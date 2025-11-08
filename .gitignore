@@ -1,0 +1,8 @@
+__pycache__/
+.venv/
+dist/
+build/
+.ropeproject/
+*.code-workspace
+*.spec
+*.egg-info
