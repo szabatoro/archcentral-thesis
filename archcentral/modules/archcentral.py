@@ -5,7 +5,7 @@ from archcentral.modules.packagemanager import PackageManagerModule
 from archcentral.ui.designer.mainwindow import Ui_MainWindow
 import sys
 
-VERSION: str = "0.0.1"
+VERSION: str = "0.0.2"
 
 # Main window of the application. All the modules will be loaded within this window
 class MainWindow(QMainWindow, Ui_MainWindow):
