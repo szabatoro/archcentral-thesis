@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>856</width>
+    <height>595</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,14 +15,113 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>System info test</string>
+    <widget class="QLabel" name="title">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
      </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>50</height>
+      </size>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>20</pointsize>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>System information</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTabWidget" name="content">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="hardware" native="true">
+      <attribute name="title">
+       <string>Hardware</string>
+      </attribute>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QWidget" name="info" native="true">
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <widget class="QLabel" name="cpu_info">
+            <property name="text">
+             <string>CPU:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="ram_info">
+            <property name="text">
+             <string>RAM:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="gpu_info">
+            <property name="text">
+             <string>GPU:</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QWidget" name="monitors" native="true">
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <widget class="CPUGraph" name="cpu_graph" native="true"/>
+          </item>
+          <item>
+           <widget class="RAMGraph" name="ram_graph" native="true"/>
+          </item>
+          <item>
+           <widget class="GPUGraph" name="gpu_graph" native="true"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="processes">
+      <attribute name="title">
+       <string>Processes</string>
+      </attribute>
+     </widget>
     </widget>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CPUGraph</class>
+   <extends>QWidget</extends>
+   <header>archcentral.ui.graph</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>GPUGraph</class>
+   <extends>QWidget</extends>
+   <header>archcentral.ui.graph</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>RAMGraph</class>
+   <extends>QWidget</extends>
+   <header>archcentral.ui.graph</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
