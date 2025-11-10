@@ -18,26 +18,26 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
 from PySide6.QtWidgets import (QApplication, QLabel, QSizePolicy, QVBoxLayout,
     QWidget)
 
-class Ui_package_manager(object):
-    def setupUi(self, package_manager):
-        if not package_manager.objectName():
-            package_manager.setObjectName(u"package_manager")
-        package_manager.resize(400, 300)
-        self.verticalLayout = QVBoxLayout(package_manager)
+class Ui_PackageManager(object):
+    def setupUi(self, PackageManager):
+        if not PackageManager.objectName():
+            PackageManager.setObjectName(u"PackageManager")
+        PackageManager.resize(400, 300)
+        self.verticalLayout = QVBoxLayout(PackageManager)
         self.verticalLayout.setObjectName(u"verticalLayout")
-        self.label = QLabel(package_manager)
+        self.label = QLabel(PackageManager)
         self.label.setObjectName(u"label")
 
         self.verticalLayout.addWidget(self.label)
 
 
-        self.retranslateUi(package_manager)
+        self.retranslateUi(PackageManager)
 
-        QMetaObject.connectSlotsByName(package_manager)
+        QMetaObject.connectSlotsByName(PackageManager)
     # setupUi
 
-    def retranslateUi(self, package_manager):
-        package_manager.setWindowTitle(QCoreApplication.translate("package_manager", u"Form", None))
-        self.label.setText(QCoreApplication.translate("package_manager", u"Package manager test", None))
+    def retranslateUi(self, PackageManager):
+        PackageManager.setWindowTitle(QCoreApplication.translate("PackageManager", u"Form", None))
+        self.label.setText(QCoreApplication.translate("PackageManager", u"Package manager test", None))
     # retranslateUi
 

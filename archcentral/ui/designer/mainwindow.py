@@ -25,11 +25,11 @@ class Ui_MainWindow(object):
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize(800, 600)
         MainWindow.setMinimumSize(QSize(800, 600))
-        self.centralwidget = QWidget(MainWindow)
-        self.centralwidget.setObjectName(u"centralwidget")
-        self.horizontalLayout = QHBoxLayout(self.centralwidget)
+        self.central_widget = QWidget(MainWindow)
+        self.central_widget.setObjectName(u"central_widget")
+        self.horizontalLayout = QHBoxLayout(self.central_widget)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.sidebar = QFrame(self.centralwidget)
+        self.sidebar = QFrame(self.central_widget)
         self.sidebar.setObjectName(u"sidebar")
         self.sidebar.setMinimumSize(QSize(150, 0))
         self.sidebar.setFrameShape(QFrame.Shape.NoFrame)
@@ -81,9 +81,9 @@ class Ui_MainWindow(object):
 
         self.menu_options.addWidget(self.package_manager_button)
 
-        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.spacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
-        self.menu_options.addItem(self.verticalSpacer)
+        self.menu_options.addItem(self.spacer)
 
 
         self.verticalLayout.addWidget(self.menu_buttons)
@@ -91,19 +91,19 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout.addWidget(self.sidebar)
 
-        self.displayarea = QStackedWidget(self.centralwidget)
-        self.displayarea.setObjectName(u"displayarea")
-        self.displayarea.setStyleSheet(u"")
+        self.display_area = QStackedWidget(self.central_widget)
+        self.display_area.setObjectName(u"display_area")
+        self.display_area.setStyleSheet(u"")
         self.page = QWidget()
         self.page.setObjectName(u"page")
-        self.displayarea.addWidget(self.page)
+        self.display_area.addWidget(self.page)
         self.page_2 = QWidget()
         self.page_2.setObjectName(u"page_2")
-        self.displayarea.addWidget(self.page_2)
+        self.display_area.addWidget(self.page_2)
 
-        self.horizontalLayout.addWidget(self.displayarea)
+        self.horizontalLayout.addWidget(self.display_area)
 
-        MainWindow.setCentralWidget(self.centralwidget)
+        MainWindow.setCentralWidget(self.central_widget)
 
         self.retranslateUi(MainWindow)
 

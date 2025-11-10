@@ -1,7 +1,7 @@
 from PySide6.QtCore import QObject
 from PySide6.QtWidgets import QApplication, QMainWindow
-from archcentral.modules.sysinfo import sys_info
-from archcentral.modules.packagemanager import package_manager
+from archcentral.modules.sysinfo import SysInfoModule
+from archcentral.modules.packagemanager import PackageManagerModule
 from archcentral.ui.designer.mainwindow import Ui_MainWindow
 import sys
 
@@ -15,13 +15,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.app_ver.setText(f"Version: {VERSION}")
 
         # instanciating widget modules
-        self.sysinfowidget: sys_info = sys_info()
-        self.packagemanagerwidget: package_manager = package_manager()
+        self.sysinfo_widget: SysInfoModule = SysInfoModule()
+        self.package_manager_widget: PackageManagerModule = PackageManagerModule()
 
         # setting up the displayarea stacked widgets with the modules
-        self.displayarea.addWidget(self.sysinfowidget)
-        self.displayarea.addWidget(self.packagemanagerwidget)
-        self.displayarea.setCurrentWidget(self.sysinfowidget)
+        self.display_area.addWidget(self.sysinfo_widget)
+        self.display_area.addWidget(self.package_manager_widget)
+        self.display_area.setCurrentWidget(self.sysinfo_widget)
 
         # setting up the buttons
         self.sys_info_button.setChecked(True)
@@ -35,11 +35,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # open the appropriate module
         match clicked_button:
             case self.sys_info_button:
-                if self.displayarea.currentWidget() is not self.sysinfowidget:
-                    self.displayarea.setCurrentWidget(self.sysinfowidget)
+                if self.display_area.currentWidget() is not self.sysinfo_widget:
+                    self.display_area.setCurrentWidget(self.sysinfo_widget)
             case self.package_manager_button:
-                if self.displayarea.currentWidget() is not self.packagemanagerwidget:
-                    self.displayarea.setCurrentWidget(self.packagemanagerwidget)
+                if self.display_area.currentWidget() is not self.package_manager_widget:
+                    self.display_area.setCurrentWidget(self.package_manager_widget)
 
 # main function to launch the program
 def main():

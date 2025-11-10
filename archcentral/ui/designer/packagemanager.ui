@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>package_manager</class>
- <widget class="QWidget" name="package_manager">
+ <class>PackageManager</class>
+ <widget class="QWidget" name="PackageManager">
   <property name="geometry">
    <rect>
     <x>0</x>

@@ -1,8 +1,8 @@
 from PySide6.QtWidgets import QWidget
-from archcentral.ui.designer.packagemanager import Ui_package_manager
+from archcentral.ui.designer.packagemanager import Ui_PackageManager
 
 # package manager module placeholder
-class package_manager(QWidget, Ui_package_manager):
+class PackageManagerModule(QWidget, Ui_PackageManager):
     def __init__(self) -> None:
         super().__init__()
-        self.setupUi(package_manager=self)
+        self.setupUi(PackageManager=self)

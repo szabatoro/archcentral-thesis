@@ -18,26 +18,26 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
 from PySide6.QtWidgets import (QApplication, QLabel, QSizePolicy, QVBoxLayout,
     QWidget)
 
-class Ui_sys_info(object):
-    def setupUi(self, sys_info):
-        if not sys_info.objectName():
-            sys_info.setObjectName(u"sys_info")
-        sys_info.resize(400, 300)
-        self.verticalLayout = QVBoxLayout(sys_info)
+class Ui_SysInfo(object):
+    def setupUi(self, SysInfo):
+        if not SysInfo.objectName():
+            SysInfo.setObjectName(u"SysInfo")
+        SysInfo.resize(400, 300)
+        self.verticalLayout = QVBoxLayout(SysInfo)
         self.verticalLayout.setObjectName(u"verticalLayout")
-        self.label = QLabel(sys_info)
+        self.label = QLabel(SysInfo)
         self.label.setObjectName(u"label")
 
         self.verticalLayout.addWidget(self.label)
 
 
-        self.retranslateUi(sys_info)
+        self.retranslateUi(SysInfo)
 
-        QMetaObject.connectSlotsByName(sys_info)
+        QMetaObject.connectSlotsByName(SysInfo)
     # setupUi
 
-    def retranslateUi(self, sys_info):
-        sys_info.setWindowTitle(QCoreApplication.translate("sys_info", u"Form", None))
-        self.label.setText(QCoreApplication.translate("sys_info", u"System info test", None))
+    def retranslateUi(self, SysInfo):
+        SysInfo.setWindowTitle(QCoreApplication.translate("SysInfo", u"Form", None))
+        self.label.setText(QCoreApplication.translate("SysInfo", u"System info test", None))
     # retranslateUi
 

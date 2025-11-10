@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>sys_info</class>
- <widget class="QWidget" name="sys_info">
+ <class>SysInfo</class>
+ <widget class="QWidget" name="SysInfo">
   <property name="geometry">
    <rect>
     <x>0</x>
