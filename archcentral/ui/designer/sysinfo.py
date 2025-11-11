@@ -16,7 +16,7 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QHBoxLayout, QLabel, QSizePolicy,
-    QTabWidget, QVBoxLayout, QWidget)
+    QSpacerItem, QTabWidget, QVBoxLayout, QWidget)
 
 from archcentral.ui.graph import (CPUGraph, GPUGraph, RAMGraph)
 
@@ -48,18 +48,68 @@ class Ui_SysInfo(object):
         self.info.setObjectName(u"info")
         self.verticalLayout_3 = QVBoxLayout(self.info)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
-        self.cpu_info = QLabel(self.info)
+        self.cpu_info = QWidget(self.info)
         self.cpu_info.setObjectName(u"cpu_info")
+        self.verticalLayout_4 = QVBoxLayout(self.cpu_info)
+        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
+        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_4.addItem(self.verticalSpacer)
+
+        self.cpu_name = QLabel(self.cpu_info)
+        self.cpu_name.setObjectName(u"cpu_name")
+
+        self.verticalLayout_4.addWidget(self.cpu_name)
+
+        self.cpu_core_count = QLabel(self.cpu_info)
+        self.cpu_core_count.setObjectName(u"cpu_core_count")
+
+        self.verticalLayout_4.addWidget(self.cpu_core_count)
+
+        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_4.addItem(self.verticalSpacer_2)
+
 
         self.verticalLayout_3.addWidget(self.cpu_info)
 
-        self.ram_info = QLabel(self.info)
+        self.ram_info = QWidget(self.info)
         self.ram_info.setObjectName(u"ram_info")
+        self.verticalLayout_5 = QVBoxLayout(self.ram_info)
+        self.verticalLayout_5.setObjectName(u"verticalLayout_5")
+        self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_5.addItem(self.verticalSpacer_3)
+
+        self.ram_amount = QLabel(self.ram_info)
+        self.ram_amount.setObjectName(u"ram_amount")
+
+        self.verticalLayout_5.addWidget(self.ram_amount)
+
+        self.verticalSpacer_4 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_5.addItem(self.verticalSpacer_4)
+
 
         self.verticalLayout_3.addWidget(self.ram_info)
 
-        self.gpu_info = QLabel(self.info)
+        self.gpu_info = QWidget(self.info)
         self.gpu_info.setObjectName(u"gpu_info")
+        self.verticalLayout_6 = QVBoxLayout(self.gpu_info)
+        self.verticalLayout_6.setObjectName(u"verticalLayout_6")
+        self.verticalSpacer_5 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_6.addItem(self.verticalSpacer_5)
+
+        self.gpu_name = QLabel(self.gpu_info)
+        self.gpu_name.setObjectName(u"gpu_name")
+
+        self.verticalLayout_6.addWidget(self.gpu_name)
+
+        self.verticalSpacer_6 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_6.addItem(self.verticalSpacer_6)
+
 
         self.verticalLayout_3.addWidget(self.gpu_info)
 
@@ -107,9 +157,10 @@ class Ui_SysInfo(object):
     def retranslateUi(self, SysInfo):
         SysInfo.setWindowTitle(QCoreApplication.translate("SysInfo", u"Form", None))
         self.title.setText(QCoreApplication.translate("SysInfo", u"System information", None))
-        self.cpu_info.setText(QCoreApplication.translate("SysInfo", u"CPU:", None))
-        self.ram_info.setText(QCoreApplication.translate("SysInfo", u"RAM:", None))
-        self.gpu_info.setText(QCoreApplication.translate("SysInfo", u"GPU:", None))
+        self.cpu_name.setText(QCoreApplication.translate("SysInfo", u"CPU name:", None))
+        self.cpu_core_count.setText(QCoreApplication.translate("SysInfo", u"CPU cores:", None))
+        self.ram_amount.setText(QCoreApplication.translate("SysInfo", u"RAM:", None))
+        self.gpu_name.setText(QCoreApplication.translate("SysInfo", u"GPU:", None))
         self.content.setTabText(self.content.indexOf(self.hardware), QCoreApplication.translate("SysInfo", u"Hardware", None))
         self.content.setTabText(self.content.indexOf(self.processes), QCoreApplication.translate("SysInfo", u"Processes", None))
     # retranslateUi
