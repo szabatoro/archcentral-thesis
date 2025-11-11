@@ -6,14 +6,37 @@ class ResourceGraph(QWidget):
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
 
-        # Create the plot widget
-        self.graphWidget: PlotWidget = PlotWidget()
-        self.graphWidget.setMouseEnabled(False, False)
+        # Initialize plot data
+        self.value_store: list[list[float]]= [] # values needed for plotting are stored here
+        self.graph_length: int = 30
+        self.plots: list = []
+
+        # Create and configure the plot widget
+        self.graph_widget: PlotWidget = PlotWidget()
+        self.graph_widget.setMouseEnabled(False, False)
+        self.graph_widget.getAxis('bottom').setStyle(showValues=False)
+        self.graph_widget.setXRange(0, self.graph_length)
 
         # Create a layout to make the plot widget fit its host widget
-        layout = QVBoxLayout(self)
+        layout: QVBoxLayout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
-        layout.addWidget(self.graphWidget)
+        layout.addWidget(self.graph_widget)
+
+    # Plot the graph with the relevant data, handles multiple plots if needed
+    def plotter(self, value_points: list[float], upper_limit: float = None) -> None:
+        self.value_store.append(value_points)
+        # set graph range on the y axis, use largest value in value store unless the upper_limit parameter is given
+        self.graph_widget.setYRange(0, upper_limit if upper_limit else max(self.value_store[-1]))
+
+        # for keeping the plot within the length of the graph, pop the first value at every step after the length limit is reached
+        if len(self.value_store) > self.graph_length:
+            self.value_store.pop(0)
+
+        # make a plot for each value point
+        for i in range(len(value_points)):
+            ydata: list[float] = [val[i] for val in self.value_store]
+            self.graph_widget.plot(ydata, clear=(i==0), pen=(i, len(value_points)))
+
 
 # Graph widget for visualizing CPU clocks
 class CPUGraph(ResourceGraph):
