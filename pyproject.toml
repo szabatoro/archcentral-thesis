@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "ArchCentral"
 description = "An Arch Linux control center utility built with PySide6"
-version = "0.0.1"
+version = "0.0.3"
 readme = "README.md"
 
 dependencies = [
