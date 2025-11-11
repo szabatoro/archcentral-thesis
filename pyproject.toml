@@ -10,6 +10,8 @@ readme = "README.md"
 
 dependencies = [
     "PySide6",
+    "pyqtgraph",
+    "psutil"
 ]
 
 [project.scripts]
