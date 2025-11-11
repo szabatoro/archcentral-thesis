@@ -47,7 +47,7 @@ class SysInfoModule(QWidget, Ui_SysInfo):
         cpu_threads: str = psutil.cpu_count(logical=True)
         ram_total: str = float(psutil.virtual_memory().total)/1024.0
         ram_used: str = float(psutil.virtual_memory().used)/1024.0
-        self.set_ram_unit_label(ram_used, ram_total)
+        self.set_ram_label(ram_used, ram_total)
         self.cpu_name.setText(f"CPU name: {cpu_model}")
         self.cpu_core_count.setText(f"CPU cores: {cpu_cores} cores, {cpu_threads} threads")
 
@@ -57,7 +57,7 @@ class SysInfoModule(QWidget, Ui_SysInfo):
         # psutil returns bytes, convert to kilobytes as a more convenient unit
         ram_total: float = float(psutil.virtual_memory().total)/1024.0
         ram_used: float = float(psutil.virtual_memory().used)/1024.0
-        self.set_ram_unit_label(ram_used, ram_total)
+        self.set_ram_label(ram_used, ram_total)
 
         self.ram_graph.plotter([ram_used/1024], ram_total/1024)
 
