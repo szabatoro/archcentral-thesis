@@ -48,3 +48,8 @@ The project that is the subject of my thesis/final project is available in this 
     ```
 
 3. After this you can launch the program by typing ```archcentral``` .
+
+# Screenshots / képernyőképek
+
+1. Hardware monitor GUI within the System Information module:
+![Hardware monitor GUI](screenshots/sysinfo_ui.png "Hardware monitor")
