@@ -18,9 +18,9 @@ class ResourceGraph(QWidget):
         self.graph_widget.setXRange(0, self.graph_length)
 
         # Create a layout to make the plot widget fit its host widget
-        layout: QVBoxLayout = QVBoxLayout(self)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.addWidget(self.graph_widget)
+        self.layout: QVBoxLayout = QVBoxLayout(self)
+        self.layout.setContentsMargins(0, 0, 0, 0)
+        self.layout.addWidget(self.graph_widget)
 
     # Plot the graph with the relevant data, handles multiple plots if needed
     def plotter(self, value_points: list[float], upper_limit: float = None) -> None:
