@@ -69,16 +69,29 @@
               </spacer>
              </item>
              <item>
+              <widget class="QLabel" name="cpu_title">
+               <property name="font">
+                <font>
+                 <pointsize>12</pointsize>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>CPU</string>
+               </property>
+              </widget>
+             </item>
+             <item>
               <widget class="QLabel" name="cpu_name">
                <property name="text">
-                <string>CPU name:</string>
+                <string>Name: </string>
                </property>
               </widget>
              </item>
              <item>
               <widget class="QLabel" name="cpu_core_count">
                <property name="text">
-                <string>CPU cores:</string>
+                <string>Core count:</string>
                </property>
               </widget>
              </item>
@@ -115,9 +128,29 @@
               </spacer>
              </item>
              <item>
+              <widget class="QLabel" name="ram_title">
+               <property name="font">
+                <font>
+                 <pointsize>12</pointsize>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>RAM</string>
+               </property>
+              </widget>
+             </item>
+             <item>
               <widget class="QLabel" name="ram_amount">
                <property name="text">
-                <string>RAM:</string>
+                <string>Used:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="swap_amount">
+               <property name="text">
+                <string>Swap disabled.</string>
                </property>
               </widget>
              </item>
@@ -152,6 +185,19 @@
                 </size>
                </property>
               </spacer>
+             </item>
+             <item>
+              <widget class="QLabel" name="gpu_title">
+               <property name="font">
+                <font>
+                 <pointsize>12</pointsize>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>GPU</string>
+               </property>
+              </widget>
              </item>
              <item>
               <widget class="QLabel" name="gpu_name">

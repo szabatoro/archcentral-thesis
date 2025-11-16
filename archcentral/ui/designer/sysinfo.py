@@ -56,6 +56,15 @@ class Ui_SysInfo(object):
 
         self.verticalLayout_4.addItem(self.verticalSpacer)
 
+        self.cpu_title = QLabel(self.cpu_info)
+        self.cpu_title.setObjectName(u"cpu_title")
+        font1 = QFont()
+        font1.setPointSize(12)
+        font1.setBold(True)
+        self.cpu_title.setFont(font1)
+
+        self.verticalLayout_4.addWidget(self.cpu_title)
+
         self.cpu_name = QLabel(self.cpu_info)
         self.cpu_name.setObjectName(u"cpu_name")
 
@@ -81,10 +90,21 @@ class Ui_SysInfo(object):
 
         self.verticalLayout_5.addItem(self.verticalSpacer_3)
 
+        self.ram_title = QLabel(self.ram_info)
+        self.ram_title.setObjectName(u"ram_title")
+        self.ram_title.setFont(font1)
+
+        self.verticalLayout_5.addWidget(self.ram_title)
+
         self.ram_amount = QLabel(self.ram_info)
         self.ram_amount.setObjectName(u"ram_amount")
 
         self.verticalLayout_5.addWidget(self.ram_amount)
+
+        self.swap_amount = QLabel(self.ram_info)
+        self.swap_amount.setObjectName(u"swap_amount")
+
+        self.verticalLayout_5.addWidget(self.swap_amount)
 
         self.verticalSpacer_4 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
@@ -100,6 +120,12 @@ class Ui_SysInfo(object):
         self.verticalSpacer_5 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_6.addItem(self.verticalSpacer_5)
+
+        self.gpu_title = QLabel(self.gpu_info)
+        self.gpu_title.setObjectName(u"gpu_title")
+        self.gpu_title.setFont(font1)
+
+        self.verticalLayout_6.addWidget(self.gpu_title)
 
         self.gpu_name = QLabel(self.gpu_info)
         self.gpu_name.setObjectName(u"gpu_name")
@@ -157,9 +183,13 @@ class Ui_SysInfo(object):
     def retranslateUi(self, SysInfo):
         SysInfo.setWindowTitle(QCoreApplication.translate("SysInfo", u"Form", None))
         self.title.setText(QCoreApplication.translate("SysInfo", u"System information", None))
-        self.cpu_name.setText(QCoreApplication.translate("SysInfo", u"CPU name:", None))
-        self.cpu_core_count.setText(QCoreApplication.translate("SysInfo", u"CPU cores:", None))
-        self.ram_amount.setText(QCoreApplication.translate("SysInfo", u"RAM:", None))
+        self.cpu_title.setText(QCoreApplication.translate("SysInfo", u"CPU", None))
+        self.cpu_name.setText(QCoreApplication.translate("SysInfo", u"Name: ", None))
+        self.cpu_core_count.setText(QCoreApplication.translate("SysInfo", u"Core count:", None))
+        self.ram_title.setText(QCoreApplication.translate("SysInfo", u"RAM", None))
+        self.ram_amount.setText(QCoreApplication.translate("SysInfo", u"Used:", None))
+        self.swap_amount.setText(QCoreApplication.translate("SysInfo", u"Swap disabled.", None))
+        self.gpu_title.setText(QCoreApplication.translate("SysInfo", u"GPU", None))
         self.gpu_name.setText(QCoreApplication.translate("SysInfo", u"GPU:", None))
         self.content.setTabText(self.content.indexOf(self.hardware), QCoreApplication.translate("SysInfo", u"Hardware", None))
         self.content.setTabText(self.content.indexOf(self.processes), QCoreApplication.translate("SysInfo", u"Processes", None))
