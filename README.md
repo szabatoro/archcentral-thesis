@@ -4,6 +4,7 @@ Ebben a repositoryban érhető el a szakdolgozatom tárgyát képező projekt.
 
 ## Mappák:
 - archcentral: a python projekt helye
+- screenshots: képernyőképek a programról
 - tools: a fejlesztést segítő szkriptek és egyebek
 
 ## A projekt közvetlen futtatásához szükséges:
@@ -30,6 +31,7 @@ The project that is the subject of my thesis/final project is available in this 
 
 ## Directories:
 - archcentral: the location of the python project
+- screenshots: screenshots about various parts of the program
 - tools: scripts and other things for helping development
 
 ## For running the project directly, you need:
