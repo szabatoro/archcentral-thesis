@@ -165,6 +165,79 @@ class Ui_SysInfo(object):
         self.horizontalLayout.addWidget(self.monitors)
 
         self.content.addTab(self.hardware, "")
+        self.software = QWidget()
+        self.software.setObjectName(u"software")
+        self.verticalLayout_7 = QVBoxLayout(self.software)
+        self.verticalLayout_7.setObjectName(u"verticalLayout_7")
+        self.system = QWidget(self.software)
+        self.system.setObjectName(u"system")
+        self.verticalLayout_8 = QVBoxLayout(self.system)
+        self.verticalLayout_8.setObjectName(u"verticalLayout_8")
+        self.verticalSpacer_7 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_8.addItem(self.verticalSpacer_7)
+
+        self.system_title = QLabel(self.system)
+        self.system_title.setObjectName(u"system_title")
+        self.system_title.setFont(font1)
+
+        self.verticalLayout_8.addWidget(self.system_title)
+
+        self.hostname = QLabel(self.system)
+        self.hostname.setObjectName(u"hostname")
+
+        self.verticalLayout_8.addWidget(self.hostname)
+
+        self.kernel_name = QLabel(self.system)
+        self.kernel_name.setObjectName(u"kernel_name")
+
+        self.verticalLayout_8.addWidget(self.kernel_name)
+
+        self.verticalSpacer_8 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_8.addItem(self.verticalSpacer_8)
+
+
+        self.verticalLayout_7.addWidget(self.system)
+
+        self.gui = QWidget(self.software)
+        self.gui.setObjectName(u"gui")
+        self.gui.setMinimumSize(QSize(0, 0))
+        self.verticalLayout_9 = QVBoxLayout(self.gui)
+        self.verticalLayout_9.setObjectName(u"verticalLayout_9")
+        self.verticalSpacer_9 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_9.addItem(self.verticalSpacer_9)
+
+        self.gui_title = QLabel(self.gui)
+        self.gui_title.setObjectName(u"gui_title")
+        self.gui_title.setFont(font1)
+
+        self.verticalLayout_9.addWidget(self.gui_title)
+
+        self.de = QLabel(self.gui)
+        self.de.setObjectName(u"de")
+
+        self.verticalLayout_9.addWidget(self.de)
+
+        self.wm = QLabel(self.gui)
+        self.wm.setObjectName(u"wm")
+
+        self.verticalLayout_9.addWidget(self.wm)
+
+        self.verticalSpacer_10 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_9.addItem(self.verticalSpacer_10)
+
+
+        self.verticalLayout_7.addWidget(self.gui)
+
+        self.widget_3 = QWidget(self.software)
+        self.widget_3.setObjectName(u"widget_3")
+
+        self.verticalLayout_7.addWidget(self.widget_3)
+
+        self.content.addTab(self.software, "")
         self.processes = QWidget()
         self.processes.setObjectName(u"processes")
         self.content.addTab(self.processes, "")
@@ -174,7 +247,7 @@ class Ui_SysInfo(object):
 
         self.retranslateUi(SysInfo)
 
-        self.content.setCurrentIndex(0)
+        self.content.setCurrentIndex(1)
 
 
         QMetaObject.connectSlotsByName(SysInfo)
@@ -192,6 +265,13 @@ class Ui_SysInfo(object):
         self.gpu_title.setText(QCoreApplication.translate("SysInfo", u"GPU", None))
         self.gpu_name.setText(QCoreApplication.translate("SysInfo", u"GPU:", None))
         self.content.setTabText(self.content.indexOf(self.hardware), QCoreApplication.translate("SysInfo", u"Hardware", None))
+        self.system_title.setText(QCoreApplication.translate("SysInfo", u"System", None))
+        self.hostname.setText(QCoreApplication.translate("SysInfo", u"Hostname:", None))
+        self.kernel_name.setText(QCoreApplication.translate("SysInfo", u"Kernel:", None))
+        self.gui_title.setText(QCoreApplication.translate("SysInfo", u"GUI", None))
+        self.de.setText(QCoreApplication.translate("SysInfo", u"Desktop environment:", None))
+        self.wm.setText(QCoreApplication.translate("SysInfo", u"Window manager:", None))
+        self.content.setTabText(self.content.indexOf(self.software), QCoreApplication.translate("SysInfo", u"Software", None))
         self.content.setTabText(self.content.indexOf(self.processes), QCoreApplication.translate("SysInfo", u"Processes", None))
     # retranslateUi
 
