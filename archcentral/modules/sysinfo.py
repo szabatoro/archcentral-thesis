@@ -1,6 +1,7 @@
 from PySide6.QtCore import QTimer
 from PySide6.QtWidgets import QWidget
 from archcentral.ui.designer.sysinfo import Ui_SysInfo
+from archcentral.helpers.qprocesshelper import QProcessHandler
 import re # for taking data manually if info not retrievable by psutil
 import psutil # for everything else
 
@@ -19,6 +20,15 @@ class SysInfoModule(QWidget, Ui_SysInfo):
         self.timer.setInterval(1000) # 1 sec
         self.timer.timeout.connect(self.hw_info_monitor)
         self.timer.start()
+
+        # Process runner
+        self.hostname_handler: QProcessHandler = QProcessHandler()
+        self.kernel_handler: QProcessHandler = QProcessHandler()
+        self.fetch_hostname()
+        self.fetch_kernel()
+
+
+    ############### Hardware info ###############
 
     # Read /proc/cpuinfo
     def read_cpu_info(self) -> str:
@@ -126,3 +136,13 @@ class SysInfoModule(QWidget, Ui_SysInfo):
         cpu_corefreqs: list[float] = psutil.cpu_percent(percpu=True)
         # draw the cpu graph with every core
         self.cpu_graph.plotter(cpu_corefreqs, 100.0)
+
+    ############### Software info ###############
+
+    def fetch_hostname(self) -> None:
+        self.hostname_handler.start_process("uname",  ["-n"])
+        self.hostname_handler.finished.connect(lambda hn: self.hostname.setText(f"Hostname: {hn}"))
+
+    def fetch_kernel(self) -> None:
+        self.kernel_handler.start_process("uname",  ["-sr"])
+        self.kernel_handler.finished.connect(lambda kr: self.kernel_name.setText(f"Kernel: {kr}"))
