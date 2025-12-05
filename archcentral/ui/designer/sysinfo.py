@@ -193,6 +193,11 @@ class Ui_SysInfo(object):
 
         self.verticalLayout_8.addWidget(self.kernel_name)
 
+        self.uptime = QLabel(self.system)
+        self.uptime.setObjectName(u"uptime")
+
+        self.verticalLayout_8.addWidget(self.uptime)
+
         self.verticalSpacer_8 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_8.addItem(self.verticalSpacer_8)
@@ -268,6 +273,7 @@ class Ui_SysInfo(object):
         self.system_title.setText(QCoreApplication.translate("SysInfo", u"System", None))
         self.hostname.setText(QCoreApplication.translate("SysInfo", u"Hostname:", None))
         self.kernel_name.setText(QCoreApplication.translate("SysInfo", u"Kernel:", None))
+        self.uptime.setText(QCoreApplication.translate("SysInfo", u"Uptime: ", None))
         self.gui_title.setText(QCoreApplication.translate("SysInfo", u"GUI", None))
         self.de.setText(QCoreApplication.translate("SysInfo", u"Desktop environment:", None))
         self.wm.setText(QCoreApplication.translate("SysInfo", u"Window manager:", None))

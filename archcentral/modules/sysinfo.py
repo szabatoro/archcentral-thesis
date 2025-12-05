@@ -1,3 +1,4 @@
+import time
 from PySide6.QtCore import QTimer
 from PySide6.QtWidgets import QWidget
 from archcentral.ui.designer.sysinfo import Ui_SysInfo
@@ -14,18 +15,22 @@ class SysInfoModule(QWidget, Ui_SysInfo):
         # variable to determine if getting swap info is needed
         self.swap_exists: bool = False if psutil.swap_memory().total == 0.0 else True
 
-        self.static_hw_info()
         # Set up a timer for the live monitoring
         self.timer: QTimer = QTimer()
         self.timer.setInterval(1000) # 1 sec
         self.timer.timeout.connect(self.hw_info_monitor)
+        self.timer.timeout.connect(self.fetch_uptime)
         self.timer.start()
 
         # Process runner
         self.hostname_handler: QProcessHandler = QProcessHandler()
         self.kernel_handler: QProcessHandler = QProcessHandler()
+
+        # Gather info once at launch
+        self.static_hw_info()
         self.fetch_hostname()
         self.fetch_kernel()
+        self.fetch_uptime()
 
 
     ############### Hardware info ###############
@@ -146,3 +151,7 @@ class SysInfoModule(QWidget, Ui_SysInfo):
     def fetch_kernel(self) -> None:
         self.kernel_handler.start_process("uname",  ["-sr"])
         self.kernel_handler.finished.connect(lambda kr: self.kernel_name.setText(f"Kernel: {kr}"))
+
+    def fetch_uptime(self) -> None:
+        uptime: str = time.strftime("%Hh:%Mm:%Ss", time.gmtime(time.time() - psutil.boot_time()))
+        self.uptime.setText(f"Uptime: {uptime}")
