@@ -122,7 +122,7 @@ class SysInfoModule(QWidget, Ui_SysInfo):
         stats = psutil.net_if_stats()
 
         for intface, addr_list in addresses.items():
-            if intface in stats and getattr(stats[intface], "isup") and intface.startswith(("enp", "wlan", "eth")):
+            if intface in stats and getattr(stats[intface], "isup") and intface.startswith(("enp", "wlp", "wlan", "eth")):
                 self.active_network_adapter = intface
                 break
 
