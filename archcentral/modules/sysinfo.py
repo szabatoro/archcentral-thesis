@@ -18,8 +18,8 @@ class SysInfoModule(QWidget, Ui_SysInfo):
         # variable to determine if getting swap info is needed
         self.swap_exists: bool = False if psutil.swap_memory().total == 0.0 else True
 
-        # variable to store active network adapter
-        self.active_network_adapter: str
+        # variable to store active network interface
+        self.active_network_interface: str
 
         # Set up a timer for the live monitoring
         self.timer: QTimer = QTimer()
@@ -49,6 +49,7 @@ class SysInfoModule(QWidget, Ui_SysInfo):
         cpu_file.close()
         return cpu_str
 
+    # fetch ipify.org for public ip
     def fetch_public_ip(self) -> str:
         try:
             public_ip_v4 = urlopen('https://api.ipify.org').read().decode('utf8')
@@ -148,15 +149,20 @@ class SysInfoModule(QWidget, Ui_SysInfo):
 
         for intface, addr_list in addresses.items():
             if intface in stats and getattr(stats[intface], "isup") and intface.startswith(("enp", "wlp", "wlan", "eth")):
-                self.active_network_adapter = intface
+                self.active_network_interface = intface
                 break
+            else:
+                self.active_network_interface = "No active network interface."
 
         ip: str
         for addr in addresses[intface]:
             if addr.family == socket.AF_INET:
                 ip = addr.address
+                break
+            else:
+                ip = "Not connected."
 
-        self.network_active_interface.setText(f"Active interface: {self.active_network_adapter}")
+        self.network_active_interface.setText(f"Active interface: {self.active_network_interface}")
         self.network_local_ip.setText(f"Local IP: {ip}")
 
 
