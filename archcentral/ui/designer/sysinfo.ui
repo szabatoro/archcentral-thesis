@@ -42,7 +42,7 @@
    <item>
     <widget class="QTabWidget" name="content">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="hardware">
       <attribute name="title">
@@ -171,7 +171,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QWidget" name="gpu_info" native="true">
+           <widget class="QWidget" name="network_info" native="true">
             <layout class="QVBoxLayout" name="verticalLayout_6">
              <item>
               <spacer name="verticalSpacer_5">
@@ -187,7 +187,7 @@
               </spacer>
              </item>
              <item>
-              <widget class="QLabel" name="gpu_title">
+              <widget class="QLabel" name="network_title">
                <property name="font">
                 <font>
                  <pointsize>12</pointsize>
@@ -195,14 +195,21 @@
                 </font>
                </property>
                <property name="text">
-                <string>GPU</string>
+                <string>Network</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="gpu_name">
+              <widget class="QLabel" name="network_active_interface">
                <property name="text">
-                <string>GPU:</string>
+                <string>Active interface: </string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="network_local_ip">
+               <property name="text">
+                <string>Local IP: </string>
                </property>
               </widget>
              </item>
@@ -235,7 +242,7 @@
            <widget class="RAMGraph" name="ram_graph" native="true"/>
           </item>
           <item>
-           <widget class="GPUGraph" name="gpu_graph" native="true"/>
+           <widget class="NetworkGraph" name="network_graph" native="true"/>
           </item>
          </layout>
         </widget>
@@ -400,13 +407,13 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>GPUGraph</class>
+   <class>RAMGraph</class>
    <extends>QWidget</extends>
    <header>archcentral.ui.graph</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>RAMGraph</class>
+   <class>NetworkGraph</class>
    <extends>QWidget</extends>
    <header>archcentral.ui.graph</header>
    <container>1</container>

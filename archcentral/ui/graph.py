@@ -44,7 +44,7 @@ class CPUGraph(ResourceGraph):
         super().__init__(parent)
 
 # Graph widget for visualizing GPU clocks/mem usage (??Undecided)
-class GPUGraph(ResourceGraph):
+class NetworkGraph(ResourceGraph):
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
 

@@ -18,7 +18,7 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
 from PySide6.QtWidgets import (QApplication, QHBoxLayout, QLabel, QSizePolicy,
     QSpacerItem, QTabWidget, QVBoxLayout, QWidget)
 
-from archcentral.ui.graph import (CPUGraph, GPUGraph, RAMGraph)
+from archcentral.ui.graph import (CPUGraph, NetworkGraph, RAMGraph)
 
 class Ui_SysInfo(object):
     def setupUi(self, SysInfo):
@@ -113,31 +113,36 @@ class Ui_SysInfo(object):
 
         self.verticalLayout_3.addWidget(self.ram_info)
 
-        self.gpu_info = QWidget(self.info)
-        self.gpu_info.setObjectName(u"gpu_info")
-        self.verticalLayout_6 = QVBoxLayout(self.gpu_info)
+        self.network_info = QWidget(self.info)
+        self.network_info.setObjectName(u"network_info")
+        self.verticalLayout_6 = QVBoxLayout(self.network_info)
         self.verticalLayout_6.setObjectName(u"verticalLayout_6")
         self.verticalSpacer_5 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_6.addItem(self.verticalSpacer_5)
 
-        self.gpu_title = QLabel(self.gpu_info)
-        self.gpu_title.setObjectName(u"gpu_title")
-        self.gpu_title.setFont(font1)
+        self.network_title = QLabel(self.network_info)
+        self.network_title.setObjectName(u"network_title")
+        self.network_title.setFont(font1)
 
-        self.verticalLayout_6.addWidget(self.gpu_title)
+        self.verticalLayout_6.addWidget(self.network_title)
 
-        self.gpu_name = QLabel(self.gpu_info)
-        self.gpu_name.setObjectName(u"gpu_name")
+        self.network_active_interface = QLabel(self.network_info)
+        self.network_active_interface.setObjectName(u"network_active_interface")
 
-        self.verticalLayout_6.addWidget(self.gpu_name)
+        self.verticalLayout_6.addWidget(self.network_active_interface)
+
+        self.network_local_ip = QLabel(self.network_info)
+        self.network_local_ip.setObjectName(u"network_local_ip")
+
+        self.verticalLayout_6.addWidget(self.network_local_ip)
 
         self.verticalSpacer_6 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_6.addItem(self.verticalSpacer_6)
 
 
-        self.verticalLayout_3.addWidget(self.gpu_info)
+        self.verticalLayout_3.addWidget(self.network_info)
 
 
         self.horizontalLayout.addWidget(self.info)
@@ -156,10 +161,10 @@ class Ui_SysInfo(object):
 
         self.verticalLayout_2.addWidget(self.ram_graph)
 
-        self.gpu_graph = GPUGraph(self.monitors)
-        self.gpu_graph.setObjectName(u"gpu_graph")
+        self.network_graph = NetworkGraph(self.monitors)
+        self.network_graph.setObjectName(u"network_graph")
 
-        self.verticalLayout_2.addWidget(self.gpu_graph)
+        self.verticalLayout_2.addWidget(self.network_graph)
 
 
         self.horizontalLayout.addWidget(self.monitors)
@@ -252,7 +257,7 @@ class Ui_SysInfo(object):
 
         self.retranslateUi(SysInfo)
 
-        self.content.setCurrentIndex(1)
+        self.content.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(SysInfo)
@@ -267,8 +272,9 @@ class Ui_SysInfo(object):
         self.ram_title.setText(QCoreApplication.translate("SysInfo", u"RAM", None))
         self.ram_amount.setText(QCoreApplication.translate("SysInfo", u"Used:", None))
         self.swap_amount.setText(QCoreApplication.translate("SysInfo", u"Swap disabled.", None))
-        self.gpu_title.setText(QCoreApplication.translate("SysInfo", u"GPU", None))
-        self.gpu_name.setText(QCoreApplication.translate("SysInfo", u"GPU:", None))
+        self.network_title.setText(QCoreApplication.translate("SysInfo", u"Network", None))
+        self.network_active_interface.setText(QCoreApplication.translate("SysInfo", u"Active interface: ", None))
+        self.network_local_ip.setText(QCoreApplication.translate("SysInfo", u"Local IP: ", None))
         self.content.setTabText(self.content.indexOf(self.hardware), QCoreApplication.translate("SysInfo", u"Hardware", None))
         self.system_title.setText(QCoreApplication.translate("SysInfo", u"System", None))
         self.hostname.setText(QCoreApplication.translate("SysInfo", u"Hostname:", None))
