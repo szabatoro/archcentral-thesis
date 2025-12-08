@@ -15,8 +15,9 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QHBoxLayout, QLabel, QSizePolicy,
-    QSpacerItem, QTabWidget, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QHBoxLayout, QLabel, QPushButton,
+    QSizePolicy, QSpacerItem, QTabWidget, QVBoxLayout,
+    QWidget)
 
 from archcentral.ui.graph import (CPUGraph, NetworkGraph, RAMGraph)
 
@@ -136,6 +137,21 @@ class Ui_SysInfo(object):
         self.network_local_ip.setObjectName(u"network_local_ip")
 
         self.verticalLayout_6.addWidget(self.network_local_ip)
+
+        self.network_public_ip_layout = QHBoxLayout()
+        self.network_public_ip_layout.setObjectName(u"network_public_ip_layout")
+        self.network_public_ip = QLabel(self.network_info)
+        self.network_public_ip.setObjectName(u"network_public_ip")
+
+        self.network_public_ip_layout.addWidget(self.network_public_ip)
+
+        self.network_public_ip_switch = QPushButton(self.network_info)
+        self.network_public_ip_switch.setObjectName(u"network_public_ip_switch")
+
+        self.network_public_ip_layout.addWidget(self.network_public_ip_switch)
+
+
+        self.verticalLayout_6.addLayout(self.network_public_ip_layout)
 
         self.verticalSpacer_6 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
@@ -275,6 +291,11 @@ class Ui_SysInfo(object):
         self.network_title.setText(QCoreApplication.translate("SysInfo", u"Network", None))
         self.network_active_interface.setText(QCoreApplication.translate("SysInfo", u"Active interface: ", None))
         self.network_local_ip.setText(QCoreApplication.translate("SysInfo", u"Local IP: ", None))
+        self.network_public_ip.setText(QCoreApplication.translate("SysInfo", u"Public IP:", None))
+#if QT_CONFIG(tooltip)
+        self.network_public_ip_switch.setToolTip(QCoreApplication.translate("SysInfo", u"This will connect to api.ipify.org to determine public IP.", None))
+#endif // QT_CONFIG(tooltip)
+        self.network_public_ip_switch.setText(QCoreApplication.translate("SysInfo", u"Get IP", None))
         self.content.setTabText(self.content.indexOf(self.hardware), QCoreApplication.translate("SysInfo", u"Hardware", None))
         self.system_title.setText(QCoreApplication.translate("SysInfo", u"System", None))
         self.hostname.setText(QCoreApplication.translate("SysInfo", u"Hostname:", None))

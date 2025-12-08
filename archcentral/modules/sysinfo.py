@@ -1,5 +1,7 @@
 import socket
 import time
+from urllib.request import urlopen
+from urllib.error import URLError, HTTPError
 from PySide6.QtCore import QTimer
 from PySide6.QtWidgets import QWidget
 from archcentral.ui.designer.sysinfo import Ui_SysInfo
@@ -34,6 +36,9 @@ class SysInfoModule(QWidget, Ui_SysInfo):
         self.static_hw_info()
         self.static_sw_info()
 
+        # Connect buttons
+        self.network_public_ip_switch.clicked.connect(self.fetch_public_ip)
+
 
     ############### Hardware info ###############
 
@@ -43,6 +48,26 @@ class SysInfoModule(QWidget, Ui_SysInfo):
         cpu_str: str = cpu_file.read()
         cpu_file.close()
         return cpu_str
+
+    def fetch_public_ip(self) -> str:
+        try:
+            public_ip_v4 = urlopen('https://api.ipify.org').read().decode('utf8')
+        except HTTPError:
+            public_ip_v4 = "A network error occured."
+        except URLError:
+            public_ip_v4 = "There is no IPv4 connectivity."
+
+        try:
+            public_ip_v6 = urlopen('https://api6.ipify.org').read().decode('utf8')
+        except HTTPError:
+            public_ip_v6 = "A network error occured."
+        except URLError:
+            public_ip_v6 = "There is no IPv6 connectivity."
+
+        self.network_public_ip_switch.setDisabled(True)
+        self.network_public_ip_switch.setVisible(False)
+
+        self.network_public_ip.setText(f"Public IP:\nIPv4: {public_ip_v4}\nIPv6: {public_ip_v6}")
 
     # Convert memory to suitable units
     # same_units: whether the total should be the same unit as used instead of the largest possible one
@@ -133,6 +158,7 @@ class SysInfoModule(QWidget, Ui_SysInfo):
 
         self.network_active_interface.setText(f"Active interface: {self.active_network_adapter}")
         self.network_local_ip.setText(f"Local IP: {ip}")
+
 
     # Collect changing hardware information
     def hw_info_monitor(self) -> None:

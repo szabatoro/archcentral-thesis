@@ -214,6 +214,27 @@
               </widget>
              </item>
              <item>
+              <layout class="QHBoxLayout" name="network_public_ip_layout">
+               <item>
+                <widget class="QLabel" name="network_public_ip">
+                 <property name="text">
+                  <string>Public IP:</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="network_public_ip_switch">
+                 <property name="toolTip">
+                  <string>This will connect to api.ipify.org to determine public IP.</string>
+                 </property>
+                 <property name="text">
+                  <string>Get IP</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
               <spacer name="verticalSpacer_6">
                <property name="orientation">
                 <enum>Qt::Orientation::Vertical</enum>
