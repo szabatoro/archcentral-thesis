@@ -1,3 +1,4 @@
+import socket
 import time
 from PySide6.QtCore import QTimer
 from PySide6.QtWidgets import QWidget
@@ -15,11 +16,14 @@ class SysInfoModule(QWidget, Ui_SysInfo):
         # variable to determine if getting swap info is needed
         self.swap_exists: bool = False if psutil.swap_memory().total == 0.0 else True
 
+        # variable to store active network adapter
+        self.active_network_adapter: str
+
         # Set up a timer for the live monitoring
         self.timer: QTimer = QTimer()
         self.timer.setInterval(1000) # 1 sec
         self.timer.timeout.connect(self.hw_info_monitor)
-        self.timer.timeout.connect(self.fetch_uptime)
+        self.timer.timeout.connect(self.sw_info_monitor)
         self.timer.start()
 
         # Process runner
@@ -28,9 +32,7 @@ class SysInfoModule(QWidget, Ui_SysInfo):
 
         # Gather info once at launch
         self.static_hw_info()
-        self.fetch_hostname()
-        self.fetch_kernel()
-        self.fetch_uptime()
+        self.static_sw_info()
 
 
     ############### Hardware info ###############
@@ -115,6 +117,23 @@ class SysInfoModule(QWidget, Ui_SysInfo):
         self.cpu_name.setText(f"Name: {cpu_model}")
         self.cpu_core_count.setText(f"Core count: {cpu_cores} cores, {cpu_threads} threads")
 
+        ### Network ###
+        addresses = psutil.net_if_addrs()
+        stats = psutil.net_if_stats()
+
+        for intface, addr_list in addresses.items():
+            if intface in stats and getattr(stats[intface], "isup") and intface.startswith(("enp", "wlan", "eth")):
+                self.active_network_adapter = intface
+                break
+
+        ip: str
+        for addr in addresses[intface]:
+            if addr.family == socket.AF_INET:
+                ip = addr.address
+
+        self.network_active_interface.setText(f"Active interface: {self.active_network_adapter}")
+        self.network_local_ip.setText(f"Local IP: {ip}")
+
     # Collect changing hardware information
     def hw_info_monitor(self) -> None:
         ### RAM ###
@@ -142,16 +161,18 @@ class SysInfoModule(QWidget, Ui_SysInfo):
         # draw the cpu graph with every core
         self.cpu_graph.plotter(cpu_corefreqs, 100.0)
 
+        ### Network ###
+
+
     ############### Software info ###############
 
-    def fetch_hostname(self) -> None:
+    def static_sw_info(self) -> None:
         self.hostname_handler.start_process("uname",  ["-n"])
         self.hostname_handler.finished.connect(lambda hn: self.hostname.setText(f"Hostname: {hn}"))
 
-    def fetch_kernel(self) -> None:
         self.kernel_handler.start_process("uname",  ["-sr"])
         self.kernel_handler.finished.connect(lambda kr: self.kernel_name.setText(f"Kernel: {kr}"))
 
-    def fetch_uptime(self) -> None:
+    def sw_info_monitor(self) -> None:
         uptime: str = time.strftime("%Hh:%Mm:%Ss", time.gmtime(time.time() - psutil.boot_time()))
         self.uptime.setText(f"Uptime: {uptime}")
