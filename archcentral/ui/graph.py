@@ -26,7 +26,7 @@ class ResourceGraph(QWidget):
     def plotter(self, value_points: list[float], upper_limit: float = None) -> None:
         self.value_store.append(value_points)
         # set graph range on the y axis, use largest value in value store unless the upper_limit parameter is given
-        self.graph_widget.setYRange(0, upper_limit if upper_limit else max(self.value_store[-1]))
+        self.graph_widget.setYRange(0, upper_limit if upper_limit else max(value for row in self.value_store for value in row))
 
         # for keeping the plot within the length of the graph, pop the first value at every step after the length limit is reached
         if len(self.value_store) > self.graph_length:
