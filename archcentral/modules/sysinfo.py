@@ -15,18 +15,12 @@ class SysInfoModule(QWidget, Ui_SysInfo):
         super().__init__()
         self.setupUi(SysInfo=self)
 
+        # module-level variables
+        self.active_network_interface: str
+        self.bs: float = None # bytes sent
+        self.br: float = None # bytes recieved
         # variable to determine if getting swap info is needed
         self.swap_exists: bool = False if psutil.swap_memory().total == 0.0 else True
-
-        # variable to store active network interface
-        self.active_network_interface: str
-
-        # Set up a timer for the live monitoring
-        self.timer: QTimer = QTimer()
-        self.timer.setInterval(1000) # 1 sec
-        self.timer.timeout.connect(self.hw_info_monitor)
-        self.timer.timeout.connect(self.sw_info_monitor)
-        self.timer.start()
 
         # Process runner
         self.hostname_handler: QProcessHandler = QProcessHandler()
@@ -35,6 +29,13 @@ class SysInfoModule(QWidget, Ui_SysInfo):
         # Gather info once at launch
         self.static_hw_info()
         self.static_sw_info()
+
+        # Set up a timer for the live monitoring
+        self.timer: QTimer = QTimer()
+        self.timer.setInterval(1000) # 1 sec
+        self.timer.timeout.connect(self.hw_info_monitor)
+        self.timer.timeout.connect(self.sw_info_monitor)
+        self.timer.start()
 
         # Connect buttons
         self.network_public_ip_switch.clicked.connect(self.fetch_public_ip)
@@ -152,7 +153,7 @@ class SysInfoModule(QWidget, Ui_SysInfo):
                 self.active_network_interface = intface
                 break
             else:
-                self.active_network_interface = "No active network interface."
+                self.active_network_interface = None
 
         ip: str
         for addr in addresses[intface]:
@@ -162,7 +163,7 @@ class SysInfoModule(QWidget, Ui_SysInfo):
             else:
                 ip = "Not connected."
 
-        self.network_active_interface.setText(f"Active interface: {self.active_network_interface}")
+        self.network_active_interface.setText(f"Active interface: {self.active_network_interface if self.active_network_interface else "No active network interface."}")
         self.network_local_ip.setText(f"Local IP: {ip}")
 
 
@@ -194,7 +195,22 @@ class SysInfoModule(QWidget, Ui_SysInfo):
         self.cpu_graph.plotter(cpu_corefreqs, 100.0)
 
         ### Network ###
+        # only perform if there is an active network interface
+        if self.active_network_interface:
+            # if no value has been recorded yet don't do calculations
+            if (self.bs is None) and (self.br is None):
+                self.bs = psutil.net_io_counters(pernic=True)[self.active_network_interface].bytes_sent
+                self.br = psutil.net_io_counters(pernic=True)[self.active_network_interface].bytes_recv
+            else:
+                # provided network traffic is cumulative, need to calculate the difference for network speed
+                current_bs: float = psutil.net_io_counters(pernic=True)[self.active_network_interface].bytes_sent
+                diff_bs: float = current_bs - self.bs
+                self.bs = current_bs
+                current_br: float = psutil.net_io_counters(pernic=True)[self.active_network_interface].bytes_recv
+                diff_br: float = current_br - self.br
+                self.br = current_br
 
+                self.network_graph.plotter([diff_bs, diff_br])
 
     ############### Software info ###############
 
