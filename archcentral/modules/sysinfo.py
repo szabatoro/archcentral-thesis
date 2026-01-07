@@ -186,14 +186,18 @@ class SysInfoModule(QWidget, Ui_SysInfo):
             self.set_ram_label(ram_readable)
 
         # draw the ram graph
+        self.ram_graph.init_plots(["Used RAM", "Used swap"] if self.swap_exists else ["Used RAM"])
         self.ram_graph.plotter([ram_readable_graph[0], swap_readable_graph[0]] if self.swap_exists else [ram_readable_graph[0]], ram_readable_graph[2])
 
         ### CPU ###
         # get a list of cpu cores utilisation %
         cpu_corefreqs: list[float] = psutil.cpu_percent(percpu=True)
         # draw the cpu graph with every core
+        cpu_labels: list[str] = []
+        for i, cpu in enumerate(cpu_corefreqs):
+            cpu_labels.append(f"C{i}")
+        self.cpu_graph.init_plots(cpu_labels)
         self.cpu_graph.plotter(cpu_corefreqs, 100.0)
-
         ### Network ###
         # only perform if there is an active network interface
         if self.active_network_interface:
@@ -210,6 +214,7 @@ class SysInfoModule(QWidget, Ui_SysInfo):
                 diff_br: float = current_br - self.br
                 self.br = current_br
 
+                self.network_graph.init_plots(["Upload", "Download"])
                 self.network_graph.plotter([diff_bs, diff_br])
 
     ############### Software info ###############
