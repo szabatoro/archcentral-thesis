@@ -16,3 +16,6 @@ dependencies = [
 
 [project.scripts]
 archcentral = "archcentral.__main__:main"
+
+[tool.setuptools]
+packages = ["archcentral"]
