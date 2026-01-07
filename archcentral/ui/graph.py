@@ -1,18 +1,19 @@
 from PySide6.QtWidgets import QWidget, QVBoxLayout
 from pyqtgraph import PlotWidget
+from pyqtgraph import mkPen
 
 # Base class for resource visualizer widgets
 class ResourceGraph(QWidget):
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
-
-        # Initialize plot data
         self.value_store: list[list[float]]= [] # values needed for plotting are stored here
         self.graph_length: int = 30
         self.plots: list = []
 
         # Create and configure the plot widget
         self.graph_widget: PlotWidget = PlotWidget()
+        self.graph_legend = self.graph_widget.addLegend()
+        self.graph_legend.hide()
         self.graph_widget.setMouseEnabled(False, False)
         self.graph_widget.getAxis('bottom').setStyle(showValues=False)
         self.graph_widget.setXRange(0, self.graph_length)
@@ -22,28 +23,53 @@ class ResourceGraph(QWidget):
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.layout.addWidget(self.graph_widget)
 
+    # Extracting plot name and color for creating a legend
+    def get_legend_data(self):
+        legend_data = []
+
+        for plot in self.plots:
+            pen = plot.opts['pen']
+            color = pen.color()
+            legend_data.append((color, plot.name()))
+
+        return legend_data
+
+    # Set up plots as needed
+    def init_plots(self, line_labels) -> None:
+        self.plots.clear()
+        for i, label in enumerate(line_labels):
+            pen = mkPen(color=i)
+            plot = self.graph_widget.plot(
+                name=label,
+                pen=pen
+            )
+            self.plots.append(plot)
+
     # Plot the graph with the relevant data, handles multiple plots if needed
     def plotter(self, value_points: list[float], upper_limit: float = None) -> None:
         self.value_store.append(value_points)
         # set graph range on the y axis, use largest value in value store unless the upper_limit parameter is given
-        self.graph_widget.setYRange(0, upper_limit if upper_limit else max(value for row in self.value_store for value in row))
+        if upper_limit is not None:
+            ymax = upper_limit
+        else:
+            ymax = max(max(row) for row in self.value_store)
+        self.graph_widget.setYRange(0, ymax)
 
         # for keeping the plot within the length of the graph, pop the first value at every step after the length limit is reached
         if len(self.value_store) > self.graph_length:
             self.value_store.pop(0)
 
-        # make a plot for each value point
-        for i in range(len(value_points)):
-            ydata: list[float] = [val[i] for val in self.value_store]
-            self.graph_widget.plot(ydata, clear=(i==0), pen=(i, len(value_points)))
-
+        # update plots with latest data
+        for i, plot in enumerate(self.plots):
+            ydata = [row[i] for row in self.value_store]
+            plot.setData(y=ydata)
 
 # Graph widget for visualizing CPU clocks
 class CPUGraph(ResourceGraph):
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
 
-# Graph widget for visualizing GPU clocks/mem usage (??Undecided)
+# Graph widget for visualizing network traffic
 class NetworkGraph(ResourceGraph):
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
