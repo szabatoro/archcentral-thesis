@@ -1,17 +1,47 @@
 from PySide6.QtWidgets import QWidget, QVBoxLayout
-from pyqtgraph import PlotWidget
-from pyqtgraph import mkPen
+from pyqtgraph import PlotWidget, AxisItem, mkPen
+
+# Custom Y axis to dynamically change displayed unit
+class ByteAxis(AxisItem):
+    def tickStrings(self, values, scale, spacing) -> list:
+        min_val, max_val = self.range
+
+        if max_val < 1024:
+            divisor = 1
+            #unit = "B"
+        elif max_val < 1024**2:
+            divisor = 1024
+            #unit = "KB"
+        elif max_val < 1024**3:
+            divisor = 1024**2
+            #unit = "MB"
+        else:
+            divisor = 1024**3
+            #unit = "GB"
+
+        self.setLabel(units="B")
+
+        strings = []
+        for value in values:
+            scaled = value / divisor
+            strings.append(f"{scaled:.2f}")
+
+        return strings
 
 # Base class for resource visualizer widgets
 class ResourceGraph(QWidget):
-    def __init__(self, parent=None) -> None:
+    def __init__(self, parent=None, not_byte=None) -> None:
         super().__init__(parent)
         self.value_store: list[list[float]]= [] # values needed for plotting are stored here
-        self.graph_length: int = 30
+        self.graph_length: int = 4
         self.plots: list = []
 
         # Create and configure the plot widget
-        self.graph_widget: PlotWidget = PlotWidget()
+        if not_byte: # Specifically for the CPU plot as it's the only one not measured in bytes
+            self.graph_widget: PlotWidget = PlotWidget()
+        else:
+            self.axis = ByteAxis("left")
+            self.graph_widget: PlotWidget = PlotWidget(axisItems={"left": self.axis})
         self.graph_legend = self.graph_widget.addLegend()
         self.graph_legend.hide()
         self.graph_widget.setMouseEnabled(False, False)
@@ -62,12 +92,12 @@ class ResourceGraph(QWidget):
         # update plots with latest data
         for i, plot in enumerate(self.plots):
             ydata = [row[i] for row in self.value_store]
-            plot.setData(y=ydata)
+            plot.setData(x=list(range(len(self.value_store))),y=ydata)
 
 # Graph widget for visualizing CPU clocks
 class CPUGraph(ResourceGraph):
     def __init__(self, parent=None) -> None:
-        super().__init__(parent)
+        super().__init__(parent, True)
 
 # Graph widget for visualizing network traffic
 class NetworkGraph(ResourceGraph):
