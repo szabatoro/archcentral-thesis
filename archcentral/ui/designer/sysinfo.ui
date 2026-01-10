@@ -51,6 +51,12 @@
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
         <widget class="QWidget" name="info" native="true">
+         <property name="minimumSize">
+          <size>
+           <width>300</width>
+           <height>0</height>
+          </size>
+         </property>
          <layout class="QVBoxLayout" name="verticalLayout_3">
           <item>
            <widget class="QWidget" name="cpu_info" native="true">
@@ -94,6 +100,9 @@
                 <string>Core count:</string>
                </property>
               </widget>
+             </item>
+             <item>
+              <widget class="LegendWidget" name="cpu_legend" native="true"/>
              </item>
              <item>
               <spacer name="verticalSpacer_2">
@@ -153,6 +162,9 @@
                 <string>Swap disabled.</string>
                </property>
               </widget>
+             </item>
+             <item>
+              <widget class="LegendWidget" name="ram_legend" native="true"/>
              </item>
              <item>
               <spacer name="verticalSpacer_4">
@@ -235,6 +247,9 @@
               </layout>
              </item>
              <item>
+              <widget class="LegendWidget" name="network_legend" native="true"/>
+             </item>
+             <item>
               <spacer name="verticalSpacer_6">
                <property name="orientation">
                 <enum>Qt::Orientation::Vertical</enum>
@@ -267,109 +282,6 @@
           </item>
          </layout>
         </widget>
-       </item>
-       <item>
-        <layout class="QVBoxLayout" name="legends">
-         <item>
-          <layout class="QVBoxLayout" name="cpu_legend">
-           <item>
-            <spacer name="verticalSpacer_11">
-             <property name="orientation">
-              <enum>Qt::Orientation::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="LegendWidget" name="cpu_widget_legend" native="true"/>
-           </item>
-           <item>
-            <spacer name="verticalSpacer_12">
-             <property name="orientation">
-              <enum>Qt::Orientation::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QVBoxLayout" name="ram_legend">
-           <item>
-            <spacer name="verticalSpacer_13">
-             <property name="orientation">
-              <enum>Qt::Orientation::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="LegendWidget" name="widget" native="true"/>
-           </item>
-           <item>
-            <spacer name="verticalSpacer_14">
-             <property name="orientation">
-              <enum>Qt::Orientation::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QVBoxLayout" name="network_legend">
-           <item>
-            <spacer name="verticalSpacer_15">
-             <property name="orientation">
-              <enum>Qt::Orientation::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="LegendWidget" name="network_widget_legend" native="true"/>
-           </item>
-           <item>
-            <spacer name="verticalSpacer_16">
-             <property name="orientation">
-              <enum>Qt::Orientation::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-          </layout>
-         </item>
-        </layout>
        </item>
       </layout>
      </widget>

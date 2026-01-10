@@ -48,6 +48,7 @@ class Ui_SysInfo(object):
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.info = QWidget(self.hardware)
         self.info.setObjectName(u"info")
+        self.info.setMinimumSize(QSize(300, 0))
         self.verticalLayout_3 = QVBoxLayout(self.info)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.cpu_info = QWidget(self.info)
@@ -76,6 +77,11 @@ class Ui_SysInfo(object):
         self.cpu_core_count.setObjectName(u"cpu_core_count")
 
         self.verticalLayout_4.addWidget(self.cpu_core_count)
+
+        self.cpu_legend = LegendWidget(self.cpu_info)
+        self.cpu_legend.setObjectName(u"cpu_legend")
+
+        self.verticalLayout_4.addWidget(self.cpu_legend)
 
         self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
@@ -107,6 +113,11 @@ class Ui_SysInfo(object):
         self.swap_amount.setObjectName(u"swap_amount")
 
         self.verticalLayout_5.addWidget(self.swap_amount)
+
+        self.ram_legend = LegendWidget(self.ram_info)
+        self.ram_legend.setObjectName(u"ram_legend")
+
+        self.verticalLayout_5.addWidget(self.ram_legend)
 
         self.verticalSpacer_4 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
@@ -154,6 +165,11 @@ class Ui_SysInfo(object):
 
         self.verticalLayout_6.addLayout(self.network_public_ip_layout)
 
+        self.network_legend = LegendWidget(self.network_info)
+        self.network_legend.setObjectName(u"network_legend")
+
+        self.verticalLayout_6.addWidget(self.network_legend)
+
         self.verticalSpacer_6 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_6.addItem(self.verticalSpacer_6)
@@ -185,65 +201,6 @@ class Ui_SysInfo(object):
 
 
         self.horizontalLayout.addWidget(self.monitors)
-
-        self.legends = QVBoxLayout()
-        self.legends.setObjectName(u"legends")
-        self.cpu_legend = QVBoxLayout()
-        self.cpu_legend.setObjectName(u"cpu_legend")
-        self.verticalSpacer_11 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.cpu_legend.addItem(self.verticalSpacer_11)
-
-        self.cpu_widget_legend = LegendWidget(self.hardware)
-        self.cpu_widget_legend.setObjectName(u"cpu_widget_legend")
-
-        self.cpu_legend.addWidget(self.cpu_widget_legend)
-
-        self.verticalSpacer_12 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.cpu_legend.addItem(self.verticalSpacer_12)
-
-
-        self.legends.addLayout(self.cpu_legend)
-
-        self.ram_legend = QVBoxLayout()
-        self.ram_legend.setObjectName(u"ram_legend")
-        self.verticalSpacer_13 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.ram_legend.addItem(self.verticalSpacer_13)
-
-        self.widget = LegendWidget(self.hardware)
-        self.widget.setObjectName(u"widget")
-
-        self.ram_legend.addWidget(self.widget)
-
-        self.verticalSpacer_14 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.ram_legend.addItem(self.verticalSpacer_14)
-
-
-        self.legends.addLayout(self.ram_legend)
-
-        self.network_legend = QVBoxLayout()
-        self.network_legend.setObjectName(u"network_legend")
-        self.verticalSpacer_15 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.network_legend.addItem(self.verticalSpacer_15)
-
-        self.network_widget_legend = LegendWidget(self.hardware)
-        self.network_widget_legend.setObjectName(u"network_widget_legend")
-
-        self.network_legend.addWidget(self.network_widget_legend)
-
-        self.verticalSpacer_16 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.network_legend.addItem(self.verticalSpacer_16)
-
-
-        self.legends.addLayout(self.network_legend)
-
-
-        self.horizontalLayout.addLayout(self.legends)
 
         self.content.addTab(self.hardware, "")
         self.software = QWidget()
