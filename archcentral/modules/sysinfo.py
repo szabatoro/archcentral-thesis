@@ -5,6 +5,7 @@ from urllib.error import URLError, HTTPError
 from PySide6.QtCore import QTimer
 from PySide6.QtWidgets import QWidget
 from archcentral.ui.designer.sysinfo import Ui_SysInfo
+from archcentral.ui.legendwidget import LegendWidget
 from archcentral.helpers.qprocesshelper import QProcessHandler
 from archcentral.helpers.unitconverter import convert_mem_unit
 import re # for taking data manually if info not retrievable by psutil
@@ -40,6 +41,11 @@ class SysInfoModule(QWidget, Ui_SysInfo):
 
         # Connect buttons
         self.network_public_ip_switch.clicked.connect(self.fetch_public_ip)
+
+        # Generate legends
+        self.network_legend.build(self.network_graph.get_legend_data())
+        self.cpu_legend.build(self.cpu_graph.get_legend_data())
+        self.ram_legend.build(self.ram_graph.get_legend_data())
 
 
     ############### Hardware info ###############
