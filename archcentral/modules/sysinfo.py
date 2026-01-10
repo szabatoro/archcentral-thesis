@@ -116,8 +116,8 @@ class SysInfoModule(QWidget, Ui_SysInfo):
         self.cpu_core_count.setText(f"Core count: {cpu_cores} cores, {cpu_threads} threads")
 
         cpu_labels = []
-        for i in range(1,cpu_threads):
-            cpu_labels.append(f"C{i-1}")
+        for i in range(0,cpu_threads):
+            cpu_labels.append(f"C{i}")
         self.cpu_graph.init_plots(cpu_labels)
 
         ### Network ###
