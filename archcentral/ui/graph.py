@@ -33,7 +33,7 @@ class ResourceGraph(QWidget):
     def __init__(self, parent=None, not_byte=None) -> None:
         super().__init__(parent)
         self.value_store: list[list[float]]= [] # values needed for plotting are stored here
-        self.graph_length: int = 4
+        self.graph_length: int = 30
         self.plots: list = []
 
         # Create and configure the plot widget
