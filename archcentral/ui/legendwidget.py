@@ -10,11 +10,6 @@ class LegendWidget(QWidget):
         self.items = []
 
     def build(self, data) -> None:
-        # clear previous items
-        for i in reversed(range(self.layout.count())):
-            self.layout.itemAt(i).widget().deleteLater()
-
-    def build(self, data) -> None:
         # clear previous items (widgets and layouts)
         while self.layout.count():
             item = self.layout.takeAt(0)
