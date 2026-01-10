@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>856</width>
+    <width>1200</width>
     <height>595</height>
    </rect>
   </property>
@@ -51,6 +51,12 @@
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
         <widget class="QWidget" name="info" native="true">
+         <property name="minimumSize">
+          <size>
+           <width>300</width>
+           <height>0</height>
+          </size>
+         </property>
          <layout class="QVBoxLayout" name="verticalLayout_3">
           <item>
            <widget class="QWidget" name="cpu_info" native="true">
@@ -94,6 +100,9 @@
                 <string>Core count:</string>
                </property>
               </widget>
+             </item>
+             <item>
+              <widget class="LegendWidget" name="cpu_legend" native="true"/>
              </item>
              <item>
               <spacer name="verticalSpacer_2">
@@ -153,6 +162,9 @@
                 <string>Swap disabled.</string>
                </property>
               </widget>
+             </item>
+             <item>
+              <widget class="LegendWidget" name="ram_legend" native="true"/>
              </item>
              <item>
               <spacer name="verticalSpacer_4">
@@ -233,6 +245,9 @@
                 </widget>
                </item>
               </layout>
+             </item>
+             <item>
+              <widget class="LegendWidget" name="network_legend" native="true"/>
              </item>
              <item>
               <spacer name="verticalSpacer_6">
@@ -437,6 +452,12 @@
    <class>NetworkGraph</class>
    <extends>QWidget</extends>
    <header>archcentral.ui.graph</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LegendWidget</class>
+   <extends>QWidget</extends>
+   <header>archcentral.ui.legendwidget</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

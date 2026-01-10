@@ -20,12 +20,13 @@ from PySide6.QtWidgets import (QApplication, QHBoxLayout, QLabel, QPushButton,
     QWidget)
 
 from archcentral.ui.graph import (CPUGraph, NetworkGraph, RAMGraph)
+from archcentral.ui.legendwidget import LegendWidget
 
 class Ui_SysInfo(object):
     def setupUi(self, SysInfo):
         if not SysInfo.objectName():
             SysInfo.setObjectName(u"SysInfo")
-        SysInfo.resize(856, 595)
+        SysInfo.resize(1200, 595)
         self.verticalLayout = QVBoxLayout(SysInfo)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.title = QLabel(SysInfo)
@@ -47,6 +48,7 @@ class Ui_SysInfo(object):
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.info = QWidget(self.hardware)
         self.info.setObjectName(u"info")
+        self.info.setMinimumSize(QSize(300, 0))
         self.verticalLayout_3 = QVBoxLayout(self.info)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.cpu_info = QWidget(self.info)
@@ -75,6 +77,11 @@ class Ui_SysInfo(object):
         self.cpu_core_count.setObjectName(u"cpu_core_count")
 
         self.verticalLayout_4.addWidget(self.cpu_core_count)
+
+        self.cpu_legend = LegendWidget(self.cpu_info)
+        self.cpu_legend.setObjectName(u"cpu_legend")
+
+        self.verticalLayout_4.addWidget(self.cpu_legend)
 
         self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
@@ -106,6 +113,11 @@ class Ui_SysInfo(object):
         self.swap_amount.setObjectName(u"swap_amount")
 
         self.verticalLayout_5.addWidget(self.swap_amount)
+
+        self.ram_legend = LegendWidget(self.ram_info)
+        self.ram_legend.setObjectName(u"ram_legend")
+
+        self.verticalLayout_5.addWidget(self.ram_legend)
 
         self.verticalSpacer_4 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
@@ -152,6 +164,11 @@ class Ui_SysInfo(object):
 
 
         self.verticalLayout_6.addLayout(self.network_public_ip_layout)
+
+        self.network_legend = LegendWidget(self.network_info)
+        self.network_legend.setObjectName(u"network_legend")
+
+        self.verticalLayout_6.addWidget(self.network_legend)
 
         self.verticalSpacer_6 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
