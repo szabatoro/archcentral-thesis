@@ -18,7 +18,7 @@ class LegendWidget(QWidget):
             elif item.layout():
                 self._clear_layout(item.layout())
 
-        columns = 3  # number of columns in the grid
+        columns = 4  # number of columns in the grid
 
         for index, (color, name) in enumerate(data):
             row = index // columns
