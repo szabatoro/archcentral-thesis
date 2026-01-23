@@ -5,7 +5,6 @@ from urllib.error import URLError, HTTPError
 from PySide6.QtCore import QTimer
 from PySide6.QtWidgets import QWidget
 from archcentral.ui.designer.sysinfo import Ui_SysInfo
-from archcentral.ui.legendwidget import LegendWidget
 from archcentral.helpers.qprocesshelper import QProcessHandler
 from archcentral.helpers.unitconverter import convert_mem_unit
 import re # for taking data manually if info not retrievable by psutil

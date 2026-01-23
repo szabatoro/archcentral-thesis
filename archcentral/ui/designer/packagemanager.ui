@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>927</width>
+    <height>623</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,10 +15,67 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Package manager test</string>
+    <widget class="QLabel" name="title">
+     <property name="font">
+      <font>
+       <pointsize>20</pointsize>
+       <bold>true</bold>
+      </font>
      </property>
+     <property name="text">
+      <string>Package Manager</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTabWidget" name="content">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="update">
+      <attribute name="title">
+       <string>Update packages</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QTableView" name="update_table"/>
+       </item>
+       <item>
+        <widget class="QPushButton" name="fetch_update_button">
+         <property name="text">
+          <string>Fetch updates</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="update_button">
+         <property name="text">
+          <string>Update</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPlainTextEdit" name="pacman_output">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+         <property name="placeholderText">
+          <string>Pacman update output will be printed here...</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="management">
+      <property name="font">
+       <font>
+        <bold>true</bold>
+       </font>
+      </property>
+      <attribute name="title">
+       <string>Install/Remove packages</string>
+      </attribute>
+     </widget>
     </widget>
    </item>
   </layout>
