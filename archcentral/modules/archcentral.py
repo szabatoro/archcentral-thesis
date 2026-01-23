@@ -5,14 +5,11 @@ from archcentral.modules.packagemanager import PackageManagerModule
 from archcentral.ui.designer.mainwindow import Ui_MainWindow
 import sys
 
-VERSION: str = "0.0.5"
-
 # Main window of the application. All the modules will be loaded within this window
 class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self) -> None:
         super().__init__()
         self.setupUi(MainWindow=self)
-        self.app_ver.setText(f"Version: {VERSION}")
 
         # instanciating widget modules
         self.sysinfo_widget: SysInfoModule = SysInfoModule()
