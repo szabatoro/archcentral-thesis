@@ -19,8 +19,8 @@ from PySide6.QtWidgets import (QApplication, QHBoxLayout, QLabel, QPushButton,
     QSizePolicy, QSpacerItem, QTabWidget, QVBoxLayout,
     QWidget)
 
-from archcentral.ui.graph import (CPUGraph, NetworkGraph, RAMGraph)
-from archcentral.ui.legendwidget import LegendWidget
+from archcentral.ui.custom_widgets.graph import (CPUGraph, NetworkGraph, RAMGraph)
+from archcentral.ui.custom_widgets.legendwidget import LegendWidget
 
 class Ui_SysInfo(object):
     def setupUi(self, SysInfo):

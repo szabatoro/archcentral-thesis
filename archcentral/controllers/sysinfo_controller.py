@@ -9,7 +9,7 @@ import socket
 import time
 
 # Class intended to be used by the sysinfo module to fetch system information
-class SysInfoRetriever(QObject):
+class SysInfoController(QObject):
     # Signals
     kernel_fetched: Signal = Signal(str)
     hostname_fetched: Signal = Signal(str)

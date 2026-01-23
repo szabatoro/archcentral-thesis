@@ -1,3 +1,3 @@
-from archcentral.modules.archcentral import main
+from archcentral.ui.views.archcentral import main
 
 main()

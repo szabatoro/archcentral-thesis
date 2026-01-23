@@ -1,7 +1,7 @@
 from PySide6.QtCore import QObject
 from PySide6.QtWidgets import QApplication, QMainWindow
-from archcentral.modules.sysinfo import SysInfoModule
-from archcentral.modules.packagemanager import PackageManagerModule
+from archcentral.ui.views.sysinfo import SysInfoModule
+from archcentral.ui.views.packagemanager import PackageManagerModule
 from archcentral.ui.designer.mainwindow import Ui_MainWindow
 import sys
 

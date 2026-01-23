@@ -1,7 +1,7 @@
 from PySide6.QtCore import QTimer
 from PySide6.QtWidgets import QWidget
 from archcentral.ui.designer.sysinfo import Ui_SysInfo
-from archcentral.helpers.sysinfo_retrievers import SysInfoRetriever
+from archcentral.controllers.sysinfo_controller import SysInfoController
 
 # system information module
 class SysInfoModule(QWidget, Ui_SysInfo):
@@ -10,7 +10,7 @@ class SysInfoModule(QWidget, Ui_SysInfo):
         self.setupUi(SysInfo=self)
 
         # Instanciate the system info retriever class and connect its signals
-        self.sysret: SysInfoRetriever = SysInfoRetriever()
+        self.sysret: SysInfoController = SysInfoController()
         self.sysret.kernel_fetched.connect(lambda kr: self.kernel_name.setText(f"Kernel: {kr}"))
         self.sysret.hostname_fetched.connect(lambda hn: self.hostname.setText(f"Hostname: {hn}"))
 
