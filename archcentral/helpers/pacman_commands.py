@@ -7,6 +7,9 @@ class PacmanUpdater(QObject):
 
     # fetches latest package info from mirrors
     def fetch(self) -> None:
+        """
+        Fetches latest package info from mirrors, lists updateable packages and emits them with the finished_fetch signal.
+        """
         self.pacman_worker = QProcessHandler()
         self.pacman_worker.finished.connect(self._get_update_list)
         self.pacman_worker.start_process("pkexec", ["pacman", "-Sy"])
@@ -29,8 +32,10 @@ class PacmanUpdater(QObject):
 
         self.finished_fetch.emit(processed_updates)
 
-    # Runs the update with the specified packages
     def update(self, packagelist) -> None:
+        """
+        Runs pacman -S with the specified packages, updating the system.
+        """
         self.pacman_worker: QProcessHandler = QProcessHandler()
         self.pacman_worker.stream.connect(self.running_update.emit)
         #self.pacman_worker.start_process("pkexec", ["pacman", "-S", "--noconfirm", "hplip"]) # testing
