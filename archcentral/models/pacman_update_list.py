@@ -5,7 +5,7 @@ class PacmanUpdateTableModel(QAbstractTableModel):
     def __init__(self, data):
         super().__init__()
         self._data = data
-        self._headers = ["Package", "Installed Version", "New Version"]
+        self._headers = ["Package", "Installed Version", "New Version", "Update Size"]
 
     def rowCount(self, parent=None):
         return len(self._data)
@@ -20,6 +20,9 @@ class PacmanUpdateTableModel(QAbstractTableModel):
 
     def get_packagenames(self):
         return [row[0] for row in self._data]
+
+    def get_total_size(self):
+        return sum([row[3] for row in self._data])
 
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         if role == Qt.DisplayRole:
