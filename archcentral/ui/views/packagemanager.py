@@ -47,7 +47,7 @@ class PackageManagerModule(QWidget, Ui_PackageManager):
 
     # Opens dialog box for update confirmation
     def open_update_confirm_dialog(self) -> bool:
-        dialog: PacmanUpdateDialog = PacmanUpdateDialog()
+        dialog: PacmanUpdateDialog = PacmanUpdateDialog(self.update_table.model.get_total_size())
         result = dialog.exec()
         if result == QDialog.Accepted:
             return True
