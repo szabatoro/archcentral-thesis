@@ -82,10 +82,10 @@ class Ui_PackageManager(object):
 
         self.horizontalLayout_2.addWidget(self.package_search)
 
-        self.pushButton_3 = QPushButton(self.horizontalWidget_2)
-        self.pushButton_3.setObjectName(u"pushButton_3")
+        self.package_search_button = QPushButton(self.horizontalWidget_2)
+        self.package_search_button.setObjectName(u"package_search_button")
 
-        self.horizontalLayout_2.addWidget(self.pushButton_3)
+        self.horizontalLayout_2.addWidget(self.package_search_button)
 
 
         self.verticalLayout_3.addWidget(self.horizontalWidget_2)
@@ -94,6 +94,7 @@ class Ui_PackageManager(object):
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.package_list_table = QTableView(self.management)
         self.package_list_table.setObjectName(u"package_list_table")
+        self.package_list_table.horizontalHeader().setStretchLastSection(True)
 
         self.horizontalLayout.addWidget(self.package_list_table)
 
@@ -148,7 +149,7 @@ class Ui_PackageManager(object):
         self.pacman_output.setPlaceholderText(QCoreApplication.translate("PackageManager", u"Pacman update output will be printed here...", None))
         self.content.setTabText(self.content.indexOf(self.update), QCoreApplication.translate("PackageManager", u"Update packages", None))
         self.package_search.setPlaceholderText(QCoreApplication.translate("PackageManager", u"Search a package...", None))
-        self.pushButton_3.setText(QCoreApplication.translate("PackageManager", u"PushButton", None))
+        self.package_search_button.setText(QCoreApplication.translate("PackageManager", u"Search", None))
         self.pushButton_2.setText(QCoreApplication.translate("PackageManager", u"PushButton", None))
         self.pushButton.setText(QCoreApplication.translate("PackageManager", u"PushButton", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QCoreApplication.translate("PackageManager", u"Tab 1", None))
