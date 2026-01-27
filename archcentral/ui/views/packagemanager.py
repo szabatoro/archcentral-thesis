@@ -13,45 +13,40 @@ class PackageManagerModule(QWidget, Ui_PackageManager):
         self.setupUi(PackageManager=self)
 
         self.pmc: PackageManagerController = PackageManagerController()
-        self.pmc.update_fetched.connect(self.fill_update_table)
+        self.pmc.update_fetched.connect(self.refresh_update_model)
         self.pmc.update_fetched.connect(self.are_there_updates)
         self.pmc.update_stdout_stream.connect(self.pacman_output.appendPlainText)
 
         # Hook up model to the update table view to initialize it
-        self.update_table.model = PacmanUpdateTableModel([])
-        self.update_table.setModel(self.update_table.model)
+        self.update_list_model: PacmanUpdateTableModel = PacmanUpdateTableModel([])
+        self.update_list_proxy_model: QSortFilterProxyModel = QSortFilterProxyModel()
+        self.update_list_proxy_model.setSourceModel(self.update_list_model)
+        self.update_table.setModel(self.update_list_proxy_model)
 
-        # Set up the table view in the instalL/manage section
-        self.package_list_table.model = PacmanPackageListTableModel([])
-        self.package_list_table.setModel(self.package_list_table.model)
-        self.fill_package_table(self.pmc.list_all_packages())
-        self.package_search.textChanged.connect(self.package_table_search)
-
-        # Refresh model data with output of pacman -Qu, blank out previous pacman output
+        # Call the update fetcher method of pmc
         self.fetch_update_button.clicked.connect(self.pmc.fetch_updates)
         self.fetch_update_button.clicked.connect(lambda: self.pacman_output.setPlainText(""))
 
         # Update the packages listed in the update table view
         self.update_button.clicked.connect(self.update_packages)
 
-    def fill_update_table(self, updates) -> None:
-        """Initializes the update table widget with the latest model data."""
-        self.update_table.model = PacmanUpdateTableModel(updates)
-        self.update_table.setModel(self.update_table.model)
+        # Set up the table view in the instalL/manage section
+        self.package_list_model: PacmanPackageListTableModel = PacmanPackageListTableModel(self.pmc.list_all_packages())
+        self.package_list_proxy_model: QSortFilterProxyModel = QSortFilterProxyModel()
+        self.package_list_proxy_model.setSourceModel(self.package_list_model)
+        self.package_list_proxy_model.setFilterKeyColumn(2)
+        self.package_list_table.setModel(self.package_list_proxy_model)
+        self.package_search_button.pressed.connect(lambda: self.package_list_proxy_model.setFilterRegularExpression(self.package_search.text()))
+        self.package_search.returnPressed.connect(lambda: self.package_list_proxy_model.setFilterRegularExpression(self.package_search.text()))
 
-    def fill_package_table(self, packagelist) -> None:
-        """Initializes the package table widget with the latest model data."""
-        self.package_list_table.model = PacmanPackageListTableModel(packagelist)
-        self.package_list_table.setModel(self.package_list_table.model)
-
-    def package_table_search(self, search_text) -> None:
-        """Takes a string and filters data in the package list model with it."""
-        proxyModel = QSortFilterProxyModel(self)
-        proxyModel.setSourceModel(self.package_list_table.model)
+    def refresh_update_model(self, updates) -> None:
+        """Fills the update model with updateable packages."""
+        self.update_list_model = PacmanUpdateTableModel(updates)
+        self.update_list_proxy_model.setSourceModel(self.update_list_model)
 
     def are_there_updates(self) -> None:
         """Checks if there are updates available and sets the state of the update button accordingly."""
-        if not self.update_table.model.get_packagenames():
+        if not self.update_list_model.get_packagenames():
             self.update_button.setText("Up to date")
             self.update_button.setEnabled(False)
         else:
