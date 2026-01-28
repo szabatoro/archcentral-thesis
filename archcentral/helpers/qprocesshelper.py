@@ -16,6 +16,7 @@ class QProcessHandler(QObject):
         if self.process is None:
             self.process = QProcess()
             self.process.readyReadStandardOutput.connect(self._read_stdout)
+            self.process.readyReadStandardError.connect(self._read_stderr)
             self.process.finished.connect(self._handle_finished)
             self.process.start(program, arguments)
 
@@ -24,6 +25,14 @@ class QProcessHandler(QObject):
             data: QByteArray = self.process.readAllStandardOutput()
             if data:
                 output: str = bytes(data).decode("utf8")
+                self._buffer += output
+                self.stream.emit(output)
+
+    def _read_stderr(self) -> None:
+        if self.process:
+            data = self.process.readAllStandardError()
+            if data:
+                output = bytes(data).decode("utf8")
                 self._buffer += output
                 self.stream.emit(output)
 
