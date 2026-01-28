@@ -33,11 +33,17 @@ class PackageManagerModule(QWidget, Ui_PackageManager):
         # Set up the table view in the instalL/manage section
         self.package_list_model: PacmanPackageListTableModel = PacmanPackageListTableModel(self.pmc.list_all_packages())
         self.package_list_proxy_model: QSortFilterProxyModel = QSortFilterProxyModel()
+        self.package_list_proxy_model.setDynamicSortFilter(True)
         self.package_list_proxy_model.setSourceModel(self.package_list_model)
         self.package_list_proxy_model.setFilterKeyColumn(2)
         self.package_list_table.setModel(self.package_list_proxy_model)
         self.package_search_button.pressed.connect(lambda: self.package_list_proxy_model.setFilterRegularExpression(self.package_search.text()))
         self.package_search.returnPressed.connect(lambda: self.package_list_proxy_model.setFilterRegularExpression(self.package_search.text()))
+
+        self.pmc.transaction_stdout_stream.connect(self.pacman_output_tr.appendPlainText)
+        self.pmc.transaction_finished.connect(lambda: self.package_list_proxy_model.setFilterRegularExpression(""))
+
+        self.run_transaction_button.pressed.connect(lambda: self.pmc.run_package_transaction(self.package_list_model.get_marked_packages()))
 
     def refresh_update_model(self, updates) -> None:
         """Fills the update model with updateable packages."""
@@ -56,11 +62,11 @@ class PackageManagerModule(QWidget, Ui_PackageManager):
     def update_packages(self) -> None:
         """Initiates the package update process depending on the dialog box return value."""
         if self.open_update_confirm_dialog():
-            self.pmc.perform_update(self.update_table.model.get_packagenames())
+            self.pmc.perform_update(self.update_list_model.get_packagenames())
 
     def open_update_confirm_dialog(self) -> bool:
         """Opens dialog box for update confirmation. Returns a boolean value depending on if the dialog is accepted or not."""
-        dialog: PacmanUpdateDialog = PacmanUpdateDialog(self.update_table.model.get_total_size())
+        dialog: PacmanUpdateDialog = PacmanUpdateDialog(self.update_list_model.get_total_size())
         result = dialog.exec()
         if result == QDialog.Accepted:
             return True
