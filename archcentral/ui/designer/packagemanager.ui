@@ -121,6 +121,9 @@
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
           <widget class="QTableView" name="package_list_table">
+           <property name="selectionBehavior">
+            <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+           </property>
            <attribute name="horizontalHeaderStretchLastSection">
             <bool>true</bool>
            </attribute>
@@ -129,9 +132,9 @@
          <item>
           <layout class="QVBoxLayout" name="verticalLayout_4">
            <item>
-            <widget class="QPushButton" name="pushButton_2">
+            <widget class="QPushButton" name="run_transaction_button">
              <property name="text">
-              <string>PushButton</string>
+              <string>Run</string>
              </property>
             </widget>
            </item>
@@ -155,6 +158,11 @@
           <attribute name="title">
            <string>Tab 1</string>
           </attribute>
+          <layout class="QVBoxLayout" name="verticalLayout_5">
+           <item>
+            <widget class="QPlainTextEdit" name="pacman_output_tr"/>
+           </item>
+          </layout>
          </widget>
          <widget class="QWidget" name="tab_2">
           <attribute name="title">

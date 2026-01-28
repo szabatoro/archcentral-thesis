@@ -15,9 +15,10 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QHBoxLayout, QHeaderView, QLabel,
-    QLineEdit, QPlainTextEdit, QPushButton, QSizePolicy,
-    QTabWidget, QTableView, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QAbstractItemView, QApplication, QHBoxLayout, QHeaderView,
+    QLabel, QLineEdit, QPlainTextEdit, QPushButton,
+    QSizePolicy, QTabWidget, QTableView, QVBoxLayout,
+    QWidget)
 
 class Ui_PackageManager(object):
     def setupUi(self, PackageManager):
@@ -94,16 +95,17 @@ class Ui_PackageManager(object):
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.package_list_table = QTableView(self.management)
         self.package_list_table.setObjectName(u"package_list_table")
+        self.package_list_table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.package_list_table.horizontalHeader().setStretchLastSection(True)
 
         self.horizontalLayout.addWidget(self.package_list_table)
 
         self.verticalLayout_4 = QVBoxLayout()
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
-        self.pushButton_2 = QPushButton(self.management)
-        self.pushButton_2.setObjectName(u"pushButton_2")
+        self.run_transaction_button = QPushButton(self.management)
+        self.run_transaction_button.setObjectName(u"run_transaction_button")
 
-        self.verticalLayout_4.addWidget(self.pushButton_2)
+        self.verticalLayout_4.addWidget(self.run_transaction_button)
 
         self.pushButton = QPushButton(self.management)
         self.pushButton.setObjectName(u"pushButton")
@@ -120,6 +122,13 @@ class Ui_PackageManager(object):
         self.tabWidget.setObjectName(u"tabWidget")
         self.tab = QWidget()
         self.tab.setObjectName(u"tab")
+        self.verticalLayout_5 = QVBoxLayout(self.tab)
+        self.verticalLayout_5.setObjectName(u"verticalLayout_5")
+        self.pacman_output_tr = QPlainTextEdit(self.tab)
+        self.pacman_output_tr.setObjectName(u"pacman_output_tr")
+
+        self.verticalLayout_5.addWidget(self.pacman_output_tr)
+
         self.tabWidget.addTab(self.tab, "")
         self.tab_2 = QWidget()
         self.tab_2.setObjectName(u"tab_2")
@@ -150,7 +159,7 @@ class Ui_PackageManager(object):
         self.content.setTabText(self.content.indexOf(self.update), QCoreApplication.translate("PackageManager", u"Update packages", None))
         self.package_search.setPlaceholderText(QCoreApplication.translate("PackageManager", u"Search a package...", None))
         self.package_search_button.setText(QCoreApplication.translate("PackageManager", u"Search", None))
-        self.pushButton_2.setText(QCoreApplication.translate("PackageManager", u"PushButton", None))
+        self.run_transaction_button.setText(QCoreApplication.translate("PackageManager", u"Run", None))
         self.pushButton.setText(QCoreApplication.translate("PackageManager", u"PushButton", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QCoreApplication.translate("PackageManager", u"Tab 1", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QCoreApplication.translate("PackageManager", u"Tab 2", None))
