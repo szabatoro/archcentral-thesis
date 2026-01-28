@@ -8,6 +8,8 @@ class PackageManagerController(QObject):
     update_fetched: Signal = Signal(list)
     update_stdout_stream: Signal = Signal(str)
     update_finished: Signal = Signal()
+    transaction_stdout_stream: Signal = Signal(str)
+    transaction_finished: Signal = Signal()
 
     def __init__(self) -> None:
         super().__init__()
@@ -77,8 +79,27 @@ class PackageManagerController(QObject):
         for db in self.syncdbs:
             for pkg in db.pkgcache:
                 if self.localdb.get_pkg(pkg.name):
-                    pkg_list.append(("x", db.name, pkg.name, pkg.version, pkg.size))
+                    pkg_list.append([False, db.name, pkg.name, pkg.version, pkg.size, True])
                 else:
-                    pkg_list.append(("", db.name, pkg.name, pkg.version, pkg.size))
+                    pkg_list.append([False, db.name, pkg.name, pkg.version, pkg.size, False])
 
         return pkg_list
+
+    def run_package_transaction(self, packagelist) -> None:
+        self.pacman_worker: QProcessHandler = QProcessHandler()
+        self.pacman_worker.finished.connect(lambda: self.transaction_finished.emit)
+        self.pacman_worker.stream.connect(self.transaction_stdout_stream.emit)
+        pkg_install = ""
+        pkg_remove = ""
+        for pkg in packagelist:
+            if pkg[1]:
+                pkg_remove += f" {pkg[0]}"
+            elif not pkg[1]:
+                pkg_install += f" {pkg[0]}"
+        #print(f"to remove:{pkg_remove}, and to install:{pkg_install} ")
+        #print(f"pacman -S --noconfirm {pkg_install} && pacman -Rns --noconfirm {pkg_remove}")
+        self.pacman_worker.start_process("pkexec",
+            ["sh", "-c", f"pacman -S --noconfirm {pkg_install} && pacman -Rns --noconfirm {pkg_remove}"]
+        )
+
+        #self.pacman_worker.start_process("pkexec", ["pacman", "-S", "--noconfirm", "fastfetch"])
