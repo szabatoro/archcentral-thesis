@@ -12,16 +12,16 @@ class PackageManagerModule(QWidget, Ui_PackageManager):
         super().__init__()
         self.setupUi(PackageManager=self)
 
-        self.pmc: PackageManagerController = PackageManagerController()
-        self.pmc.update_fetched.connect(self.refresh_update_model)
-        self.pmc.update_fetched.connect(self.are_there_updates)
-        self.pmc.update_stdout_stream.connect(self.pacman_output.appendPlainText)
-
         # Hook up model to the update table view to initialize it
         self.update_list_model: PacmanUpdateTableModel = PacmanUpdateTableModel([])
         self.update_list_proxy_model: QSortFilterProxyModel = QSortFilterProxyModel()
         self.update_list_proxy_model.setSourceModel(self.update_list_model)
         self.update_table.setModel(self.update_list_proxy_model)
+
+        self.pmc: PackageManagerController = PackageManagerController()
+        self.pmc.update_fetched.connect(self.update_list_model.refresh)
+        self.pmc.update_fetched.connect(self.are_there_updates)
+        self.pmc.update_stdout_stream.connect(self.pacman_output.appendPlainText)
 
         # Call the update fetcher method of pmc
         self.fetch_update_button.clicked.connect(self.pmc.fetch_updates)
@@ -37,18 +37,18 @@ class PackageManagerModule(QWidget, Ui_PackageManager):
         self.package_list_proxy_model.setSourceModel(self.package_list_model)
         self.package_list_proxy_model.setFilterKeyColumn(2)
         self.package_list_table.setModel(self.package_list_proxy_model)
+        # Connects the search bar and buttons to filter view results
         self.package_search_button.pressed.connect(lambda: self.package_list_proxy_model.setFilterRegularExpression(self.package_search.text()))
         self.package_search.returnPressed.connect(lambda: self.package_list_proxy_model.setFilterRegularExpression(self.package_search.text()))
 
+        # Connect pacman output to the appropriate textbox
         self.pmc.transaction_stdout_stream.connect(self.pacman_output_tr.appendPlainText)
-        self.pmc.transaction_finished.connect(lambda: self.package_list_proxy_model.setFilterRegularExpression(""))
 
+        # Run package transaction and refresh the package model upon transaction completion
+        self.pmc.transaction_finished.connect(lambda: self.package_list_model.refresh(self.pmc.list_all_packages()))
         self.run_transaction_button.pressed.connect(lambda: self.pmc.run_package_transaction(self.package_list_model.get_marked_packages()))
 
-    def refresh_update_model(self, updates) -> None:
-        """Fills the update model with updateable packages."""
-        self.update_list_model = PacmanUpdateTableModel(updates)
-        self.update_list_proxy_model.setSourceModel(self.update_list_model)
+        self.pmc.pacman_lock_activated.connect(lambda: print("Pacman locked."))
 
     def are_there_updates(self) -> None:
         """Checks if there are updates available and sets the state of the update button accordingly."""
@@ -62,6 +62,7 @@ class PackageManagerModule(QWidget, Ui_PackageManager):
     def update_packages(self) -> None:
         """Initiates the package update process depending on the dialog box return value."""
         if self.open_update_confirm_dialog():
+            self.pmc.update_finished.connect(lambda: self.package_list_model.refresh(self.pmc.list_all_packages()))
             self.pmc.perform_update(self.update_list_model.get_packagenames())
 
     def open_update_confirm_dialog(self) -> bool:
