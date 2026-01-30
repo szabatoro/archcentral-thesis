@@ -1,5 +1,6 @@
 from PySide6.QtCore import QAbstractTableModel, Qt
 from PySide6.QtGui import QColor
+from archcentral.helpers.unitconverter import unit_converter
 
 # Model for the package search table
 class PacmanPackageListTableModel(QAbstractTableModel):
@@ -24,6 +25,10 @@ class PacmanPackageListTableModel(QAbstractTableModel):
             if not self._data[index.row()][5] and self._data[index.row()][0]:
                 return "Installation"
             return None
+
+        if role == Qt.DisplayRole and index.column() == 4:
+            value, unit = unit_converter(self._data[index.row()][4])
+            return f"{value:.2f} {unit}"
 
         if role == Qt.BackgroundRole and index.column() == 5:
             return QColor("green") if self._data[index.row()][5] else QColor("red")
@@ -51,6 +56,11 @@ class PacmanPackageListTableModel(QAbstractTableModel):
 
         return False
 
+    def refresh(self, new_data):
+            self.beginResetModel()
+            self._data = new_data
+            self.endResetModel()
+
     def flags(self, index):
         if not index.isValid():
             return Qt.NoItemFlags
@@ -63,7 +73,7 @@ class PacmanPackageListTableModel(QAbstractTableModel):
         return base_flags
 
     def get_marked_packages(self):
-        marked_packages: list[list[bool, bool]] = []
+        marked_packages: list[list[str, bool]] = []
         for row in self._data:
             if row[0]:
                 marked_packages.append([row[2], row[5]])

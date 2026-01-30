@@ -18,6 +18,11 @@ class PacmanUpdateTableModel(QAbstractTableModel):
             return self._data[index.row()][index.column()]
         return None
 
+    def refresh(self, new_data):
+            self.beginResetModel()
+            self._data = new_data
+            self.endResetModel()
+
     def get_packagenames(self):
         return [row[0] for row in self._data]
 
