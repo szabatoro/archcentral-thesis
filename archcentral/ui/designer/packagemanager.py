@@ -25,8 +25,8 @@ class Ui_PackageManager(object):
         if not PackageManager.objectName():
             PackageManager.setObjectName(u"PackageManager")
         PackageManager.resize(927, 623)
-        self.verticalLayout = QVBoxLayout(PackageManager)
-        self.verticalLayout.setObjectName(u"verticalLayout")
+        self.verticalLayout_7 = QVBoxLayout(PackageManager)
+        self.verticalLayout_7.setObjectName(u"verticalLayout_7")
         self.title = QLabel(PackageManager)
         self.title.setObjectName(u"title")
         font = QFont()
@@ -34,7 +34,7 @@ class Ui_PackageManager(object):
         font.setBold(True)
         self.title.setFont(font)
 
-        self.verticalLayout.addWidget(self.title)
+        self.verticalLayout_7.addWidget(self.title)
 
         self.content = QTabWidget(PackageManager)
         self.content.setObjectName(u"content")
@@ -70,81 +70,93 @@ class Ui_PackageManager(object):
         font1 = QFont()
         font1.setBold(True)
         self.management.setFont(font1)
-        self.verticalLayout_3 = QVBoxLayout(self.management)
-        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
-        self.horizontalWidget_2 = QWidget(self.management)
-        self.horizontalWidget_2.setObjectName(u"horizontalWidget_2")
-        self.horizontalWidget_2.setMaximumSize(QSize(16777215, 30))
-        self.horizontalLayout_2 = QHBoxLayout(self.horizontalWidget_2)
+        self.verticalLayout_8 = QVBoxLayout(self.management)
+        self.verticalLayout_8.setObjectName(u"verticalLayout_8")
+        self.search_layout = QWidget(self.management)
+        self.search_layout.setObjectName(u"search_layout")
+        self.search_layout.setMaximumSize(QSize(16777215, 30))
+        self.horizontalLayout_2 = QHBoxLayout(self.search_layout)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
-        self.package_search = QLineEdit(self.horizontalWidget_2)
+        self.package_search = QLineEdit(self.search_layout)
         self.package_search.setObjectName(u"package_search")
 
         self.horizontalLayout_2.addWidget(self.package_search)
 
-        self.package_search_button = QPushButton(self.horizontalWidget_2)
+        self.package_search_button = QPushButton(self.search_layout)
         self.package_search_button.setObjectName(u"package_search_button")
 
         self.horizontalLayout_2.addWidget(self.package_search_button)
 
 
-        self.verticalLayout_3.addWidget(self.horizontalWidget_2)
+        self.verticalLayout_8.addWidget(self.search_layout)
 
-        self.horizontalLayout = QHBoxLayout()
-        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.package_list_layout = QHBoxLayout()
+        self.package_list_layout.setObjectName(u"package_list_layout")
         self.package_list_table = QTableView(self.management)
         self.package_list_table.setObjectName(u"package_list_table")
         self.package_list_table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.package_list_table.horizontalHeader().setStretchLastSection(True)
 
-        self.horizontalLayout.addWidget(self.package_list_table)
+        self.package_list_layout.addWidget(self.package_list_table)
 
-        self.verticalLayout_4 = QVBoxLayout()
-        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
+        self.package_list_options_layout = QVBoxLayout()
+        self.package_list_options_layout.setObjectName(u"package_list_options_layout")
+        self.pushButton_2 = QPushButton(self.management)
+        self.pushButton_2.setObjectName(u"pushButton_2")
+
+        self.package_list_options_layout.addWidget(self.pushButton_2)
+
+
+        self.package_list_layout.addLayout(self.package_list_options_layout)
+
+
+        self.verticalLayout_8.addLayout(self.package_list_layout)
+
+        self.operations_layout = QHBoxLayout()
+        self.operations_layout.setObjectName(u"operations_layout")
+        self.tabWidget = QTabWidget(self.management)
+        self.tabWidget.setObjectName(u"tabWidget")
+        self.package_details_tab = QWidget()
+        self.package_details_tab.setObjectName(u"package_details_tab")
+        self.verticalLayout_5 = QVBoxLayout(self.package_details_tab)
+        self.verticalLayout_5.setObjectName(u"verticalLayout_5")
+        self.tabWidget.addTab(self.package_details_tab, "")
+        self.pacman_output_tab = QWidget()
+        self.pacman_output_tab.setObjectName(u"pacman_output_tab")
+        self.verticalLayout_6 = QVBoxLayout(self.pacman_output_tab)
+        self.verticalLayout_6.setObjectName(u"verticalLayout_6")
+        self.pacman_output_tr = QPlainTextEdit(self.pacman_output_tab)
+        self.pacman_output_tr.setObjectName(u"pacman_output_tr")
+
+        self.verticalLayout_6.addWidget(self.pacman_output_tr)
+
+        self.tabWidget.addTab(self.pacman_output_tab, "")
+
+        self.operations_layout.addWidget(self.tabWidget)
+
+        self.operation_buttons_layout = QVBoxLayout()
+        self.operation_buttons_layout.setObjectName(u"operation_buttons_layout")
         self.run_transaction_button = QPushButton(self.management)
         self.run_transaction_button.setObjectName(u"run_transaction_button")
 
-        self.verticalLayout_4.addWidget(self.run_transaction_button)
-
-        self.pushButton = QPushButton(self.management)
-        self.pushButton.setObjectName(u"pushButton")
-
-        self.verticalLayout_4.addWidget(self.pushButton)
+        self.operation_buttons_layout.addWidget(self.run_transaction_button)
 
 
-        self.horizontalLayout.addLayout(self.verticalLayout_4)
+        self.operations_layout.addLayout(self.operation_buttons_layout)
 
 
-        self.verticalLayout_3.addLayout(self.horizontalLayout)
-
-        self.tabWidget = QTabWidget(self.management)
-        self.tabWidget.setObjectName(u"tabWidget")
-        self.tab = QWidget()
-        self.tab.setObjectName(u"tab")
-        self.verticalLayout_5 = QVBoxLayout(self.tab)
-        self.verticalLayout_5.setObjectName(u"verticalLayout_5")
-        self.pacman_output_tr = QPlainTextEdit(self.tab)
-        self.pacman_output_tr.setObjectName(u"pacman_output_tr")
-
-        self.verticalLayout_5.addWidget(self.pacman_output_tr)
-
-        self.tabWidget.addTab(self.tab, "")
-        self.tab_2 = QWidget()
-        self.tab_2.setObjectName(u"tab_2")
-        self.tabWidget.addTab(self.tab_2, "")
-
-        self.verticalLayout_3.addWidget(self.tabWidget)
+        self.verticalLayout_8.addLayout(self.operations_layout)
 
         self.content.addTab(self.management, "")
 
-        self.verticalLayout.addWidget(self.content)
+        self.verticalLayout_7.addWidget(self.content)
 
 
         self.retranslateUi(PackageManager)
 
         self.content.setCurrentIndex(1)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
 
 
         QMetaObject.connectSlotsByName(PackageManager)
@@ -159,10 +171,10 @@ class Ui_PackageManager(object):
         self.content.setTabText(self.content.indexOf(self.update), QCoreApplication.translate("PackageManager", u"Update packages", None))
         self.package_search.setPlaceholderText(QCoreApplication.translate("PackageManager", u"Search a package...", None))
         self.package_search_button.setText(QCoreApplication.translate("PackageManager", u"Search", None))
+        self.pushButton_2.setText(QCoreApplication.translate("PackageManager", u"PushButton", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.package_details_tab), QCoreApplication.translate("PackageManager", u"Package details", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.pacman_output_tab), QCoreApplication.translate("PackageManager", u"Pacman output", None))
         self.run_transaction_button.setText(QCoreApplication.translate("PackageManager", u"Run", None))
-        self.pushButton.setText(QCoreApplication.translate("PackageManager", u"PushButton", None))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QCoreApplication.translate("PackageManager", u"Tab 1", None))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QCoreApplication.translate("PackageManager", u"Tab 2", None))
         self.content.setTabText(self.content.indexOf(self.management), QCoreApplication.translate("PackageManager", u"Install/Remove packages", None))
     # retranslateUi
 
