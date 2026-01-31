@@ -1,12 +1,14 @@
 from PySide6.QtCore import QSortFilterProxyModel
-from PySide6.QtWidgets import QWidget, QDialog
+from PySide6.QtWidgets import QWidget, QDialog, QTreeWidgetItem
+from archcentral.helpers.custom_classes import PacmanPkgInfo
+from archcentral.helpers.unitconverter import unit_converter
 from archcentral.ui.designer.packagemanager import Ui_PackageManager
 from archcentral.models.pacman_update_list import PacmanUpdateTableModel
 from archcentral.models.pacman_package_list import PacmanPackageListTableModel
 from archcentral.ui.views.pacman_update_dialog import PacmanUpdateDialog
 from archcentral.controllers.packagemanager_controller import PackageManagerController
+#from datetime import datetime
 
-# package manager module placeholder
 class PackageManagerModule(QWidget, Ui_PackageManager):
     def __init__(self) -> None:
         super().__init__()
@@ -50,6 +52,9 @@ class PackageManagerModule(QWidget, Ui_PackageManager):
 
         self.pmc.pacman_lock_activated.connect(lambda: print("Pacman locked."))
 
+        #self.fill_package_details()
+        self.package_list_table.clicked.connect(self.fill_package_details)
+
     def are_there_updates(self) -> None:
         """Checks if there are updates available and sets the state of the update button accordingly."""
         if not self.update_list_model.get_packagenames():
@@ -73,3 +78,30 @@ class PackageManagerModule(QWidget, Ui_PackageManager):
             return True
         elif result == QDialog.Rejected:
             return False
+
+    def fill_package_details(self) -> None:
+        self.package_details_tree.clear()
+        selected_pkg: PacmanPkgInfo = self.package_list_model.get_package(self.package_list_table.currentIndex())
+
+        self.package_details_tree.addTopLevelItem(QTreeWidgetItem(["Name: ", selected_pkg.name]))
+
+        self.package_details_tree.addTopLevelItem(QTreeWidgetItem(["Upstream URL: ", selected_pkg.url]))
+
+        if selected_pkg.licenses:
+            licenses_item = QTreeWidgetItem(["Licenses:"])
+            for license in selected_pkg.licenses:
+                licenses_item.addChild(QTreeWidgetItem([license]))
+        else:
+            licenses_item = QTreeWidgetItem(["Licenses:", "None"])
+        self.package_details_tree.addTopLevelItem(licenses_item)
+
+        download_size, unit = unit_converter(selected_pkg.size)
+        self.package_details_tree.addTopLevelItem(QTreeWidgetItem(["Download size: ", f"{download_size} {unit}"]))
+
+        if selected_pkg.depends:
+            deps_item = QTreeWidgetItem(["Dependencies:"])
+            for dep in selected_pkg.depends:
+                deps_item.addChild(QTreeWidgetItem([dep]))
+        else:
+            deps_item = QTreeWidgetItem(["Dependencies:", "None"])
+        self.package_details_tree.addTopLevelItem(deps_item)

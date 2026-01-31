@@ -17,8 +17,8 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QAbstractItemView, QApplication, QHBoxLayout, QHeaderView,
     QLabel, QLineEdit, QPlainTextEdit, QPushButton,
-    QSizePolicy, QTabWidget, QTableView, QVBoxLayout,
-    QWidget)
+    QSizePolicy, QTabWidget, QTableView, QTreeWidget,
+    QTreeWidgetItem, QVBoxLayout, QWidget)
 
 class Ui_PackageManager(object):
     def setupUi(self, PackageManager):
@@ -97,6 +97,7 @@ class Ui_PackageManager(object):
         self.package_list_table.setObjectName(u"package_list_table")
         self.package_list_table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.package_list_table.horizontalHeader().setStretchLastSection(True)
+        self.package_list_table.verticalHeader().setVisible(False)
 
         self.package_list_layout.addWidget(self.package_list_table)
 
@@ -121,6 +122,14 @@ class Ui_PackageManager(object):
         self.package_details_tab.setObjectName(u"package_details_tab")
         self.verticalLayout_5 = QVBoxLayout(self.package_details_tab)
         self.verticalLayout_5.setObjectName(u"verticalLayout_5")
+        self.package_details_tree = QTreeWidget(self.package_details_tab)
+        self.package_details_tree.setObjectName(u"package_details_tree")
+        self.package_details_tree.setColumnCount(2)
+        self.package_details_tree.header().setVisible(True)
+        self.package_details_tree.header().setCascadingSectionResizes(True)
+
+        self.verticalLayout_5.addWidget(self.package_details_tree)
+
         self.tabWidget.addTab(self.package_details_tab, "")
         self.pacman_output_tab = QWidget()
         self.pacman_output_tab.setObjectName(u"pacman_output_tab")
@@ -156,7 +165,7 @@ class Ui_PackageManager(object):
         self.retranslateUi(PackageManager)
 
         self.content.setCurrentIndex(1)
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(PackageManager)
@@ -172,6 +181,9 @@ class Ui_PackageManager(object):
         self.package_search.setPlaceholderText(QCoreApplication.translate("PackageManager", u"Search a package...", None))
         self.package_search_button.setText(QCoreApplication.translate("PackageManager", u"Search", None))
         self.pushButton_2.setText(QCoreApplication.translate("PackageManager", u"PushButton", None))
+        ___qtreewidgetitem = self.package_details_tree.headerItem()
+        ___qtreewidgetitem.setText(1, QCoreApplication.translate("PackageManager", u"Value", None));
+        ___qtreewidgetitem.setText(0, QCoreApplication.translate("PackageManager", u"Name", None));
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.package_details_tab), QCoreApplication.translate("PackageManager", u"Package details", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.pacman_output_tab), QCoreApplication.translate("PackageManager", u"Pacman output", None))
         self.run_transaction_button.setText(QCoreApplication.translate("PackageManager", u"Run", None))
