@@ -1,13 +1,14 @@
 from PySide6.QtCore import QAbstractTableModel, Qt
 from PySide6.QtGui import QColor
 from archcentral.helpers.unitconverter import unit_converter
+from archcentral.helpers.custom_classes import PacmanPkgInfo
 
 # Model for the package search table
 class PacmanPackageListTableModel(QAbstractTableModel):
     def __init__(self, data):
         super().__init__()
         self._data = data
-        self._headers = ["Marked for", "Repo", "Package", "Version", "Size", "Install Status"]
+        self._headers = ["Marked for", "Repo", "Package", "Version", "Installed Size", "Install Status"]
 
     def rowCount(self, parent=None):
         return len(self._data)
@@ -16,32 +17,39 @@ class PacmanPackageListTableModel(QAbstractTableModel):
         return len(self._headers)
 
     def data(self, index, role):
+        pkg: PacmanPkgInfo = self._data[index.row()]
+
         if role == Qt.CheckStateRole and index.column() == 0:
-            return Qt.Checked if self._data[index.row()][0] else Qt.Unchecked
+            return Qt.Checked if pkg.marked else Qt.Unchecked
 
         if role == Qt.DisplayRole and index.column() == 0:
-            if self._data[index.row()][5] and self._data[index.row()][0]:
+            if pkg.installed and pkg.marked:
                 return "Removal"
-            if not self._data[index.row()][5] and self._data[index.row()][0]:
+            if not pkg.installed and pkg.marked:
                 return "Installation"
             return None
 
         if role == Qt.DisplayRole and index.column() == 4:
-            value, unit = unit_converter(self._data[index.row()][4])
+            value, unit = unit_converter(pkg.isize)
             return f"{value:.2f} {unit}"
 
         if role == Qt.BackgroundRole and index.column() == 5:
-            return QColor("green") if self._data[index.row()][5] else QColor("red")
+            return QColor("green") if pkg.installed else QColor("red")
 
         if role == Qt.DisplayRole and index.column() == 5:
-            if not self._data[index.row()][5]:
+            if not pkg.installed:
                 return "Not Installed"
-            if self._data[index.row()][5]:
+            if pkg.installed:
                 return "Installed"
             return None
 
         if role == Qt.DisplayRole:
-            return self._data[index.row()][index.column()]
+            mapping = {
+                1: pkg.repo,
+                2: pkg.name,
+                3: pkg.version,
+            }
+            return mapping.get(index.column())
 
         return None
 
@@ -49,8 +57,10 @@ class PacmanPackageListTableModel(QAbstractTableModel):
         if not index.isValid():
             return False
 
+        pkg: PacmanPkgInfo = self._data[index.row()]
+
         if role == Qt.CheckStateRole and index.column() == 0:
-            self._data[index.row()][0] = True if value == Qt.Checked.value else False
+            pkg.marked = True if value == Qt.Checked.value else False
             self.dataChanged.emit(index, index, [Qt.CheckStateRole])
             return True
 
@@ -74,13 +84,17 @@ class PacmanPackageListTableModel(QAbstractTableModel):
 
     def get_marked_packages(self):
         marked_packages: list[list[str, bool]] = []
-        for row in self._data:
-            if row[0]:
-                marked_packages.append([row[2], row[5]])
+        for pkg in self._data:
+            if pkg.marked:
+                marked_packages.append([pkg.name, pkg.installed])
         return marked_packages
 
+    def get_package(self, index) -> PacmanPkgInfo:
+        """Returns the PacmanPkgInfo object found in the specified row."""
+        return self._data[index.row()]
+
     def get_total_size(self):
-        return sum([row[3] for row in self._data])
+        return sum([pkg.size for pkg in self._data])
 
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         if role == Qt.DisplayRole:

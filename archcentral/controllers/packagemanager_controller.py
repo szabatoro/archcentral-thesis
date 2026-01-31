@@ -1,5 +1,6 @@
 from PySide6.QtCore import QObject,  Signal
 from archcentral.helpers.qprocesshelper import QProcessHandler
+from archcentral.helpers.custom_classes import PacmanPkgInfo
 import pyalpm
 import re
 from threading import Lock
@@ -116,9 +117,9 @@ class PackageManagerController(QObject):
             for pkg in db.pkgcache:
                 local_pkg = self.localdb.get_pkg(pkg.name)
                 if local_pkg:
-                    pkg_list.append([False, db.name, local_pkg.name, local_pkg.version, local_pkg.isize, True])
+                    pkg_list.append(PacmanPkgInfo(local_pkg, False, True, db.name))
                 else:
-                    pkg_list.append([False, db.name, pkg.name, pkg.version, pkg.size, False])
+                    pkg_list.append(PacmanPkgInfo(pkg, False, False, db.name))
 
         return pkg_list
 
