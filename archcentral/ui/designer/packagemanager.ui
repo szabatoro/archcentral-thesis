@@ -30,7 +30,7 @@
    <item>
     <widget class="QTabWidget" name="content">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="update">
       <attribute name="title">
@@ -148,7 +148,7 @@
        <item>
         <layout class="QHBoxLayout" name="operations_layout">
          <item>
-          <widget class="QTabWidget" name="tabWidget">
+          <widget class="QTabWidget" name="package_det_out_tabs">
            <property name="currentIndex">
             <number>0</number>
            </property>
@@ -188,7 +188,14 @@
             </attribute>
             <layout class="QVBoxLayout" name="verticalLayout_6">
              <item>
-              <widget class="QPlainTextEdit" name="pacman_output_tr"/>
+              <widget class="QPlainTextEdit" name="pacman_output_tr">
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+               <property name="placeholderText">
+                <string>Pacman transaction output will be printed here...</string>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>
@@ -209,6 +216,16 @@
        </item>
       </layout>
      </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="status_label">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
     </widget>
    </item>
   </layout>

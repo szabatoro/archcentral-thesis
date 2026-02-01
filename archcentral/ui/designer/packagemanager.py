@@ -116,8 +116,8 @@ class Ui_PackageManager(object):
 
         self.operations_layout = QHBoxLayout()
         self.operations_layout.setObjectName(u"operations_layout")
-        self.tabWidget = QTabWidget(self.management)
-        self.tabWidget.setObjectName(u"tabWidget")
+        self.package_det_out_tabs = QTabWidget(self.management)
+        self.package_det_out_tabs.setObjectName(u"package_det_out_tabs")
         self.package_details_tab = QWidget()
         self.package_details_tab.setObjectName(u"package_details_tab")
         self.verticalLayout_5 = QVBoxLayout(self.package_details_tab)
@@ -130,19 +130,20 @@ class Ui_PackageManager(object):
 
         self.verticalLayout_5.addWidget(self.package_details_tree)
 
-        self.tabWidget.addTab(self.package_details_tab, "")
+        self.package_det_out_tabs.addTab(self.package_details_tab, "")
         self.pacman_output_tab = QWidget()
         self.pacman_output_tab.setObjectName(u"pacman_output_tab")
         self.verticalLayout_6 = QVBoxLayout(self.pacman_output_tab)
         self.verticalLayout_6.setObjectName(u"verticalLayout_6")
         self.pacman_output_tr = QPlainTextEdit(self.pacman_output_tab)
         self.pacman_output_tr.setObjectName(u"pacman_output_tr")
+        self.pacman_output_tr.setReadOnly(True)
 
         self.verticalLayout_6.addWidget(self.pacman_output_tr)
 
-        self.tabWidget.addTab(self.pacman_output_tab, "")
+        self.package_det_out_tabs.addTab(self.pacman_output_tab, "")
 
-        self.operations_layout.addWidget(self.tabWidget)
+        self.operations_layout.addWidget(self.package_det_out_tabs)
 
         self.operation_buttons_layout = QVBoxLayout()
         self.operation_buttons_layout.setObjectName(u"operation_buttons_layout")
@@ -161,11 +162,17 @@ class Ui_PackageManager(object):
 
         self.verticalLayout_7.addWidget(self.content)
 
+        self.status_label = QLabel(PackageManager)
+        self.status_label.setObjectName(u"status_label")
+        self.status_label.setEnabled(True)
+
+        self.verticalLayout_7.addWidget(self.status_label)
+
 
         self.retranslateUi(PackageManager)
 
-        self.content.setCurrentIndex(1)
-        self.tabWidget.setCurrentIndex(0)
+        self.content.setCurrentIndex(0)
+        self.package_det_out_tabs.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(PackageManager)
@@ -184,9 +191,11 @@ class Ui_PackageManager(object):
         ___qtreewidgetitem = self.package_details_tree.headerItem()
         ___qtreewidgetitem.setText(1, QCoreApplication.translate("PackageManager", u"Value", None));
         ___qtreewidgetitem.setText(0, QCoreApplication.translate("PackageManager", u"Name", None));
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.package_details_tab), QCoreApplication.translate("PackageManager", u"Package details", None))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.pacman_output_tab), QCoreApplication.translate("PackageManager", u"Pacman output", None))
+        self.package_det_out_tabs.setTabText(self.package_det_out_tabs.indexOf(self.package_details_tab), QCoreApplication.translate("PackageManager", u"Package details", None))
+        self.pacman_output_tr.setPlaceholderText(QCoreApplication.translate("PackageManager", u"Pacman transaction output will be printed here...", None))
+        self.package_det_out_tabs.setTabText(self.package_det_out_tabs.indexOf(self.pacman_output_tab), QCoreApplication.translate("PackageManager", u"Pacman output", None))
         self.run_transaction_button.setText(QCoreApplication.translate("PackageManager", u"Run", None))
         self.content.setTabText(self.content.indexOf(self.management), QCoreApplication.translate("PackageManager", u"Install/Remove packages", None))
+        self.status_label.setText("")
     # retranslateUi
 
