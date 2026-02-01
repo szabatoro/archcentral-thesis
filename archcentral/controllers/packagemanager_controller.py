@@ -10,6 +10,7 @@ class PackageManagerController(QObject):
     update_fetched: Signal = Signal(list)
     update_stdout_stream: Signal = Signal(str)
     update_finished: Signal = Signal()
+    transaction_started: Signal = Signal()
     transaction_stdout_stream: Signal = Signal(str)
     transaction_finished: Signal = Signal()
     pacman_lock_activated: Signal = Signal()
@@ -27,14 +28,13 @@ class PackageManagerController(QObject):
         self.enabled_repos = re.findall(r'^(?!#)(?!.*option)\[(.*)\]$', self.pacman_conf_str, re.MULTILINE)
 
         # Lock object to prevent native pacman lock crashing the qprocesses or working with non-up-to-date data
-        self.pacman_lock = Lock()
+        self.pacman_lock: Lock = Lock()
 
     def _acquire_pacman(self) -> bool:
         """Activates the pacman lock and retuns True, if its already locked it emits a signal and returns False."""
         if self.pacman_lock.acquire(blocking=False):
+            self.pacman_lock_activated.emit()
             return True
-
-        self.pacman_lock_activated.emit()
         return False
 
     def _release_pacman(self):
@@ -46,8 +46,6 @@ class PackageManagerController(QObject):
         """
         Fetches the local and repo package databases.
         """
-        if not self._acquire_pacman():
-            return None
 
         # Initialize handle and get localdb
         self.handle = pyalpm.Handle(".", "/var/lib/pacman")
@@ -57,8 +55,6 @@ class PackageManagerController(QObject):
         for repo in self.enabled_repos:
             self.handle.register_syncdb(f"{repo}", pyalpm.SIG_DATABASE_OPTIONAL)
         self.syncdbs = self.handle.get_syncdbs()
-
-        self._release_pacman()
 
     # fetches latest package info from mirrors
     def fetch_updates(self) -> None:
@@ -134,8 +130,8 @@ class PackageManagerController(QObject):
         if not self._acquire_pacman():
             return None
 
-        pkg_install = []
-        pkg_remove = []
+        pkg_install: list[str] = []
+        pkg_remove: list[str] = []
         for pkg in packagelist:
             if pkg[1]:
                 pkg_remove.append(pkg[0])
@@ -144,6 +140,7 @@ class PackageManagerController(QObject):
 
         try:
             self.pacman_transaction_worker: QProcessHandler = QProcessHandler()
+            self.pacman_transaction_worker.started.connect(self.transaction_started.emit)
             self.pacman_transaction_worker.finished.connect(self._release_pacman)
             self.pacman_transaction_worker.finished.connect(lambda: self.transaction_finished.emit())
             self.pacman_transaction_worker.stream.connect(self.transaction_stdout_stream.emit)
