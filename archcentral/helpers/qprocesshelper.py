@@ -1,6 +1,7 @@
 from PySide6.QtCore import QByteArray, QProcess, QObject, Signal
 
 class QProcessHandler(QObject):
+    started: Signal = Signal()
     finished: Signal = Signal(str)
     stream: Signal = Signal(str)
 
@@ -17,6 +18,7 @@ class QProcessHandler(QObject):
             self.process = QProcess()
             self.process.readyReadStandardOutput.connect(self._read_stdout)
             self.process.readyReadStandardError.connect(self._read_stderr)
+            self.process.started.connect(self.started.emit)
             self.process.finished.connect(self._handle_finished)
             self.process.start(program, arguments)
 
