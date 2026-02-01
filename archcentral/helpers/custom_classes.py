@@ -1,4 +1,5 @@
 class PacmanPkgInfo():
+    """Class that contains package information extracted from the given alpm package object, with additional package manager specifics."""
     def __init__(self, alpm_pkginfo, marked: bool, installed: bool, repo: str) -> None:
         self.marked = marked
         self.installed = installed
@@ -10,7 +11,7 @@ class PacmanPkgInfo():
         self.desc = alpm_pkginfo.desc
         self.url = alpm_pkginfo.url
         self.licenses = alpm_pkginfo.licenses
-        self.packager = alpm_pkginfo.packager
         self.builddate = alpm_pkginfo.builddate
-        self.files = alpm_pkginfo.files
         self.depends = alpm_pkginfo.depends
+        self.optdepends = alpm_pkginfo.optdepends
+        self.groups = alpm_pkginfo.groups
