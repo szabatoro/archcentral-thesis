@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'mainwindow.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.10.0
+## Created by: Qt User Interface Compiler version 6.10.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -44,11 +44,6 @@ class Ui_MainWindow(object):
         self.app_title.setFont(font)
 
         self.verticalLayout.addWidget(self.app_title)
-
-        self.app_ver = QLabel(self.sidebar)
-        self.app_ver.setObjectName(u"app_ver")
-
-        self.verticalLayout.addWidget(self.app_ver)
 
         self.menu_buttons = QFrame(self.sidebar)
         self.menu_buttons.setObjectName(u"menu_buttons")
@@ -113,7 +108,6 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"ArchCentral", None))
         self.app_title.setText(QCoreApplication.translate("MainWindow", u"ArchCentral", None))
-        self.app_ver.setText(QCoreApplication.translate("MainWindow", u"Version: ", None))
         self.sys_info_button.setText(QCoreApplication.translate("MainWindow", u"System Info", None))
         self.package_manager_button.setText(QCoreApplication.translate("MainWindow", u"Package Manager", None))
     # retranslateUi

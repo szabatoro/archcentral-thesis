@@ -1,27 +1,50 @@
-from PySide6.QtCore import QByteArray, QProcess, QObject,  Signal
+from PySide6.QtCore import QByteArray, QProcess, QObject, Signal
 
-# Wrapper around QProcess to make getting cli output easier
 class QProcessHandler(QObject):
+    started: Signal = Signal()
     finished: Signal = Signal(str)
+    stream: Signal = Signal(str)
 
     def __init__(self) -> None:
         super().__init__()
         self.process: QProcess = None
+        self._buffer = ""
 
-    # Start the given process with the given arguments
     def start_process(self, program, arguments) -> None:
+        """
+        Uses QProcess() to start a program with its arguments and continously logs stdout.
+        """
         if self.process is None:
             self.process = QProcess()
+            self.process.readyReadStandardOutput.connect(self._read_stdout)
+            self.process.readyReadStandardError.connect(self._read_stderr)
+            self.process.started.connect(self.started.emit)
             self.process.finished.connect(self._handle_finished)
             self.process.start(program, arguments)
 
-    # Emit finish signal with decoded process stdout
-    def _handle_finished(self) -> None:
+    def _read_stdout(self) -> None:
         if self.process:
             data: QByteArray = self.process.readAllStandardOutput()
             if data:
-                output: str = bytes(data).decode("utf8").strip()
-                self.finished.emit(output)
-            else:
-                self.finished.emit("")
+                output: str = bytes(data).decode("utf8")
+                self._buffer += output
+                self.stream.emit(output)
+
+    def _read_stderr(self) -> None:
+        if self.process:
+            data = self.process.readAllStandardError()
+            if data:
+                output = bytes(data).decode("utf8")
+                self._buffer += output
+                self.stream.emit(output)
+
+    def _handle_finished(self) -> None:
+        if self.process:
+            # emit any remaining output
+            remaining_data: QByteArray = self.process.readAllStandardOutput()
+            if remaining_data:
+                self._buffer += bytes(remaining_data).decode("utf8")
+            # emit final combined output
+            self.finished.emit(self._buffer.strip())
         self.process = None
+        self._buffer = ""

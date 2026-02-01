@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'sysinfo.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.10.0
+## Created by: Qt User Interface Compiler version 6.10.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -19,8 +19,8 @@ from PySide6.QtWidgets import (QApplication, QHBoxLayout, QLabel, QPushButton,
     QSizePolicy, QSpacerItem, QTabWidget, QVBoxLayout,
     QWidget)
 
-from archcentral.ui.graph import (CPUGraph, NetworkGraph, RAMGraph)
-from archcentral.ui.legendwidget import LegendWidget
+from archcentral.ui.custom_widgets.graph import (CPUGraph, NetworkGraph, RAMGraph)
+from archcentral.ui.custom_widgets.legendwidget import LegendWidget
 
 class Ui_SysInfo(object):
     def setupUi(self, SysInfo):

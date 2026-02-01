@@ -439,25 +439,25 @@
   <customwidget>
    <class>CPUGraph</class>
    <extends>QWidget</extends>
-   <header>archcentral.ui.graph</header>
+   <header>archcentral.ui.custom_widgets.graph</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>RAMGraph</class>
    <extends>QWidget</extends>
-   <header>archcentral.ui.graph</header>
+   <header>archcentral.ui.custom_widgets.graph</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>NetworkGraph</class>
    <extends>QWidget</extends>
-   <header>archcentral.ui.graph</header>
+   <header>archcentral.ui.custom_widgets.graph</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>LegendWidget</class>
    <extends>QWidget</extends>
-   <header>archcentral.ui.legendwidget</header>
+   <header>archcentral.ui.custom_widgets.legendwidget</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
