@@ -55,3 +55,6 @@ The project that is the subject of my thesis/final project is available in this 
 
 1. Hardware monitor GUI within the System Information module:
 ![Hardware monitor GUI](screenshots/sysinfo_ui.png "Hardware monitor")
+
+2. Package manager module:
+![Package manager](screenshots/pacman_ui.png "Package manager")
