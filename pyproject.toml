@@ -12,7 +12,9 @@ dependencies = [
     "PySide6",
     "pyqtgraph",
     "psutil",
-    "pyalpm"
+    "pyalpm",
+    "pydbus",
+    "PyGObject"
 ]
 
 [project.scripts]
