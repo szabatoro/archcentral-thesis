@@ -6,6 +6,7 @@ from archcentral.models.systemd_units_list import SystemdServiceListModel
 
 class ServiceManagerModule(QWidget, Ui_ServiceManager):
     fetch_systemd_units_signal: Signal = Signal()
+    systemctl_operation_signal: Signal = Signal(str,bool)
 
     def __init__(self) -> None:
         super().__init__()
@@ -24,7 +25,9 @@ class ServiceManagerModule(QWidget, Ui_ServiceManager):
         self.fetch_systemd_units_signal.connect(self.smc.list_services)
         self.fetch_systemd_units_signal.emit()
 
-    def initalize_service_model(self, services):
+        self.systemctl_operation_signal.connect(self.smc.call_systemctl)
+
+    def initalize_service_model(self, services: list):
         """Initializes the systemd service model with services from the systemd dbus API and populates the service table."""
         self.service_list_model: SystemdServiceListModel = SystemdServiceListModel(services)
         self.service_list_proxy_model: QSortFilterProxyModel = QSortFilterProxyModel()

@@ -68,10 +68,10 @@ class Ui_ServiceManager(object):
 
         self.verticalLayout_2 = QVBoxLayout()
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.pushButton_2 = QPushButton(self.sys_level)
-        self.pushButton_2.setObjectName(u"pushButton_2")
+        self.act_deact_button = QPushButton(self.sys_level)
+        self.act_deact_button.setObjectName(u"act_deact_button")
 
-        self.verticalLayout_2.addWidget(self.pushButton_2)
+        self.verticalLayout_2.addWidget(self.act_deact_button)
 
 
         self.horizontalLayout_3.addLayout(self.verticalLayout_2)
@@ -104,7 +104,7 @@ class Ui_ServiceManager(object):
         ServiceManager.setWindowTitle(QCoreApplication.translate("ServiceManager", u"Form", None))
         self.title.setText(QCoreApplication.translate("ServiceManager", u"Systemd Service Management", None))
         self.service_search_button.setText(QCoreApplication.translate("ServiceManager", u"PushButton", None))
-        self.pushButton_2.setText(QCoreApplication.translate("ServiceManager", u"PushButton", None))
+        self.act_deact_button.setText(QCoreApplication.translate("ServiceManager", u"Activate", None))
         self.content.setTabText(self.content.indexOf(self.sys_level), QCoreApplication.translate("ServiceManager", u"System level", None))
         self.content.setTabText(self.content.indexOf(self.user_level), QCoreApplication.translate("ServiceManager", u"User level", None))
     # retranslateUi
