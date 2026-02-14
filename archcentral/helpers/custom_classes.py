@@ -16,10 +16,13 @@ class PacmanPkgInfo():
         self.optdepends = alpm_pkginfo.optdepends
         self.groups = alpm_pkginfo.groups
 
-class SystemdServiceInfo():
-    """Class that contains systemd service information."""
-    def __init__(self, unitname, desc, servicestate, runstate) -> None:
-        self.unitname = unitname
-        self.desc = desc
-        self.servicestate = servicestate
-        self.runstate = runstate
+class SystemdUnitInfo():
+    """Class that contains systemd unit information."""
+    def __init__(self, unit, dbus_path) -> None:
+        self.unitname = unit.Id
+        self.enabledstate = unit.UnitFileState
+        self.desc = unit.Description
+        self.loadstate = unit.LoadState
+        self.activestate = unit.ActiveState
+        self.substate = unit.SubState
+        self.dbus_path = dbus_path
