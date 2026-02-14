@@ -21,6 +21,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         QApplication.instance().aboutToQuit.connect(
             self.service_manager_widget.cleanup_thread
         )
+        QApplication.instance().aboutToQuit.connect(
+            self.package_manager_widget.cleanup_thread
+        )
 
         # setting up the displayarea stacked widgets with the modules
         self.display_area.addWidget(self.sysinfo_widget)

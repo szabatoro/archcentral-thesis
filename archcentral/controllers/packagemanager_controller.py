@@ -7,6 +7,8 @@ from threading import Lock
 
 class PackageManagerController(QObject):
     # Signals
+    package_list_fetched_for_init: Signal = Signal(list)
+    package_list_fetched_for_refresh: Signal = Signal(list)
     update_fetched: Signal = Signal(list)
     update_stdout_stream: Signal = Signal(str)
     update_finished: Signal = Signal()
@@ -103,7 +105,7 @@ class PackageManagerController(QObject):
             self._release_pacman()
             raise
 
-    def list_all_packages(self) -> None:
+    def list_all_packages(self, is_refresh: bool) -> None:
         """
         Fetch a list of every repo package.
         """
@@ -117,7 +119,7 @@ class PackageManagerController(QObject):
                 else:
                     pkg_list.append(PacmanPkgInfo(pkg, False, False, db.name))
 
-        return pkg_list
+        self.package_list_fetched_for_refresh.emit(pkg_list) if is_refresh else self.package_list_fetched_for_init.emit(pkg_list)
 
     def run_package_transaction(self, packagelist: list[list[str,bool]]) -> None:
         """
