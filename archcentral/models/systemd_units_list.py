@@ -1,12 +1,12 @@
 from PySide6.QtCore import QAbstractTableModel, Qt
-from archcentral.helpers.custom_classes import SystemdServiceInfo
+from archcentral.helpers.custom_classes import SystemdUnitInfo
 
 # Model for the systemd service table
 class SystemdServiceListModel(QAbstractTableModel):
     def __init__(self, data):
         super().__init__()
         self._data = data
-        self._headers = ["Name", "State", "Substate"]
+        self._headers = ["Name", "State", "Active"]
 
     def rowCount(self, parent=None):
         return len(self._data)
@@ -15,13 +15,13 @@ class SystemdServiceListModel(QAbstractTableModel):
         return len(self._headers)
 
     def data(self, index, role):
-        service: SystemdServiceInfo = self._data[index.row()]
+        service: SystemdUnitInfo = self._data[index.row()]
 
         if role == Qt.DisplayRole:
             mapping = {
                 0: service.unitname,
-                1: service.servicestate,
-                2: service.runstate,
+                1: service.enabledstate,
+                2: service.activestate
             }
             return mapping.get(index.column())
 
