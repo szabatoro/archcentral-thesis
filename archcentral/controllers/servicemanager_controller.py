@@ -8,7 +8,8 @@ SYSTEMD_DBUS_PATH = "org.freedesktop.systemd1"
 
 class ServiceManagerController(QObject):
     # Signals
-    services_fetched: Signal = Signal(list)
+    services_fetched_for_init: Signal = Signal(list)
+    services_fetched_for_refresh: Signal = Signal(list)
     systemctl_lock_activated: Signal = Signal()
     systemctl_lock_deactivated: Signal = Signal()
     systemctl_operation_done: Signal = Signal()
@@ -25,6 +26,8 @@ class ServiceManagerController(QObject):
         # Lock object to prevent native systemctl lock crashing the qprocesses or working with non-up-to-date data
         self.systemctl_lock: Lock = Lock()
 
+        self.systemctl_operation_done.connect(self.list_services_for_refresh)
+
     def _acquire_systemctl(self) -> bool:
         """Activates the systemctl lock and retuns True, if its already locked it emits a signal and returns False."""
         if self.systemctl_lock.acquire(blocking=False):
@@ -37,7 +40,7 @@ class ServiceManagerController(QObject):
         self.systemctl_lock.release()
         self.systemctl_lock_deactivated.emit()
 
-    def list_services(self):
+    def _list_services_internal(self) -> list[SystemdServiceInfo]:
         """Fetches systemd services off the systemd API."""
         unitfiles = self.systemd_system_bus.ListUnitFilesByPatterns([],["*.service"])
 
@@ -52,7 +55,15 @@ class ServiceManagerController(QObject):
                     unit = self.system_bus.get(SYSTEMD_DBUS_PATH, unit_dbus_path)
                     processed_unitlist.append(SystemdServiceInfo(unit, unit_dbus_path))
 
-        self.services_fetched.emit(processed_unitlist)
+        return processed_unitlist
+
+    def list_services_for_init(self) -> None:
+        services: list[SystemdServiceInfo] = self._list_services_internal()
+        self.services_fetched_for_init.emit(services)
+
+    def list_services_for_refresh(self) -> None:
+        services: list[SystemdServiceInfo] = self._list_services_internal()
+        self.services_fetched_for_refresh.emit(services)
 
     def call_systemctl(self, unit: str, operation: str) -> None:
         """
