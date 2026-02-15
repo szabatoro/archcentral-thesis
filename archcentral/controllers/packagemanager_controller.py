@@ -105,7 +105,7 @@ class PackageManagerController(QObject):
             self._release_pacman()
             raise
 
-    def list_all_packages(self, is_refresh: bool) -> None:
+    def _list_all_packages_internal(self):
         """
         Fetch a list of every repo package.
         """
@@ -119,7 +119,17 @@ class PackageManagerController(QObject):
                 else:
                     pkg_list.append(PacmanPkgInfo(pkg, False, False, db.name))
 
-        self.package_list_fetched_for_refresh.emit(pkg_list) if is_refresh else self.package_list_fetched_for_init.emit(pkg_list)
+        return pkg_list
+
+    def list_all_packages_for_init(self) -> None:
+        """Runs at start."""
+        packages = self._list_all_packages_internal()
+        self.package_list_fetched_for_init.emit(packages)
+
+    def list_all_packages_for_refresh(self) -> None:
+        """Runs when only a model refresh is needed."""
+        packages = self._list_all_packages_internal()
+        self.package_list_fetched_for_refresh.emit(packages)
 
     def run_package_transaction(self, packagelist: list[list[str,bool]]) -> None:
         """

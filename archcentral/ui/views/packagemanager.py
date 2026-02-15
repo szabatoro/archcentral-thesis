@@ -14,7 +14,7 @@ class PackageManagerModule(QWidget, Ui_PackageManager):
     fetch_package_list_signal: Signal = Signal()
     refresh_package_list_signal: Signal = Signal()
     initiate_update_signal: Signal = Signal()
-    initiate_package_transaction_signal: Signal = Signal()
+    initiate_package_transaction_signal: Signal = Signal(list)
 
     def __init__(self) -> None:
         super().__init__()
@@ -27,10 +27,10 @@ class PackageManagerModule(QWidget, Ui_PackageManager):
         self.pmc_thread.start()
 
         # Connecting module signals to pmc
-        self.fetch_package_list_signal.connect(lambda: self.pmc.list_all_packages(False))
+        self.fetch_package_list_signal.connect(self.pmc.list_all_packages_for_init)
         self.initiate_update_signal.connect(self.pmc.fetch_updates)
-        self.refresh_package_list_signal.connect(lambda: self.pmc.list_all_packages(True))
-        self.initiate_package_transaction_signal.connect(lambda: self.pmc.run_package_transaction(self.package_list_model.get_marked_packages()))
+        self.refresh_package_list_signal.connect(self.pmc.list_all_packages_for_refresh)
+        self.initiate_package_transaction_signal.connect(self.pmc.run_package_transaction)
 
         # Hook up model to the update table view to initialize it
         self.update_list_model: PacmanUpdateTableModel = PacmanUpdateTableModel([])
@@ -66,7 +66,7 @@ class PackageManagerModule(QWidget, Ui_PackageManager):
         # Run package transaction and refresh the package model upon transaction completion
         self.pmc.transaction_started.connect(lambda: self.package_det_out_tabs.setCurrentIndex(1))
         self.pmc.transaction_finished.connect(self.refresh_package_list_signal.emit)
-        self.run_transaction_button.pressed.connect(self.initiate_package_transaction_signal.emit)
+        self.run_transaction_button.pressed.connect(self.initiate_package_transaction)
 
         # Connecting action buttons status and status message label to pacman lock state
         self.pmc.pacman_lock_activated.connect(self.on_pacman_lock_activated)
@@ -114,6 +114,11 @@ class PackageManagerModule(QWidget, Ui_PackageManager):
         """Initiates the package update process depending on the dialog box return value."""
         if self.open_update_confirm_dialog():
             self.pmc.perform_update(self.update_list_model.get_packagenames())
+
+    def initiate_package_transaction(self) -> None:
+        """Initiates the package transaction by emitting a signal."""
+        packages = self.package_list_model.get_marked_packages()
+        self.initiate_package_transaction_signal.emit(packages)
 
     def open_update_confirm_dialog(self) -> bool:
         """Opens dialog box for update confirmation. Returns a boolean value depending on if the dialog is accepted or not."""
