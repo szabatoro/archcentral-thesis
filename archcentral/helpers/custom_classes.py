@@ -16,8 +16,8 @@ class PacmanPkgInfo():
         self.optdepends = alpm_pkginfo.optdepends
         self.groups = alpm_pkginfo.groups
 
-class SystemdUnitInfo():
-    """Class that contains systemd unit information."""
+class SystemdServiceInfo():
+    """Class that contains systemd Service information."""
     def __init__(self, unit, dbus_path) -> None:
         self.unitname = unit.Id
         self.enabledstate = unit.UnitFileState

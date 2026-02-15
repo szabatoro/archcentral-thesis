@@ -1,8 +1,7 @@
 from PySide6.QtCore import QObject, Signal
 from pydbus import SystemBus # using pydbus instead of QtDBus as its more pythonic and far simpler
-from archcentral.helpers.custom_classes import SystemdUnitInfo
+from archcentral.helpers.custom_classes import SystemdServiceInfo
 from threading import Lock
-
 from archcentral.helpers.qprocesshelper import QProcessHandler
 
 SYSTEMD_DBUS_PATH = "org.freedesktop.systemd1"
@@ -42,7 +41,7 @@ class ServiceManagerController(QObject):
         """Fetches systemd services off the systemd API."""
         unitfiles = self.systemd_system_bus.ListUnitFilesByPatterns([],["*.service"])
 
-        processed_unitlist: list[SystemdUnitInfo] = []
+        processed_unitlist: list[SystemdServiceInfo] = []
 
         for unitfile in unitfiles:
             unitname, enabledstate = unitfile
@@ -51,7 +50,7 @@ class ServiceManagerController(QObject):
                 if "@." not in bare_unitname: # @.service units are template units, and as such can't be loaded
                     unit_dbus_path = self.systemd_system_bus.LoadUnit(bare_unitname)
                     unit = self.system_bus.get(SYSTEMD_DBUS_PATH, unit_dbus_path)
-                    processed_unitlist.append(SystemdUnitInfo(unit, unit_dbus_path))
+                    processed_unitlist.append(SystemdServiceInfo(unit, unit_dbus_path))
 
         self.services_fetched.emit(processed_unitlist)
 
