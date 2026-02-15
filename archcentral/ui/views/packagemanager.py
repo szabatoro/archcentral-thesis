@@ -82,7 +82,7 @@ class PackageManagerModule(QWidget, Ui_PackageManager):
         # Populate the package details widget with the selected package's information
         self.package_list_table.selectionModel().currentRowChanged.connect(self.fill_package_details)
 
-    def refresh_package_list(self, packages):
+    def refresh_package_list(self, packages) -> None:
         self.package_list_model.refresh(packages)
 
     def on_pacman_lock_activated(self) -> None:
@@ -178,7 +178,7 @@ class PackageManagerModule(QWidget, Ui_PackageManager):
             groups_item: QTreeWidgetItem = QTreeWidgetItem(["Groups:", "None"])
         self.package_details_tree.addTopLevelItem(groups_item)
 
-    def cleanup_thread(self):
+    def cleanup_thread(self) -> None:
         """Gracefully stops threads."""
         if self.pmc_thread.isRunning():
             self.pmc_thread.quit()
