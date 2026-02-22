@@ -17,8 +17,8 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QAbstractItemView, QApplication, QHBoxLayout, QHeaderView,
     QLabel, QLineEdit, QPushButton, QSizePolicy,
-    QTableView, QTreeWidget, QTreeWidgetItem, QVBoxLayout,
-    QWidget)
+    QTabWidget, QTableView, QTreeWidget, QTreeWidgetItem,
+    QVBoxLayout, QWidget)
 
 class Ui_ServiceManager(object):
     def setupUi(self, ServiceManager):
@@ -53,16 +53,45 @@ class Ui_ServiceManager(object):
 
         self.horizontalLayout2 = QHBoxLayout()
         self.horizontalLayout2.setObjectName(u"horizontalLayout2")
-        self.service_list_table = QTableView(ServiceManager)
-        self.service_list_table.setObjectName(u"service_list_table")
+        self.user_system_tab = QTabWidget(ServiceManager)
+        self.user_system_tab.setObjectName(u"user_system_tab")
+        self.user_system_tab.setTabPosition(QTabWidget.TabPosition.North)
+        self.user_system_tab.setDocumentMode(False)
+        self.system_services_tab = QWidget()
+        self.system_services_tab.setObjectName(u"system_services_tab")
+        self.verticalLayout_3 = QVBoxLayout(self.system_services_tab)
+        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.system_service_list_table = QTableView(self.system_services_tab)
+        self.system_service_list_table.setObjectName(u"system_service_list_table")
         font1 = QFont()
         font1.setBold(True)
-        self.service_list_table.setFont(font1)
-        self.service_list_table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
-        self.service_list_table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
-        self.service_list_table.verticalHeader().setVisible(False)
+        self.system_service_list_table.setFont(font1)
+        self.system_service_list_table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
+        self.system_service_list_table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        self.system_service_list_table.verticalHeader().setVisible(False)
+        self.system_service_list_table.verticalHeader().setStretchLastSection(True)
 
-        self.horizontalLayout2.addWidget(self.service_list_table)
+        self.verticalLayout_3.addWidget(self.system_service_list_table)
+
+        self.user_system_tab.addTab(self.system_services_tab, "")
+        self.user_services_tab = QWidget()
+        self.user_services_tab.setObjectName(u"user_services_tab")
+        self.verticalLayout_4 = QVBoxLayout(self.user_services_tab)
+        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
+        self.user_service_list_table = QTableView(self.user_services_tab)
+        self.user_service_list_table.setObjectName(u"user_service_list_table")
+        self.user_service_list_table.setFont(font1)
+        self.user_service_list_table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
+        self.user_service_list_table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        self.user_service_list_table.horizontalHeader().setStretchLastSection(True)
+        self.user_service_list_table.verticalHeader().setVisible(False)
+        self.user_service_list_table.verticalHeader().setStretchLastSection(True)
+
+        self.verticalLayout_4.addWidget(self.user_service_list_table)
+
+        self.user_system_tab.addTab(self.user_services_tab, "")
+
+        self.horizontalLayout2.addWidget(self.user_system_tab)
 
         self.verticalLayout_2 = QVBoxLayout()
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
@@ -105,6 +134,9 @@ class Ui_ServiceManager(object):
 
         self.retranslateUi(ServiceManager)
 
+        self.user_system_tab.setCurrentIndex(1)
+
+
         QMetaObject.connectSlotsByName(ServiceManager)
     # setupUi
 
@@ -114,6 +146,8 @@ class Ui_ServiceManager(object):
         self.service_search.setText("")
         self.service_search.setPlaceholderText(QCoreApplication.translate("ServiceManager", u"Search systemd units", None))
         self.service_search_button.setText(QCoreApplication.translate("ServiceManager", u"Search", None))
+        self.user_system_tab.setTabText(self.user_system_tab.indexOf(self.system_services_tab), QCoreApplication.translate("ServiceManager", u"Tab 1", None))
+        self.user_system_tab.setTabText(self.user_system_tab.indexOf(self.user_services_tab), QCoreApplication.translate("ServiceManager", u"Tab 2", None))
         self.start_stop_button.setText(QCoreApplication.translate("ServiceManager", u"Start", None))
         self.enable_disable_button.setText(QCoreApplication.translate("ServiceManager", u"Enable", None))
         ___qtreewidgetitem = self.service_details_tree.headerItem()
