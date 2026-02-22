@@ -7,7 +7,7 @@ class SystemdServiceListModel(QAbstractTableModel):
     def __init__(self, data):
         super().__init__()
         self._data = data
-        self._headers = ["Name", "State", "Status", "Substatus"]
+        self._headers = ["Name", "Launch State", "Status", "Substatus"]
 
     def rowCount(self, parent=None):
         return len(self._data)
@@ -21,9 +21,16 @@ class SystemdServiceListModel(QAbstractTableModel):
         if role == Qt.BackgroundRole and index.column() == 1:
             match service.enabledstate:
                 case "enabled":
-                    return QColor("green")
+                    return QColor("darkgreen")
                 case "disabled":
-                    return QColor("red")
+                    return QColor("darkred")
+
+        if role == Qt.BackgroundRole and index.column() == 2:
+            match service.activestate:
+                case "active":
+                    return QColor("darkgreen")
+                case "inactive":
+                    return QColor("darkred")
 
         if role == Qt.DisplayRole:
             mapping = {
