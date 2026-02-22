@@ -1,4 +1,5 @@
 from PySide6.QtCore import QAbstractTableModel, Qt
+from archcentral.helpers.unitconverter import unit_converter
 
 # Model for the update table
 class PacmanUpdateTableModel(QAbstractTableModel):
@@ -14,6 +15,12 @@ class PacmanUpdateTableModel(QAbstractTableModel):
         return len(self._headers)
 
     def data(self, index, role=Qt.DisplayRole):
+        update = self._data[index.row()]
+
+        if role == Qt.DisplayRole and index.column() == 3:
+            value, unit = unit_converter(update[3])
+            return f"{value:.2f} {unit}"
+
         if role == Qt.DisplayRole:
             return self._data[index.row()][index.column()]
         return None
