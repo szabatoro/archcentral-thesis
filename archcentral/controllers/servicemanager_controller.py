@@ -70,8 +70,10 @@ class ServiceManagerController(QObject):
     def list_system_services_for_refresh(self) -> None:
         services: list[SystemdServiceInfo] = self._list_services_internal(True)
         self.services_fetched_for_refresh.emit(True, services)
+        user_services: list[SystemdServiceInfo] = self._list_services_internal(False)
+        self.services_fetched_for_init.emit(False, user_services)
 
-    def call_systemctl(self, unit: str, operation: str) -> None:
+    def call_systemctl(self, is_user_service: bool, unit: str, operation: str) -> None:
         """
         Calls systemctl.
 
@@ -85,4 +87,5 @@ class ServiceManagerController(QObject):
         self.systemctl_worker: QProcessHandler = QProcessHandler()
         self.systemctl_worker.finished.connect(self._release_systemctl)
         self.systemctl_worker.finished.connect(lambda: self.systemctl_operation_done.emit())
-        self.systemctl_worker.start_process("systemctl", [operation, unit])
+        systemctl_args = ["--user", operation, unit] if is_user_service else [operation, unit]
+        self.systemctl_worker.start_process("systemctl", systemctl_args)

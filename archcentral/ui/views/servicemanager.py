@@ -8,7 +8,7 @@ from archcentral.models.systemd_services_list import SystemdServiceListModel
 
 class ServiceManagerModule(QWidget, Ui_ServiceManager):
     fetch_systemd_units_signal: Signal = Signal()
-    systemctl_operation_signal: Signal = Signal(str,str)
+    systemctl_operation_signal: Signal = Signal(bool, str,str)
 
     def __init__(self) -> None:
         super().__init__()
@@ -38,16 +38,23 @@ class ServiceManagerModule(QWidget, Ui_ServiceManager):
         self.start_stop_button.clicked.connect(self.start_stop_service)
         self.enable_disable_button.clicked.connect(self.enable_disable_service)
 
-    def _get_selected_row(self) -> None:
+    def _get_selected_row(self):
         """Fetches the systemdserviceinfo object stored in the selected row."""
-        source_index: QModelIndex = self.system_service_list_proxy_model.mapToSource(self.system_service_list_table.currentIndex())
-        selected_service: SystemdServiceInfo = self.system_service_list_model.get_unit(source_index)
+        match self.user_system_tab.currentIndex():
+            case 0:
+                source_index: QModelIndex = self.system_service_list_proxy_model.mapToSource(self.system_service_list_table.currentIndex())
+                selected_service: SystemdServiceInfo = self.system_service_list_model.get_unit(source_index)
+                is_user_service = False
+            case 1:
+                source_index: QModelIndex = self.user_service_list_proxy_model.mapToSource(self.user_service_list_table.currentIndex())
+                selected_service: SystemdServiceInfo = self.user_service_list_model.get_unit(source_index)
+                is_user_service = True
 
-        return selected_service
+        return selected_service, is_user_service
 
     def _adapt_buttons_status(self) -> None:
         """Changes the service buttons names depending on selected service status."""
-        selected_service: SystemdServiceInfo = self._get_selected_row()
+        selected_service, _ = self._get_selected_row()
 
         if selected_service.substate == "running":
             self.start_stop_button.setText("Stop")
@@ -93,7 +100,7 @@ class ServiceManagerModule(QWidget, Ui_ServiceManager):
         """Fills out the service details tab with information about the selected service."""
         self.service_details_tree.clear()
 
-        selected_service: SystemdServiceInfo = self._get_selected_row()
+        selected_service, _ = self._get_selected_row()
 
         self.service_details_tree.addTopLevelItem(QTreeWidgetItem(["Name: ", selected_service.unitname]))
 
@@ -101,12 +108,12 @@ class ServiceManagerModule(QWidget, Ui_ServiceManager):
 
     def start_stop_service(self) -> None:
         """Stops or starts the selected service depending on its substate."""
-        selected_service: SystemdServiceInfo = self._get_selected_row()
+        selected_service, is_user_service = self._get_selected_row()
         if selected_service.substate == "running":
             operation = "stop"
         else:
             operation = "start"
-        self.systemctl_operation_signal.emit(selected_service.unitname, operation)
+        self.systemctl_operation_signal.emit(is_user_service, selected_service.unitname, operation)
 
     def enable_disable_service(self) -> None:
         """Enables or disables the selected service depending on its enabledstate."""
