@@ -1,5 +1,5 @@
 from PySide6.QtCore import QObject, Signal
-from pydbus import SystemBus # using pydbus instead of QtDBus as its more pythonic and far simpler
+from pydbus import SessionBus, SystemBus # using pydbus instead of QtDBus as its more pythonic and far simpler
 from archcentral.helpers.custom_classes import SystemdServiceInfo
 from threading import Lock
 from archcentral.helpers.qprocesshelper import QProcessHandler
@@ -8,8 +8,8 @@ SYSTEMD_DBUS_PATH = "org.freedesktop.systemd1"
 
 class ServiceManagerController(QObject):
     # Signals
-    services_fetched_for_init: Signal = Signal(list)
-    services_fetched_for_refresh: Signal = Signal(list)
+    services_fetched_for_init: Signal = Signal(bool, list)
+    services_fetched_for_refresh: Signal = Signal(bool, list)
     systemctl_lock_activated: Signal = Signal()
     systemctl_lock_deactivated: Signal = Signal()
     systemctl_operation_done: Signal = Signal()
@@ -18,15 +18,17 @@ class ServiceManagerController(QObject):
         super().__init__()
 
         # Getting the dbus system session bus
-        self.system_bus: SystemBus() = SystemBus()
+        self.system_bus: SystemBus = SystemBus()
+        self.user_bus: SessionBus = SessionBus()
 
-        # Connecting to the systemd dbus API
+        # Connecting to the systemd system and user level dbus API
         self.systemd_system_bus = self.system_bus.get(SYSTEMD_DBUS_PATH)
+        self.systemd_user_bus = self.user_bus.get(SYSTEMD_DBUS_PATH)
 
         # Lock object to prevent native systemctl lock crashing the qprocesses or working with non-up-to-date data
         self.systemctl_lock: Lock = Lock()
 
-        self.systemctl_operation_done.connect(self.list_services_for_refresh)
+        self.systemctl_operation_done.connect(self.list_system_services_for_refresh)
 
     def _acquire_systemctl(self) -> bool:
         """Activates the systemctl lock and retuns True, if its already locked it emits a signal and returns False."""
@@ -40,9 +42,11 @@ class ServiceManagerController(QObject):
         self.systemctl_lock.release()
         self.systemctl_lock_deactivated.emit()
 
-    def _list_services_internal(self) -> list[SystemdServiceInfo]:
+    def _list_services_internal(self, is_system_level: bool) -> list[SystemdServiceInfo]:
         """Fetches systemd services off the systemd API."""
-        unitfiles = self.systemd_system_bus.ListUnitFilesByPatterns([],["*.service"])
+        bus = self.system_bus if is_system_level else self.user_bus
+        systemd_bus = self.systemd_system_bus if is_system_level else self.systemd_user_bus
+        unitfiles = systemd_bus.ListUnitFilesByPatterns([],["*.service"])
 
         processed_unitlist: list[SystemdServiceInfo] = []
 
@@ -51,19 +55,21 @@ class ServiceManagerController(QObject):
             if enabledstate in ("disabled", "enabled"):
                 bare_unitname = unitname.split("/")[-1]
                 if "@." not in bare_unitname: # @.service units are template units, and as such can't be loaded
-                    unit_dbus_path = self.systemd_system_bus.LoadUnit(bare_unitname)
-                    unit = self.system_bus.get(SYSTEMD_DBUS_PATH, unit_dbus_path)
+                    unit_dbus_path = systemd_bus.LoadUnit(bare_unitname)
+                    unit = bus.get(SYSTEMD_DBUS_PATH, unit_dbus_path)
                     processed_unitlist.append(SystemdServiceInfo(unit, unit_dbus_path))
 
         return processed_unitlist
 
-    def list_services_for_init(self) -> None:
-        services: list[SystemdServiceInfo] = self._list_services_internal()
-        self.services_fetched_for_init.emit(services)
+    def list_system_services_for_init(self) -> None:
+        system_services: list[SystemdServiceInfo] = self._list_services_internal(True)
+        self.services_fetched_for_init.emit(True, system_services)
+        user_services: list[SystemdServiceInfo] = self._list_services_internal(False)
+        self.services_fetched_for_init.emit(False, user_services)
 
-    def list_services_for_refresh(self) -> None:
-        services: list[SystemdServiceInfo] = self._list_services_internal()
-        self.services_fetched_for_refresh.emit(services)
+    def list_system_services_for_refresh(self) -> None:
+        services: list[SystemdServiceInfo] = self._list_services_internal(True)
+        self.services_fetched_for_refresh.emit(True, services)
 
     def call_systemctl(self, unit: str, operation: str) -> None:
         """

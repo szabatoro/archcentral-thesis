@@ -24,13 +24,13 @@ class ServiceManagerModule(QWidget, Ui_ServiceManager):
         self.thread.start()
 
         # Searching services
-        self.service_search_button.pressed.connect(lambda: self.service_list_proxy_model.setFilterRegularExpression(self.service_search.text()))
-        self.service_search.returnPressed.connect(lambda: self.service_list_proxy_model.setFilterRegularExpression(self.service_search.text()))
+        self.service_search_button.pressed.connect(lambda: self.system_service_list_proxy_model.setFilterRegularExpression(self.service_search.text()))
+        self.service_search.returnPressed.connect(lambda: self.system_service_list_proxy_model.setFilterRegularExpression(self.service_search.text()))
 
-        self.smc.services_fetched_for_init.connect(self.initalize_service_model)
+        self.smc.services_fetched_for_init.connect(self.initalize_system_service_model)
         self.smc.services_fetched_for_refresh.connect(self.refresh_service_list)
 
-        self.fetch_systemd_units_signal.connect(self.smc.list_services_for_init)
+        self.fetch_systemd_units_signal.connect(self.smc.list_system_services_for_init)
         self.fetch_systemd_units_signal.emit()
 
         self.systemctl_operation_signal.connect(self.smc.call_systemctl)
@@ -40,8 +40,8 @@ class ServiceManagerModule(QWidget, Ui_ServiceManager):
 
     def _get_selected_row(self) -> None:
         """Fetches the systemdserviceinfo object stored in the selected row."""
-        source_index: QModelIndex = self.service_list_proxy_model.mapToSource(self.service_list_table.currentIndex())
-        selected_service: SystemdServiceInfo = self.service_list_model.get_unit(source_index)
+        source_index: QModelIndex = self.system_service_list_proxy_model.mapToSource(self.system_service_list_table.currentIndex())
+        selected_service: SystemdServiceInfo = self.system_service_list_model.get_unit(source_index)
 
         return selected_service
 
@@ -59,21 +59,35 @@ class ServiceManagerModule(QWidget, Ui_ServiceManager):
         else:
             self.enable_disable_button.setText("Enable")
 
-    def initalize_service_model(self, services: list) -> None:
+    def initalize_system_service_model(self, is_system: bool, services: list) -> None:
         """Initializes the systemd service model with services from the systemd dbus API and populates the service table."""
-        self.service_list_model: SystemdServiceListModel = SystemdServiceListModel(services)
-        self.service_list_proxy_model: QSortFilterProxyModel = QSortFilterProxyModel()
-        self.service_list_proxy_model.setDynamicSortFilter(True)
-        self.service_list_proxy_model.sort(0, Qt.AscendingOrder)
-        self.service_list_proxy_model.setSourceModel(self.service_list_model)
-        self.service_list_proxy_model.setFilterKeyColumn(0)
-        self.service_list_table.setModel(self.service_list_proxy_model)
-        self.service_list_table.selectionModel().currentRowChanged.connect(self.fill_service_details)
-        self.service_list_table.selectionModel().currentRowChanged.connect(self._adapt_buttons_status)
+        if is_system:
+            self.system_service_list_model: SystemdServiceListModel = SystemdServiceListModel(services)
+            self.system_service_list_proxy_model: QSortFilterProxyModel = QSortFilterProxyModel()
+            self.system_service_list_proxy_model.setDynamicSortFilter(True)
+            self.system_service_list_proxy_model.sort(0, Qt.AscendingOrder)
+            self.system_service_list_proxy_model.setSourceModel(self.system_service_list_model)
+            self.system_service_list_proxy_model.setFilterKeyColumn(0)
+            self.system_service_list_table.setModel(self.system_service_list_proxy_model)
+            self.system_service_list_table.selectionModel().currentRowChanged.connect(self.fill_service_details)
+            self.system_service_list_table.selectionModel().currentRowChanged.connect(self._adapt_buttons_status)
+        else:
+            self.user_service_list_model: SystemdServiceListModel = SystemdServiceListModel(services)
+            self.user_service_list_proxy_model: QSortFilterProxyModel = QSortFilterProxyModel()
+            self.user_service_list_proxy_model.setDynamicSortFilter(True)
+            self.user_service_list_proxy_model.sort(0, Qt.AscendingOrder)
+            self.user_service_list_proxy_model.setSourceModel(self.user_service_list_model)
+            self.user_service_list_proxy_model.setFilterKeyColumn(0)
+            self.user_service_list_table.setModel(self.user_service_list_proxy_model)
+            self.user_service_list_table.selectionModel().currentRowChanged.connect(self.fill_service_details)
+            self.user_service_list_table.selectionModel().currentRowChanged.connect(self._adapt_buttons_status)
 
-    def refresh_service_list(self, services: list) -> None:
+
+
+    def refresh_service_list(self, is_system: bool, services: list) -> None:
         """Refreshes the service list model."""
-        self.service_list_model.refresh(services)
+        self.system_service_list_model.refresh(services) if is_system else self.user_service_list_model.refresh(services)
+
 
     def fill_service_details(self) -> None:
         """Fills out the service details tab with information about the selected service."""
