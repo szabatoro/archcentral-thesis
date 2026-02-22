@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'servicemanager.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.10.1
+## Created by: Qt User Interface Compiler version 6.10.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -68,6 +68,7 @@ class Ui_ServiceManager(object):
         self.system_service_list_table.setFont(font1)
         self.system_service_list_table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
         self.system_service_list_table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        self.system_service_list_table.horizontalHeader().setStretchLastSection(True)
         self.system_service_list_table.verticalHeader().setVisible(False)
         self.system_service_list_table.verticalHeader().setStretchLastSection(True)
 
@@ -134,7 +135,7 @@ class Ui_ServiceManager(object):
 
         self.retranslateUi(ServiceManager)
 
-        self.user_system_tab.setCurrentIndex(1)
+        self.user_system_tab.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(ServiceManager)
@@ -146,8 +147,8 @@ class Ui_ServiceManager(object):
         self.service_search.setText("")
         self.service_search.setPlaceholderText(QCoreApplication.translate("ServiceManager", u"Search systemd units", None))
         self.service_search_button.setText(QCoreApplication.translate("ServiceManager", u"Search", None))
-        self.user_system_tab.setTabText(self.user_system_tab.indexOf(self.system_services_tab), QCoreApplication.translate("ServiceManager", u"Tab 1", None))
-        self.user_system_tab.setTabText(self.user_system_tab.indexOf(self.user_services_tab), QCoreApplication.translate("ServiceManager", u"Tab 2", None))
+        self.user_system_tab.setTabText(self.user_system_tab.indexOf(self.system_services_tab), QCoreApplication.translate("ServiceManager", u"System services", None))
+        self.user_system_tab.setTabText(self.user_system_tab.indexOf(self.user_services_tab), QCoreApplication.translate("ServiceManager", u"User services", None))
         self.start_stop_button.setText(QCoreApplication.translate("ServiceManager", u"Start", None))
         self.enable_disable_button.setText(QCoreApplication.translate("ServiceManager", u"Enable", None))
         ___qtreewidgetitem = self.service_details_tree.headerItem()

@@ -56,14 +56,14 @@
         <enum>QTabWidget::TabPosition::North</enum>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <property name="documentMode">
         <bool>false</bool>
        </property>
        <widget class="QWidget" name="system_services_tab">
         <attribute name="title">
-         <string>Tab 1</string>
+         <string>System services</string>
         </attribute>
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
@@ -79,6 +79,9 @@
            <property name="selectionBehavior">
             <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
            </property>
+           <attribute name="horizontalHeaderStretchLastSection">
+            <bool>true</bool>
+           </attribute>
            <attribute name="verticalHeaderVisible">
             <bool>false</bool>
            </attribute>
@@ -91,7 +94,7 @@
        </widget>
        <widget class="QWidget" name="user_services_tab">
         <attribute name="title">
-         <string>Tab 2</string>
+         <string>User services</string>
         </attribute>
         <layout class="QVBoxLayout" name="verticalLayout_4">
          <item>
