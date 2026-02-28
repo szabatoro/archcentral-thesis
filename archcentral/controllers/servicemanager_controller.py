@@ -1,3 +1,4 @@
+from typing import Literal
 from PySide6.QtCore import QObject, Signal
 from pydbus import SessionBus, SystemBus # using pydbus instead of QtDBus as its more pythonic and far simpler
 from archcentral.helpers.custom_classes import SystemdServiceInfo
@@ -73,7 +74,9 @@ class ServiceManagerController(QObject):
         user_services: list[SystemdServiceInfo] = self._list_services_internal(False)
         self.services_fetched_for_init.emit(False, user_services)
 
-    def call_systemctl(self, is_user_service: bool, unit: str, operation: str) -> None:
+        self._release_systemctl()
+
+    def call_systemctl(self, is_user_service: bool, unit: str, operation: Literal["enable", "disable", "stop", "start", "restart"]) -> None:
         """
         Calls systemctl.
 
@@ -85,7 +88,6 @@ class ServiceManagerController(QObject):
             return None
 
         self.systemctl_worker: QProcessHandler = QProcessHandler()
-        self.systemctl_worker.finished.connect(self._release_systemctl)
         self.systemctl_worker.finished.connect(lambda: self.systemctl_operation_done.emit())
         systemctl_args = ["--user", operation, unit] if is_user_service else [operation, unit]
         self.systemctl_worker.start_process("systemctl", systemctl_args)
