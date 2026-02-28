@@ -22,6 +22,11 @@ class QProcessHandler(QObject):
             self.process.finished.connect(self._handle_finished)
             self.process.start(program, arguments)
 
+    def write_to_stdin(self, str: str) -> None:
+        """Encodes a given string to bytes and writes it to stdin."""
+        writeable_data = str.encode("utf-8")
+        self.process.write(writeable_data)
+
     def _read_stdout(self) -> None:
         if self.process:
             data: QByteArray = self.process.readAllStandardOutput()
