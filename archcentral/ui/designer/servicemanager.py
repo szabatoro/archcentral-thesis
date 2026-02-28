@@ -17,8 +17,8 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QAbstractItemView, QApplication, QHBoxLayout, QHeaderView,
     QLabel, QLineEdit, QPushButton, QSizePolicy,
-    QTabWidget, QTableView, QTreeWidget, QTreeWidgetItem,
-    QVBoxLayout, QWidget)
+    QSpacerItem, QTabWidget, QTableView, QTreeWidget,
+    QTreeWidgetItem, QVBoxLayout, QWidget)
 
 class Ui_ServiceManager(object):
     def setupUi(self, ServiceManager):
@@ -70,7 +70,6 @@ class Ui_ServiceManager(object):
         self.system_service_list_table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.system_service_list_table.horizontalHeader().setStretchLastSection(True)
         self.system_service_list_table.verticalHeader().setVisible(False)
-        self.system_service_list_table.verticalHeader().setStretchLastSection(True)
 
         self.verticalLayout_3.addWidget(self.system_service_list_table)
 
@@ -86,7 +85,6 @@ class Ui_ServiceManager(object):
         self.user_service_list_table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.user_service_list_table.horizontalHeader().setStretchLastSection(True)
         self.user_service_list_table.verticalHeader().setVisible(False)
-        self.user_service_list_table.verticalHeader().setStretchLastSection(True)
 
         self.verticalLayout_4.addWidget(self.user_service_list_table)
 
@@ -95,16 +93,30 @@ class Ui_ServiceManager(object):
         self.horizontalLayout2.addWidget(self.user_system_tab)
 
         self.verticalLayout_2 = QVBoxLayout()
+        self.verticalLayout_2.setSpacing(10)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_2.addItem(self.verticalSpacer_2)
+
         self.start_stop_button = QPushButton(ServiceManager)
         self.start_stop_button.setObjectName(u"start_stop_button")
 
         self.verticalLayout_2.addWidget(self.start_stop_button)
 
+        self.restart_button = QPushButton(ServiceManager)
+        self.restart_button.setObjectName(u"restart_button")
+
+        self.verticalLayout_2.addWidget(self.restart_button)
+
         self.enable_disable_button = QPushButton(ServiceManager)
         self.enable_disable_button.setObjectName(u"enable_disable_button")
 
         self.verticalLayout_2.addWidget(self.enable_disable_button)
+
+        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_2.addItem(self.verticalSpacer)
 
 
         self.horizontalLayout2.addLayout(self.verticalLayout_2)
@@ -127,10 +139,10 @@ class Ui_ServiceManager(object):
 
         self.verticalLayout.addWidget(self.service_details_tree)
 
-        self.statusbar = QLabel(ServiceManager)
-        self.statusbar.setObjectName(u"statusbar")
+        self.status_label = QLabel(ServiceManager)
+        self.status_label.setObjectName(u"status_label")
 
-        self.verticalLayout.addWidget(self.statusbar)
+        self.verticalLayout.addWidget(self.status_label)
 
 
         self.retranslateUi(ServiceManager)
@@ -150,9 +162,10 @@ class Ui_ServiceManager(object):
         self.user_system_tab.setTabText(self.user_system_tab.indexOf(self.system_services_tab), QCoreApplication.translate("ServiceManager", u"System services", None))
         self.user_system_tab.setTabText(self.user_system_tab.indexOf(self.user_services_tab), QCoreApplication.translate("ServiceManager", u"User services", None))
         self.start_stop_button.setText(QCoreApplication.translate("ServiceManager", u"Start", None))
+        self.restart_button.setText(QCoreApplication.translate("ServiceManager", u"Restart", None))
         self.enable_disable_button.setText(QCoreApplication.translate("ServiceManager", u"Enable", None))
         ___qtreewidgetitem = self.service_details_tree.headerItem()
         ___qtreewidgetitem.setText(1, QCoreApplication.translate("ServiceManager", u"Value", None));
-        self.statusbar.setText("")
+        self.status_label.setText("")
     # retranslateUi
 
