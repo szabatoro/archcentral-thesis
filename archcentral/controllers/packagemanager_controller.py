@@ -103,7 +103,7 @@ class PackageManagerController(QObject):
         self.pacman_update_worker.stream.connect(self.update_stdout_stream.emit)
         try:
             #self.pacman_worker.start_process("pkexec", ["pacman", "-S", "--noconfirm", "hplip"]) # testing
-            self.pacman_update_worker.start_process("pkexec", ["pacman", "-S", "--noconfirm"] + packagelist)
+            self.pacman_update_worker.start_process("pkexec", ["pacman", "-S"] + packagelist)
         except:
             self._release_pacman()
             raise
