@@ -29,6 +29,8 @@ class ServiceManagerModule(QWidget, Ui_ServiceManager):
 
         self.smc.services_fetched_for_init.connect(self.initalize_system_service_model)
         self.smc.services_fetched_for_refresh.connect(self.refresh_service_list)
+        self.smc.systemctl_lock_activated.connect(self.on_systemctl_lock_activated)
+        self.smc.systemctl_lock_deactivated.connect(self.on_systemctl_lock_deactivated)
 
         self.fetch_systemd_units_signal.connect(self.smc.list_system_services_for_init)
         self.fetch_systemd_units_signal.emit()
@@ -37,6 +39,7 @@ class ServiceManagerModule(QWidget, Ui_ServiceManager):
 
         self.start_stop_button.clicked.connect(self.start_stop_service)
         self.enable_disable_button.clicked.connect(self.enable_disable_service)
+        self.restart_button.clicked.connect(self.restart_service)
 
     def _get_selected_row(self):
         """Fetches the systemdserviceinfo object stored in the selected row."""
@@ -65,6 +68,18 @@ class ServiceManagerModule(QWidget, Ui_ServiceManager):
             self.enable_disable_button.setText("Disable")
         else:
             self.enable_disable_button.setText("Enable")
+
+    def on_systemctl_lock_activated(self) -> None:
+        self.status_label.setText("Operation in progress, please wait...")
+        self.enable_disable_button.setEnabled(False)
+        self.restart_button.setEnabled(False)
+        self.start_stop_button.setEnabled(False)
+
+    def on_systemctl_lock_deactivated(self) -> None:
+        self.status_label.setText("Operation finished...")
+        self.enable_disable_button.setEnabled(True)
+        self.restart_button.setEnabled(True)
+        self.start_stop_button.setEnabled(True)
 
     def initalize_system_service_model(self, is_system: bool, services: list) -> None:
         """Initializes the systemd service model with services from the systemd dbus API and populates the service table."""
@@ -117,12 +132,16 @@ class ServiceManagerModule(QWidget, Ui_ServiceManager):
 
     def enable_disable_service(self) -> None:
         """Enables or disables the selected service depending on its enabledstate."""
-        selected_service: SystemdServiceInfo = self._get_selected_row()
+        selected_service, is_user_service = self._get_selected_row()
         if selected_service.enabledstate == "enabled":
             operation = "disable"
         else:
             operation = "enable"
-        self.systemctl_operation_signal.emit(selected_service.unitname, operation)
+        self.systemctl_operation_signal.emit(is_user_service, selected_service.unitname, operation)
+
+    def restart_service(self) -> None:
+        selected_service, is_user_service = self._get_selected_row()
+        self.systemctl_operation_signal.emit(is_user_service, selected_service.unitname, "restart")
 
     def cleanup_thread(self) -> None:
         """Gracefully stops threads."""
