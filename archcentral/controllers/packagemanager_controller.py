@@ -34,6 +34,7 @@ class PackageManagerController(QObject):
         self.pacman_lock: Lock = Lock()
 
         self.transaction_stdout_stream.connect(self._handle_pacman_prompts)
+        self.update_stdout_stream.connect(self._handle_pacman_prompts)
 
     def _acquire_pacman(self) -> bool:
         """Activates the pacman lock and retuns True, if its already locked it emits a signal and returns False."""
@@ -101,6 +102,7 @@ class PackageManagerController(QObject):
         self.pacman_update_worker.finished.connect(lambda: self.update_finished.emit())
         self.pacman_update_worker.finished.connect(lambda: self._fetch_dbs())
         self.pacman_update_worker.stream.connect(self.update_stdout_stream.emit)
+        self.write_to_stdin.connect(self.pacman_update_worker.write_to_stdin)
         try:
             #self.pacman_worker.start_process("pkexec", ["pacman", "-S", "--noconfirm", "hplip"]) # testing
             self.pacman_update_worker.start_process("pkexec", ["pacman", "-S"] + packagelist)
