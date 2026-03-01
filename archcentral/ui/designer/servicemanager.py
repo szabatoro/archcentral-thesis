@@ -15,10 +15,10 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QAbstractItemView, QApplication, QHBoxLayout, QHeaderView,
-    QLabel, QLineEdit, QPushButton, QSizePolicy,
-    QSpacerItem, QTabWidget, QTableView, QTreeWidget,
-    QTreeWidgetItem, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QAbstractItemView, QApplication, QComboBox, QHBoxLayout,
+    QHeaderView, QLabel, QLineEdit, QPushButton,
+    QSizePolicy, QSpacerItem, QTabWidget, QTableView,
+    QTreeWidget, QTreeWidgetItem, QVBoxLayout, QWidget)
 
 class Ui_ServiceManager(object):
     def setupUi(self, ServiceManager):
@@ -95,6 +95,17 @@ class Ui_ServiceManager(object):
         self.verticalLayout_2 = QVBoxLayout()
         self.verticalLayout_2.setSpacing(10)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+        self.verticalLayout_2.setContentsMargins(-1, 10, -1, 10)
+        self.unit_types_box_label = QLabel(ServiceManager)
+        self.unit_types_box_label.setObjectName(u"unit_types_box_label")
+
+        self.verticalLayout_2.addWidget(self.unit_types_box_label)
+
+        self.unit_types_box = QComboBox(ServiceManager)
+        self.unit_types_box.setObjectName(u"unit_types_box")
+
+        self.verticalLayout_2.addWidget(self.unit_types_box)
+
         self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_2.addItem(self.verticalSpacer_2)
@@ -134,6 +145,12 @@ class Ui_ServiceManager(object):
         __qtreewidgetitem.setText(0, u"Name");
         self.service_details_tree.setHeaderItem(__qtreewidgetitem)
         self.service_details_tree.setObjectName(u"service_details_tree")
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Maximum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.service_details_tree.sizePolicy().hasHeightForWidth())
+        self.service_details_tree.setSizePolicy(sizePolicy)
+        self.service_details_tree.setMaximumSize(QSize(16777215, 200))
         self.service_details_tree.setColumnCount(2)
         self.service_details_tree.header().setVisible(True)
 
@@ -161,6 +178,7 @@ class Ui_ServiceManager(object):
         self.service_search_button.setText(QCoreApplication.translate("ServiceManager", u"Search", None))
         self.user_system_tab.setTabText(self.user_system_tab.indexOf(self.system_services_tab), QCoreApplication.translate("ServiceManager", u"System services", None))
         self.user_system_tab.setTabText(self.user_system_tab.indexOf(self.user_services_tab), QCoreApplication.translate("ServiceManager", u"User services", None))
+        self.unit_types_box_label.setText(QCoreApplication.translate("ServiceManager", u"Unit types:", None))
         self.start_stop_button.setText(QCoreApplication.translate("ServiceManager", u"Start", None))
         self.restart_button.setText(QCoreApplication.translate("ServiceManager", u"Restart", None))
         self.enable_disable_button.setText(QCoreApplication.translate("ServiceManager", u"Enable", None))
