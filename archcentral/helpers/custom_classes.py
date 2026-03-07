@@ -71,5 +71,4 @@ class SystemdSocketInfo(SystemdBaseInfo):
         super().__init__(unit, dbus_path)
         self.type = "socket"
         self.dbus_path = dbus_path
-        self.listen_addresses = unit.Listen
-        self.accept = unit.Accept
+        self.listen_address = unit.Listen[0][1]
