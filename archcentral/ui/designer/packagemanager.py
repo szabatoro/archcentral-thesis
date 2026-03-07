@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'packagemanager.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.10.1
+## Created by: Qt User Interface Compiler version 6.10.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -171,7 +171,7 @@ class Ui_PackageManager(object):
 
         self.retranslateUi(PackageManager)
 
-        self.content.setCurrentIndex(0)
+        self.content.setCurrentIndex(1)
         self.package_det_out_tabs.setCurrentIndex(0)
 
 

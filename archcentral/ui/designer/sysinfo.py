@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'sysinfo.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.10.1
+## Created by: Qt User Interface Compiler version 6.10.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -298,7 +298,7 @@ class Ui_SysInfo(object):
 
     def retranslateUi(self, SysInfo):
         SysInfo.setWindowTitle(QCoreApplication.translate("SysInfo", u"Form", None))
-        self.title.setText(QCoreApplication.translate("SysInfo", u"System information", None))
+        self.title.setText(QCoreApplication.translate("SysInfo", u"System Information", None))
         self.cpu_title.setText(QCoreApplication.translate("SysInfo", u"CPU", None))
         self.cpu_name.setText(QCoreApplication.translate("SysInfo", u"Name: ", None))
         self.cpu_core_count.setText(QCoreApplication.translate("SysInfo", u"Core count:", None))

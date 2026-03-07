@@ -1,4 +1,4 @@
-from PySide6.QtCore import QSortFilterProxyModel, QModelIndex
+from PySide6.QtCore import QSortFilterProxyModel, QModelIndex, QThread, Signal
 from PySide6.QtWidgets import QWidget, QDialog, QTreeWidgetItem
 from archcentral.helpers.custom_classes import PacmanPkgInfo
 from archcentral.helpers.unitconverter import unit_converter
@@ -10,9 +10,27 @@ from archcentral.controllers.packagemanager_controller import PackageManagerCont
 from datetime import datetime
 
 class PackageManagerModule(QWidget, Ui_PackageManager):
+    # signals
+    fetch_package_list_signal: Signal = Signal()
+    refresh_package_list_signal: Signal = Signal()
+    initiate_update_signal: Signal = Signal()
+    initiate_package_transaction_signal: Signal = Signal(list)
+
     def __init__(self) -> None:
         super().__init__()
         self.setupUi(PackageManager=self)
+
+        # Instantiate the package manager controller and move it to its own thread
+        self.pmc_thread: QThread = QThread()
+        self.pmc: PackageManagerController = PackageManagerController()
+        self.pmc.moveToThread(self.pmc_thread)
+        self.pmc_thread.start()
+
+        # Connecting module signals to pmc
+        self.fetch_package_list_signal.connect(self.pmc.list_all_packages_for_init)
+        self.initiate_update_signal.connect(self.pmc.fetch_updates)
+        self.refresh_package_list_signal.connect(self.pmc.list_all_packages_for_refresh)
+        self.initiate_package_transaction_signal.connect(self.pmc.run_package_transaction)
 
         # Hook up model to the update table view to initialize it
         self.update_list_model: PacmanUpdateTableModel = PacmanUpdateTableModel([])
@@ -20,27 +38,24 @@ class PackageManagerModule(QWidget, Ui_PackageManager):
         self.update_list_proxy_model.setSourceModel(self.update_list_model)
         self.update_table.setModel(self.update_list_proxy_model)
 
-        # Instantiate the package manager controller
-        self.pmc: PackageManagerController = PackageManagerController()
         self.pmc.update_fetched.connect(self.update_list_model.refresh)
-        self.pmc.update_finished.connect(lambda: self.package_list_model.refresh(self.pmc.list_all_packages()))
+        self.pmc.update_finished.connect(self.fetch_package_list_signal.emit)
         self.pmc.update_fetched.connect(self.are_there_updates)
         self.pmc.update_stdout_stream.connect(self.pacman_output.appendPlainText)
 
         # Call the update fetcher method of pmc
-        self.fetch_update_button.clicked.connect(self.pmc.fetch_updates)
-        self.fetch_update_button.clicked.connect(lambda: self.pacman_output.setPlainText(""))
+        self.fetch_update_button.clicked.connect(self.on_update_button_clicked)
 
         # Update the packages stored in the update table model
         self.update_button.clicked.connect(self.update_packages)
 
         # Set up the table view in the instalL/manage section
-        self.package_list_model: PacmanPackageListTableModel = PacmanPackageListTableModel(self.pmc.list_all_packages())
-        self.package_list_proxy_model: QSortFilterProxyModel = QSortFilterProxyModel()
-        self.package_list_proxy_model.setDynamicSortFilter(True)
-        self.package_list_proxy_model.setSourceModel(self.package_list_model)
-        self.package_list_proxy_model.setFilterKeyColumn(2)
-        self.package_list_table.setModel(self.package_list_proxy_model)
+        self.package_list_model: PacmanPackageListTableModel = None
+        self.package_list_proxy_model: QSortFilterProxyModel = None
+        self.pmc.package_list_fetched_for_init.connect(self.initialize_package_list)
+        self.fetch_package_list_signal.emit()
+        self.pmc.package_list_fetched_for_refresh.connect(self.refresh_package_list)
+
         # Connects the search bar and buttons to filter view results
         self.package_search_button.pressed.connect(lambda: self.package_list_proxy_model.setFilterRegularExpression(self.package_search.text()))
         self.package_search.returnPressed.connect(lambda: self.package_list_proxy_model.setFilterRegularExpression(self.package_search.text()))
@@ -50,21 +65,41 @@ class PackageManagerModule(QWidget, Ui_PackageManager):
 
         # Run package transaction and refresh the package model upon transaction completion
         self.pmc.transaction_started.connect(lambda: self.package_det_out_tabs.setCurrentIndex(1))
-        self.pmc.transaction_finished.connect(lambda: self.package_list_model.refresh(self.pmc.list_all_packages()))
-        self.run_transaction_button.pressed.connect(lambda: self.pmc.run_package_transaction(self.package_list_model.get_marked_packages()))
+        self.pmc.transaction_finished.connect(self.refresh_package_list_signal.emit)
+        self.run_transaction_button.pressed.connect(self.initiate_package_transaction)
 
         # Connecting action buttons status and status message label to pacman lock state
-        self.pmc.pacman_lock_activated.connect(lambda: self.status_label.setText("Operation in progress, please wait..."))
-        self.pmc.pacman_lock_activated.connect(lambda: self.run_transaction_button.setEnabled(False))
-        self.pmc.pacman_lock_activated.connect(lambda: self.fetch_update_button.setEnabled(False))
-        self.pmc.pacman_lock_activated.connect(lambda: self.update_button.setEnabled(False))
-        self.pmc.pacman_lock_deactivated.connect(lambda: self.status_label.setText("Operation finished..."))
-        self.pmc.pacman_lock_deactivated.connect(lambda: self.run_transaction_button.setEnabled(True))
-        self.pmc.pacman_lock_deactivated.connect(lambda: self.fetch_update_button.setEnabled(True))
-        self.pmc.pacman_lock_deactivated.connect(lambda: self.are_there_updates())
+        self.pmc.pacman_lock_activated.connect(self.on_pacman_lock_activated)
+        self.pmc.pacman_lock_deactivated.connect(self.on_pacman_lock_deactivated)
 
+    def initialize_package_list(self, packages) -> None:
+        self.package_list_model: PacmanPackageListTableModel = PacmanPackageListTableModel(packages)
+        self.package_list_proxy_model: QSortFilterProxyModel = QSortFilterProxyModel()
+        self.package_list_proxy_model.setDynamicSortFilter(True)
+        self.package_list_proxy_model.setSourceModel(self.package_list_model)
+        self.package_list_proxy_model.setFilterKeyColumn(2)
+        self.package_list_table.setModel(self.package_list_proxy_model)
         # Populate the package details widget with the selected package's information
         self.package_list_table.selectionModel().currentRowChanged.connect(self.fill_package_details)
+
+    def refresh_package_list(self, packages) -> None:
+        self.package_list_model.refresh(packages)
+
+    def on_pacman_lock_activated(self) -> None:
+        self.status_label.setText("Operation in progress, please wait...")
+        self.run_transaction_button.setEnabled(False)
+        self.fetch_update_button.setEnabled(False)
+        self.update_button.setEnabled(False)
+
+    def on_pacman_lock_deactivated(self) -> None:
+        self.status_label.setText("Operation finished...")
+        self.run_transaction_button.setEnabled(True)
+        self.fetch_update_button.setEnabled(True)
+        self.are_there_updates()
+
+    def on_update_button_clicked(self) -> None:
+        self.initiate_update_signal.emit()
+        self.pacman_output.setPlainText("")
 
     def are_there_updates(self) -> None:
         """Checks if there are updates available and sets the state of the update button accordingly."""
@@ -79,6 +114,11 @@ class PackageManagerModule(QWidget, Ui_PackageManager):
         """Initiates the package update process depending on the dialog box return value."""
         if self.open_update_confirm_dialog():
             self.pmc.perform_update(self.update_list_model.get_packagenames())
+
+    def initiate_package_transaction(self) -> None:
+        """Initiates the package transaction by emitting a signal."""
+        packages = self.package_list_model.get_marked_packages()
+        self.initiate_package_transaction_signal.emit(packages)
 
     def open_update_confirm_dialog(self) -> bool:
         """Opens dialog box for update confirmation. Returns a boolean value depending on if the dialog is accepted or not."""
@@ -142,3 +182,9 @@ class PackageManagerModule(QWidget, Ui_PackageManager):
         else:
             groups_item: QTreeWidgetItem = QTreeWidgetItem(["Groups:", "None"])
         self.package_details_tree.addTopLevelItem(groups_item)
+
+    def cleanup_thread(self) -> None:
+        """Gracefully stops threads."""
+        if self.pmc_thread.isRunning():
+            self.pmc_thread.quit()
+            self.pmc_thread.wait()

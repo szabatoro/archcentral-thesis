@@ -1,18 +1,18 @@
-def unit_converter(number_in_bytes) -> tuple[float, str]:
+def unit_converter(number_in_bytes, as_tuple: bool = True) -> tuple[float, str] | str:
     """General memory unit converter"""
     if number_in_bytes < 1024.0:
-        return (number_in_bytes, "B")
+        return (number_in_bytes, "B") if as_tuple else f"{number_in_bytes:.2f} B"
     number_in_kilobytes = number_in_bytes/1024.0
     if number_in_kilobytes < 1024:
-        return (number_in_kilobytes, "KB")
+        return (number_in_kilobytes, "KB") if as_tuple else f"{number_in_kilobytes:.2f} KB"
     number_in_megabytes = number_in_kilobytes/1024.0
     if number_in_megabytes < 1024:
-        return (number_in_megabytes, "MB")
-    number_in_gigabtyes = number_in_megabytes/1024.0
-    if number_in_gigabtyes < 1024.0:
-        return (number_in_gigabtyes, "GB")
-    number_in_terrabytes = number_in_gigabtyes/1024.0
-    return (number_in_terrabytes, "TB")
+        return (number_in_megabytes, "MB") if as_tuple else f"{number_in_megabytes:.2f} MB"
+    number_in_gigabytes = number_in_megabytes/1024.0
+    if number_in_gigabytes < 1024.0:
+        return (number_in_gigabytes, "GB") if as_tuple else f"{number_in_gigabytes:.2f} GB"
+    number_in_terrabytes = number_in_gigabytes/1024.0
+    return (number_in_terrabytes, "TB") if as_tuple else f"{number_in_terrabytes:.2f} TB"
 
 def convert_mem_unit(kb_used: float, kb_total: float, same_units: bool=None, given_unit: str=None) -> tuple[float, str, float, str]:
     """

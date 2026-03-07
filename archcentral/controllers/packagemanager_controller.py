@@ -7,6 +7,8 @@ from threading import Lock
 
 class PackageManagerController(QObject):
     # Signals
+    package_list_fetched_for_init: Signal = Signal(list)
+    package_list_fetched_for_refresh: Signal = Signal(list)
     update_fetched: Signal = Signal(list)
     update_stdout_stream: Signal = Signal(str)
     update_finished: Signal = Signal()
@@ -15,6 +17,7 @@ class PackageManagerController(QObject):
     transaction_finished: Signal = Signal()
     pacman_lock_activated: Signal = Signal()
     pacman_lock_deactivated: Signal = Signal()
+    write_to_stdin: Signal = Signal(str)
 
     def __init__(self) -> None:
         super().__init__()
@@ -29,6 +32,9 @@ class PackageManagerController(QObject):
 
         # Lock object to prevent native pacman lock crashing the qprocesses or working with non-up-to-date data
         self.pacman_lock: Lock = Lock()
+
+        self.transaction_stdout_stream.connect(self._handle_pacman_prompts)
+        self.update_stdout_stream.connect(self._handle_pacman_prompts)
 
     def _acquire_pacman(self) -> bool:
         """Activates the pacman lock and retuns True, if its already locked it emits a signal and returns False."""
@@ -96,14 +102,15 @@ class PackageManagerController(QObject):
         self.pacman_update_worker.finished.connect(lambda: self.update_finished.emit())
         self.pacman_update_worker.finished.connect(lambda: self._fetch_dbs())
         self.pacman_update_worker.stream.connect(self.update_stdout_stream.emit)
+        self.write_to_stdin.connect(self.pacman_update_worker.write_to_stdin)
         try:
             #self.pacman_worker.start_process("pkexec", ["pacman", "-S", "--noconfirm", "hplip"]) # testing
-            self.pacman_update_worker.start_process("pkexec", ["pacman", "-S", "--noconfirm"] + packagelist)
+            self.pacman_update_worker.start_process("pkexec", ["pacman", "-S"] + packagelist)
         except:
             self._release_pacman()
             raise
 
-    def list_all_packages(self) -> None:
+    def _list_all_packages_internal(self):
         """
         Fetch a list of every repo package.
         """
@@ -118,6 +125,25 @@ class PackageManagerController(QObject):
                     pkg_list.append(PacmanPkgInfo(pkg, False, False, db.name))
 
         return pkg_list
+
+    def list_all_packages_for_init(self) -> None:
+        """Runs at start."""
+        packages = self._list_all_packages_internal()
+        self.package_list_fetched_for_init.emit(packages)
+
+    def list_all_packages_for_refresh(self) -> None:
+        """Runs when only a model refresh is needed."""
+        packages = self._list_all_packages_internal()
+        self.package_list_fetched_for_refresh.emit(packages)
+
+    def _handle_pacman_prompts(self, line: str) -> None:
+        install_prompt = ":: Proceed with installation? [Y/n]"
+        remove_prompt = ":: Do you want to remove these packages? [Y/n]"
+
+        if install_prompt in line:
+            self.write_to_stdin.emit("y\n")
+        if remove_prompt in line:
+            self.write_to_stdin.emit("y\n")
 
     def run_package_transaction(self, packagelist: list[list[str,bool]]) -> None:
         """
@@ -144,18 +170,19 @@ class PackageManagerController(QObject):
             self.pacman_transaction_worker.finished.connect(self._release_pacman)
             self.pacman_transaction_worker.finished.connect(lambda: self.transaction_finished.emit())
             self.pacman_transaction_worker.stream.connect(self.transaction_stdout_stream.emit)
+            self.write_to_stdin.connect(self.pacman_transaction_worker.write_to_stdin)
             if not pkg_install:
                 self.pacman_transaction_worker.start_process("pkexec",
-                    ["pacman", "-Rns", "--noconfirm"] + pkg_remove
+                    ["pacman", "-Rns"] + pkg_remove
                 )
             elif not pkg_remove:
                 self.pacman_transaction_worker.start_process("pkexec",
-                    ["pacman", "-S", "--noconfirm"] + pkg_install
+                    ["pacman", "-S"] + pkg_install
                 )
             else:
                 # Not exactly secure, temp until I find a better solution or decide to separate the transaction types instead
                 self.pacman_transaction_worker.start_process("pkexec",
-                    ["sh", "-c", f"pacman -S --noconfirm {(' '.join(pkg_install))} && pacman -Rns --noconfirm {(' '.join(pkg_remove))}"]
+                    ["sh", "-c", f"pacman -S {(' '.join(pkg_install))} && pacman -Rns {(' '.join(pkg_remove))}"]
                 )
         except:
             self._release_pacman()

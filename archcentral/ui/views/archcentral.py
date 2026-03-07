@@ -2,6 +2,7 @@ from PySide6.QtCore import QObject
 from PySide6.QtWidgets import QApplication, QMainWindow
 from archcentral.ui.views.sysinfo import SysInfoModule
 from archcentral.ui.views.packagemanager import PackageManagerModule
+from archcentral.ui.views.servicemanager import ServiceManagerModule
 from archcentral.ui.designer.mainwindow import Ui_MainWindow
 import sys
 
@@ -14,16 +15,27 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # instanciating widget modules
         self.sysinfo_widget: SysInfoModule = SysInfoModule()
         self.package_manager_widget: PackageManagerModule = PackageManagerModule()
+        self.service_manager_widget: ServiceManagerModule = ServiceManagerModule()
+
+        # Gracefully shut down threads when exiting the app
+        QApplication.instance().aboutToQuit.connect(
+            self.service_manager_widget.cleanup_thread
+        )
+        QApplication.instance().aboutToQuit.connect(
+            self.package_manager_widget.cleanup_thread
+        )
 
         # setting up the displayarea stacked widgets with the modules
         self.display_area.addWidget(self.sysinfo_widget)
         self.display_area.addWidget(self.package_manager_widget)
+        self.display_area.addWidget(self.service_manager_widget)
         self.display_area.setCurrentWidget(self.sysinfo_widget)
 
         # setting up the buttons
         self.sys_info_button.setChecked(True)
         self.sys_info_button.clicked.connect(self.handle_sidebar)
         self.package_manager_button.clicked.connect(self.handle_sidebar)
+        self.service_manager_button.clicked.connect(self.handle_sidebar)
 
     # handling switching between modules via sidebar
     def handle_sidebar(self) -> None:
@@ -37,6 +49,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             case self.package_manager_button:
                 if self.display_area.currentWidget() is not self.package_manager_widget:
                     self.display_area.setCurrentWidget(self.package_manager_widget)
+            case self.service_manager_button:
+                if self.display_area.currentWidget() is not self.service_manager_widget:
+                    self.display_area.setCurrentWidget(self.service_manager_widget)
 
 # main function to launch the program
 def main():

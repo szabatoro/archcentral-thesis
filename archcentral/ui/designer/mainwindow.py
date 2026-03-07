@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'mainwindow.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.10.1
+## Created by: Qt User Interface Compiler version 6.10.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -76,6 +76,15 @@ class Ui_MainWindow(object):
 
         self.menu_options.addWidget(self.package_manager_button)
 
+        self.service_manager_button = QPushButton(self.menu_buttons)
+        self.service_manager_button.setObjectName(u"service_manager_button")
+        icon2 = QIcon(QIcon.fromTheme(QIcon.ThemeIcon.DocumentProperties))
+        self.service_manager_button.setIcon(icon2)
+        self.service_manager_button.setCheckable(True)
+        self.service_manager_button.setAutoExclusive(True)
+
+        self.menu_options.addWidget(self.service_manager_button)
+
         self.spacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.menu_options.addItem(self.spacer)
@@ -110,5 +119,6 @@ class Ui_MainWindow(object):
         self.app_title.setText(QCoreApplication.translate("MainWindow", u"ArchCentral", None))
         self.sys_info_button.setText(QCoreApplication.translate("MainWindow", u"System Info", None))
         self.package_manager_button.setText(QCoreApplication.translate("MainWindow", u"Package Manager", None))
+        self.service_manager_button.setText(QCoreApplication.translate("MainWindow", u"Service Manager", None))
     # retranslateUi
 

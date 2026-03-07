@@ -34,7 +34,7 @@ class PacmanPackageListTableModel(QAbstractTableModel):
             return f"{value:.2f} {unit}"
 
         if role == Qt.BackgroundRole and index.column() == 5:
-            return QColor("green") if pkg.installed else QColor("red")
+            return QColor("darkgreen") if pkg.installed else QColor("darkred")
 
         if role == Qt.DisplayRole and index.column() == 5:
             if not pkg.installed:

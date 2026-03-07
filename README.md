@@ -58,3 +58,6 @@ The project that is the subject of my thesis/final project is available in this 
 
 2. Package manager module:
 ![Package manager](screenshots/pacman_ui.png "Package manager")
+
+2. Systemd unit manager module:
+![Systemd manager](screenshots/systemd_ui.png "Systemd manager")
