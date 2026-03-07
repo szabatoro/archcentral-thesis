@@ -23,15 +23,15 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1000, 800)
-        MainWindow.setMinimumSize(QSize(1000, 800))
+        MainWindow.resize(1280, 800)
+        MainWindow.setMinimumSize(QSize(1280, 720))
         self.central_widget = QWidget(MainWindow)
         self.central_widget.setObjectName(u"central_widget")
         self.horizontalLayout = QHBoxLayout(self.central_widget)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.sidebar = QFrame(self.central_widget)
         self.sidebar.setObjectName(u"sidebar")
-        self.sidebar.setMinimumSize(QSize(150, 0))
+        self.sidebar.setMinimumSize(QSize(200, 0))
         self.sidebar.setFrameShape(QFrame.Shape.NoFrame)
         self.sidebar.setFrameShadow(QFrame.Shadow.Raised)
         self.verticalLayout = QVBoxLayout(self.sidebar)
@@ -85,6 +85,15 @@ class Ui_MainWindow(object):
 
         self.menu_options.addWidget(self.service_manager_button)
 
+        self.user_group_manager_button = QPushButton(self.menu_buttons)
+        self.user_group_manager_button.setObjectName(u"user_group_manager_button")
+        icon3 = QIcon(QIcon.fromTheme(QIcon.ThemeIcon.UserOffline))
+        self.user_group_manager_button.setIcon(icon3)
+        self.user_group_manager_button.setCheckable(True)
+        self.user_group_manager_button.setAutoExclusive(True)
+
+        self.menu_options.addWidget(self.user_group_manager_button)
+
         self.spacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.menu_options.addItem(self.spacer)
@@ -120,5 +129,6 @@ class Ui_MainWindow(object):
         self.sys_info_button.setText(QCoreApplication.translate("MainWindow", u"System Info", None))
         self.package_manager_button.setText(QCoreApplication.translate("MainWindow", u"Package Manager", None))
         self.service_manager_button.setText(QCoreApplication.translate("MainWindow", u"Service Manager", None))
+        self.user_group_manager_button.setText(QCoreApplication.translate("MainWindow", u"User/Group Manager", None))
     # retranslateUi
 
