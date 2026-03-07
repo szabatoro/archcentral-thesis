@@ -3,7 +3,6 @@ from typing import Literal
 from PySide6.QtCore import QModelIndex, QSortFilterProxyModel, QThread, Signal, Qt
 from PySide6.QtWidgets import QWidget
 from pyqtgraph.Qt.QtWidgets import QTreeWidgetItem
-from archcentral.helpers.custom_classes import SystemdServiceInfo, SystemdTimerInfo, SystemdSocketInfo
 from archcentral.ui.designer.servicemanager import Ui_ServiceManager
 from archcentral.controllers.servicemanager_controller import ServiceManagerController
 from archcentral.models.systemd_services_list import SystemdServiceListModel
@@ -57,11 +56,11 @@ class ServiceManagerModule(QWidget, Ui_ServiceManager):
         match self.user_system_tab.currentIndex():
             case 0:
                 source_index: QModelIndex = self.system_service_list_proxy_model.mapToSource(self.system_service_list_table.currentIndex())
-                selected_service: SystemdServiceInfo = self.system_service_list_model.get_unit(source_index)
+                selected_service = self.system_service_list_model.get_unit(source_index)
                 is_user_service = False
             case 1:
                 source_index: QModelIndex = self.user_service_list_proxy_model.mapToSource(self.user_service_list_table.currentIndex())
-                selected_service: SystemdServiceInfo = self.user_service_list_model.get_unit(source_index)
+                selected_service = self.user_service_list_model.get_unit(source_index)
                 is_user_service = True
 
         return selected_service, is_user_service
@@ -158,6 +157,9 @@ class ServiceManagerModule(QWidget, Ui_ServiceManager):
             if selected_service.substate == "waiting":
                 next_trigger = datetime.fromtimestamp(selected_service.next_trigger/1000000).strftime('%Y-%m-%d %H:%M:%S')
                 self.service_details_tree.addTopLevelItem(QTreeWidgetItem(["Next Trigger: ", next_trigger]))
+
+        if selected_service.type == "socket":
+            self.service_details_tree.addTopLevelItem(QTreeWidgetItem(["Listen address: ", selected_service.listen_address]))
 
     def start_stop_service(self) -> None:
         """Stops or starts the selected service depending on its substate."""
