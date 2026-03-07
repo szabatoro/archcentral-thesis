@@ -32,6 +32,15 @@ class SystemdServiceListModel(QAbstractTableModel):
                 case "inactive":
                     return QColor("darkred")
 
+        if role == Qt.BackgroundRole and index.column() == 3:
+            match service.substate:
+                case "running" | "listening" | "waiting":
+                    return QColor("darkgreen")
+                case "exited":
+                    return QColor("darkblue")
+                case "dead":
+                    return QColor("darkred")
+
         if role == Qt.DisplayRole:
             mapping = {
                 0: service.unitname,
