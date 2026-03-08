@@ -15,8 +15,9 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QHeaderView, QLabel, QSizePolicy,
-    QTabWidget, QTableView, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QAbstractItemView, QApplication, QHeaderView, QLabel,
+    QSizePolicy, QTabWidget, QTableView, QVBoxLayout,
+    QWidget)
 
 class Ui_UserGroupManager(object):
     def setupUi(self, UserGroupManager):
@@ -42,12 +43,27 @@ class Ui_UserGroupManager(object):
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.user_list_table = QTableView(self.users)
         self.user_list_table.setObjectName(u"user_list_table")
+        self.user_list_table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
+        self.user_list_table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        self.user_list_table.horizontalHeader().setStretchLastSection(True)
+        self.user_list_table.verticalHeader().setVisible(False)
 
         self.verticalLayout_2.addWidget(self.user_list_table)
 
         self.content.addTab(self.users, "")
         self.groups = QWidget()
         self.groups.setObjectName(u"groups")
+        self.verticalLayout_3 = QVBoxLayout(self.groups)
+        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.group_list_table = QTableView(self.groups)
+        self.group_list_table.setObjectName(u"group_list_table")
+        self.group_list_table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
+        self.group_list_table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        self.group_list_table.horizontalHeader().setStretchLastSection(True)
+        self.group_list_table.verticalHeader().setVisible(False)
+
+        self.verticalLayout_3.addWidget(self.group_list_table)
+
         self.content.addTab(self.groups, "")
 
         self.verticalLayout.addWidget(self.content)
