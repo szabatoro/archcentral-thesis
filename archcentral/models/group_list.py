@@ -1,4 +1,5 @@
 from PySide6.QtCore import QAbstractTableModel, Qt
+from archcentral.helpers.custom_classes import GroupInfo
 
 class GroupListModel(QAbstractTableModel):
     def __init__(self, data) -> None:
@@ -13,8 +14,14 @@ class GroupListModel(QAbstractTableModel):
         return len(self._headers)
 
     def data(self, index, role=Qt.DisplayRole):
+        group: GroupInfo = self._data[index.row()]
+
         if role == Qt.DisplayRole:
-            return self._data[index.row()][index.column()]
+            mapping = {
+                0: group.name,
+                1: group.users
+            }
+            return mapping.get(index.column())
         return None
 
     def headerData(self, section, orientation, role=Qt.DisplayRole):
