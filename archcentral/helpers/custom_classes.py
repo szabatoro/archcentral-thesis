@@ -72,3 +72,17 @@ class SystemdSocketInfo(SystemdBaseInfo):
         self.type = "socket"
         self.dbus_path = dbus_path
         self.listen_address = unit.Listen[0][1]
+
+class UserInfo():
+    def __init__(self, name, uid, gid, gecos, home, shell) -> None:
+        self.name = name
+        self.uid = uid
+        self.gid = gid
+        self.gecos = gecos
+        self.home = home
+        self.shell = shell
+
+class GroupInfo():
+    def __init__(self, name, users) -> None:
+        self.name = name
+        self.users = users
