@@ -24,6 +24,15 @@ class GroupListModel(QAbstractTableModel):
             return mapping.get(index.column())
         return None
 
+    def refresh(self, new_data):
+                self.beginResetModel()
+                self._data = new_data
+                self.endResetModel()
+
+    def get_group_info_by_index(self, index) -> GroupInfo:
+        """Returns the object found in the specified row."""
+        return self._data[index.row()]
+
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         if role == Qt.DisplayRole:
             if orientation == Qt.Horizontal:

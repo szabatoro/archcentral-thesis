@@ -28,6 +28,26 @@ class UserListModel(QAbstractTableModel):
             return mapping.get(index.column())
         return None
 
+    def refresh(self, new_data):
+            self.beginResetModel()
+            self._data = new_data
+            self.endResetModel()
+
+    def get_user_info(self, username: str) -> UserInfo:
+        for user in self._data:
+            if user.name == username:
+                return user
+
+    def get_user_info_by_index(self, index) -> UserInfo:
+        """Returns the object found in the specified row."""
+        return self._data[index.row()]
+
+    def return_all_users(self, name_only: bool = False) -> list[UserInfo] | list[str]:
+        users = []
+        for user in self._data:
+            users.append(user.name if name_only else user)
+        return users
+
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         if role == Qt.DisplayRole:
             if orientation == Qt.Horizontal:
