@@ -1,4 +1,5 @@
 from archcentral.helpers.unitconverter import unit_converter
+from typing import Literal
 
 class PacmanPkgInfo():
     """Class that contains package information extracted from the given alpm package object, with additional package manager specifics."""
@@ -74,6 +75,7 @@ class SystemdSocketInfo(SystemdBaseInfo):
         self.listen_address = unit.Listen[0][1]
 
 class UserInfo():
+    """Class that contains user information."""
     def __init__(self, name, uid, gid, gecos, home, shell) -> None:
         self.name = name
         self.uid = uid
@@ -83,6 +85,16 @@ class UserInfo():
         self.shell = shell
 
 class GroupInfo():
+    """Class that contains group information."""
     def __init__(self, name, users) -> None:
         self.name = name
         self.users = users
+
+class EditedUser():
+    """Class that temporary stores user info during user creation."""
+    username: str = ""
+    fullname: str = ""
+    homedir: str = ""
+    homedirtype: Literal["none", "auto", "selectexisting"] = "auto"
+    password: str = ""
+    shell: str = "/usr/bin/bash"
