@@ -28,11 +28,11 @@
     </widget>
    </item>
    <item>
-    <widget class="QTabWidget" name="content">
+    <widget class="QTabWidget" name="users_groups_tab">
      <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QWidget" name="users">
+     <widget class="QWidget" name="users_tab">
       <attribute name="title">
        <string>Users</string>
       </attribute>
@@ -53,13 +53,45 @@
          </attribute>
         </widget>
        </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QPushButton" name="add_user_button">
+           <property name="text">
+            <string>Add user</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="modify_user_button">
+           <property name="text">
+            <string>Modify user</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="delete_user_button">
+           <property name="text">
+            <string>Delete user</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="groups">
+     <widget class="QWidget" name="groups_tab">
       <attribute name="title">
        <string>Groups</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Warning: You shouldn't delete groups you didn't make yourself.</string>
+         </property>
+        </widget>
+       </item>
        <item>
         <widget class="QTableView" name="group_list_table">
          <property name="selectionMode">
@@ -75,6 +107,31 @@
           <bool>false</bool>
          </attribute>
         </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QPushButton" name="manage_users_button">
+           <property name="text">
+            <string>Manage users</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="create_group_button">
+           <property name="text">
+            <string>Create group</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="delete_group_button">
+           <property name="text">
+            <string>Delete group</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
