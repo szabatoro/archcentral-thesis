@@ -45,6 +45,11 @@ class Ui_MainWindow(object):
 
         self.verticalLayout.addWidget(self.app_title)
 
+        self.welcome_label = QLabel(self.sidebar)
+        self.welcome_label.setObjectName(u"welcome_label")
+
+        self.verticalLayout.addWidget(self.welcome_label)
+
         self.menu_buttons = QFrame(self.sidebar)
         self.menu_buttons.setObjectName(u"menu_buttons")
         self.menu_buttons.setStyleSheet(u"QPushButton { border: 1px solid white; margin: 0 px; border-top: 0px; border-right: 0px; border-left: 0px; height: 30 px }\n"
@@ -126,6 +131,7 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"ArchCentral", None))
         self.app_title.setText(QCoreApplication.translate("MainWindow", u"ArchCentral", None))
+        self.welcome_label.setText(QCoreApplication.translate("MainWindow", u"Welcome, ", None))
         self.sys_info_button.setText(QCoreApplication.translate("MainWindow", u"System Info", None))
         self.package_manager_button.setText(QCoreApplication.translate("MainWindow", u"Package Manager", None))
         self.service_manager_button.setText(QCoreApplication.translate("MainWindow", u"Service Manager", None))

@@ -6,6 +6,7 @@ from archcentral.ui.views.servicemanager import ServiceManagerModule
 from archcentral.ui.views.usergroupmanager import UserManagerModule
 from archcentral.ui.designer.mainwindow import Ui_MainWindow
 import sys
+from getpass import getuser
 
 # Main window of the application. All the modules will be loaded within this window
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -18,6 +19,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.package_manager_widget: PackageManagerModule = PackageManagerModule()
         self.service_manager_widget: ServiceManagerModule = ServiceManagerModule()
         self.user_group_manager_widget: UserManagerModule = UserManagerModule()
+
+        self.welcome_label.setText(f"Welcome, {getuser()}!")
 
         # Gracefully shut down threads when exiting the app
         QApplication.instance().aboutToQuit.connect(self._call_module_thread_cleaners)
