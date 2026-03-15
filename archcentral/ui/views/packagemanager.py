@@ -5,7 +5,7 @@ from archcentral.helpers.unitconverter import unit_converter
 from archcentral.ui.designer.packagemanager import Ui_PackageManager
 from archcentral.models.pacman_update_list import PacmanUpdateTableModel
 from archcentral.models.pacman_package_list import PacmanPackageListTableModel
-from archcentral.ui.views.pacman_update_dialog import PacmanUpdateDialog
+from archcentral.ui.views.dialogs.pacman_update_dialog import PacmanUpdateDialog
 from archcentral.controllers.packagemanager_controller import PackageManagerController
 from datetime import datetime
 
