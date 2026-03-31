@@ -98,3 +98,11 @@ class EditedUser():
     homedirtype: Literal["none", "auto", "selectexisting"] = "auto"
     password: str = ""
     shell: str = "/usr/bin/bash"
+    groups: list[str] = []
+
+class GroupMemberUser():
+    """Class that stores user membership information for the group member manager dialog"""
+    def __init__(self, marked, name, is_member) -> None:
+        self.marked: bool = marked
+        self.name: str = name
+        self.is_member: bool = is_member
