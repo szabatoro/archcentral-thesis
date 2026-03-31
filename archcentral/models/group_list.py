@@ -29,6 +29,13 @@ class GroupListModel(QAbstractTableModel):
                 self._data = new_data
                 self.endResetModel()
 
+    def return_all_groups(self, name_only: bool = False) -> list[GroupInfo] | list[str]:
+        """Returns all groups - either only their name or the entire object, depending on the parameter."""
+        groups = []
+        for group in self._data:
+            groups.append(group.name if name_only else group)
+        return groups
+
     def get_group_info_by_index(self, index) -> GroupInfo:
         """Returns the object found in the specified row."""
         return self._data[index.row()]
