@@ -15,9 +15,9 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QAbstractItemView, QApplication, QHBoxLayout, QHeaderView,
-    QLabel, QPushButton, QSizePolicy, QTabWidget,
-    QTableView, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QAbstractItemView, QApplication, QGridLayout, QHBoxLayout,
+    QHeaderView, QLabel, QPushButton, QSizePolicy,
+    QTabWidget, QTableView, QVBoxLayout, QWidget)
 
 class Ui_UserGroupManager(object):
     def setupUi(self, UserGroupManager):
@@ -50,25 +50,40 @@ class Ui_UserGroupManager(object):
 
         self.verticalLayout_2.addWidget(self.user_list_table)
 
-        self.horizontalLayout = QHBoxLayout()
-        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.gridLayout = QGridLayout()
+        self.gridLayout.setObjectName(u"gridLayout")
+        self.change_homedir_button = QPushButton(self.users_tab)
+        self.change_homedir_button.setObjectName(u"change_homedir_button")
+
+        self.gridLayout.addWidget(self.change_homedir_button, 0, 1, 1, 1)
+
+        self.change_shell_button = QPushButton(self.users_tab)
+        self.change_shell_button.setObjectName(u"change_shell_button")
+
+        self.gridLayout.addWidget(self.change_shell_button, 1, 1, 1, 1)
+
+        self.change_password_button = QPushButton(self.users_tab)
+        self.change_password_button.setObjectName(u"change_password_button")
+
+        self.gridLayout.addWidget(self.change_password_button, 0, 2, 1, 1)
+
+        self.change_full_name_button = QPushButton(self.users_tab)
+        self.change_full_name_button.setObjectName(u"change_full_name_button")
+
+        self.gridLayout.addWidget(self.change_full_name_button, 1, 2, 1, 1)
+
         self.add_user_button = QPushButton(self.users_tab)
         self.add_user_button.setObjectName(u"add_user_button")
 
-        self.horizontalLayout.addWidget(self.add_user_button)
-
-        self.modify_user_button = QPushButton(self.users_tab)
-        self.modify_user_button.setObjectName(u"modify_user_button")
-
-        self.horizontalLayout.addWidget(self.modify_user_button)
+        self.gridLayout.addWidget(self.add_user_button, 0, 0, 1, 1)
 
         self.delete_user_button = QPushButton(self.users_tab)
         self.delete_user_button.setObjectName(u"delete_user_button")
 
-        self.horizontalLayout.addWidget(self.delete_user_button)
+        self.gridLayout.addWidget(self.delete_user_button, 1, 0, 1, 1)
 
 
-        self.verticalLayout_2.addLayout(self.horizontalLayout)
+        self.verticalLayout_2.addLayout(self.gridLayout)
 
         self.users_groups_tab.addTab(self.users_tab, "")
         self.groups_tab = QWidget()
@@ -113,6 +128,11 @@ class Ui_UserGroupManager(object):
 
         self.verticalLayout.addWidget(self.users_groups_tab)
 
+        self.status_label = QLabel(UserGroupManager)
+        self.status_label.setObjectName(u"status_label")
+
+        self.verticalLayout.addWidget(self.status_label)
+
 
         self.retranslateUi(UserGroupManager)
 
@@ -125,8 +145,11 @@ class Ui_UserGroupManager(object):
     def retranslateUi(self, UserGroupManager):
         UserGroupManager.setWindowTitle(QCoreApplication.translate("UserGroupManager", u"Form", None))
         self.title.setText(QCoreApplication.translate("UserGroupManager", u"User and groups manager", None))
+        self.change_homedir_button.setText(QCoreApplication.translate("UserGroupManager", u"Change homedir", None))
+        self.change_shell_button.setText(QCoreApplication.translate("UserGroupManager", u"Change shell", None))
+        self.change_password_button.setText(QCoreApplication.translate("UserGroupManager", u"Change password", None))
+        self.change_full_name_button.setText(QCoreApplication.translate("UserGroupManager", u"Change full name", None))
         self.add_user_button.setText(QCoreApplication.translate("UserGroupManager", u"Add user", None))
-        self.modify_user_button.setText(QCoreApplication.translate("UserGroupManager", u"Modify user", None))
         self.delete_user_button.setText(QCoreApplication.translate("UserGroupManager", u"Delete user", None))
         self.users_groups_tab.setTabText(self.users_groups_tab.indexOf(self.users_tab), QCoreApplication.translate("UserGroupManager", u"Users", None))
         self.label.setText(QCoreApplication.translate("UserGroupManager", u"Warning: You shouldn't delete groups you didn't make yourself.", None))
@@ -134,5 +157,6 @@ class Ui_UserGroupManager(object):
         self.create_group_button.setText(QCoreApplication.translate("UserGroupManager", u"Create group", None))
         self.delete_group_button.setText(QCoreApplication.translate("UserGroupManager", u"Delete group", None))
         self.users_groups_tab.setTabText(self.users_groups_tab.indexOf(self.groups_tab), QCoreApplication.translate("UserGroupManager", u"Groups", None))
+        self.status_label.setText("")
     # retranslateUi
 

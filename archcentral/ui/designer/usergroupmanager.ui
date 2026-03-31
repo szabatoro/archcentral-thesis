@@ -54,22 +54,43 @@
         </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
+        <layout class="QGridLayout" name="gridLayout">
+         <item row="0" column="1">
+          <widget class="QPushButton" name="change_homedir_button">
+           <property name="text">
+            <string>Change homedir</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QPushButton" name="change_shell_button">
+           <property name="text">
+            <string>Change shell</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QPushButton" name="change_password_button">
+           <property name="text">
+            <string>Change password</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2">
+          <widget class="QPushButton" name="change_full_name_button">
+           <property name="text">
+            <string>Change full name</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
           <widget class="QPushButton" name="add_user_button">
            <property name="text">
             <string>Add user</string>
            </property>
           </widget>
          </item>
-         <item>
-          <widget class="QPushButton" name="modify_user_button">
-           <property name="text">
-            <string>Modify user</string>
-           </property>
-          </widget>
-         </item>
-         <item>
+         <item row="1" column="0">
           <widget class="QPushButton" name="delete_user_button">
            <property name="text">
             <string>Delete user</string>
@@ -135,6 +156,13 @@
        </item>
       </layout>
      </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="status_label">
+     <property name="text">
+      <string/>
+     </property>
     </widget>
    </item>
   </layout>

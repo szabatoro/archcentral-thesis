@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>608</width>
-    <height>401</height>
+    <height>478</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,6 +16,118 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QGridLayout" name="grid_layout">
+     <item row="1" column="0">
+      <layout class="QHBoxLayout" name="name_layout">
+       <item>
+        <widget class="QLabel" name="user_name_label">
+         <property name="text">
+          <string>Username</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="user_name_edit"/>
+       </item>
+      </layout>
+     </item>
+     <item row="6" column="0">
+      <layout class="QHBoxLayout" name="shell_layout">
+       <item>
+        <widget class="QLabel" name="shell_label">
+         <property name="text">
+          <string>Shell</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="shells_box"/>
+       </item>
+      </layout>
+     </item>
+     <item row="2" column="0">
+      <layout class="QHBoxLayout" name="full_name_layout">
+       <item>
+        <widget class="QLabel" name="full_name_label">
+         <property name="text">
+          <string>Full name</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="full_name_edit"/>
+       </item>
+      </layout>
+     </item>
+     <item row="8" column="0">
+      <layout class="QHBoxLayout" name="group_list_layout">
+       <item>
+        <widget class="QLabel" name="group_list_label">
+         <property name="text">
+          <string>Groups</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QListView" name="group_list"/>
+       </item>
+      </layout>
+     </item>
+     <item row="3" column="0">
+      <layout class="QHBoxLayout" name="password_layout">
+       <item>
+        <widget class="QLabel" name="password_label">
+         <property name="text">
+          <string>Password</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="password_edit">
+         <property name="echoMode">
+          <enum>QLineEdit::EchoMode::Password</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="5" column="0">
+      <layout class="QHBoxLayout" name="home_select_layout">
+       <item>
+        <widget class="QLabel" name="home_label">
+         <property name="text">
+          <string>Home directory</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="home_dir_edit">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="file_browser_button">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>...</string>
+         </property>
+         <property name="icon">
+          <iconset theme="folder"/>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="7" column="0">
+      <widget class="QCheckBox" name="admin_checkbox">
+       <property name="text">
+        <string>Administrator privileges (toggles wheel group in the group selection)</string>
+       </property>
+      </widget>
+     </item>
      <item row="4" column="0">
       <layout class="QHBoxLayout" name="home_choice_layout">
        <item>
@@ -50,94 +162,6 @@
           <string notr="true">home_button_group</string>
          </attribute>
         </widget>
-       </item>
-      </layout>
-     </item>
-     <item row="5" column="0">
-      <layout class="QHBoxLayout" name="home_select_layout">
-       <item>
-        <widget class="QLabel" name="home_label">
-         <property name="text">
-          <string>Home directory</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="home_dir_edit">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QToolButton" name="file_browser_button">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="text">
-          <string>...</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item row="6" column="0">
-      <layout class="QHBoxLayout" name="shell_layout">
-       <item>
-        <widget class="QLabel" name="shell_label">
-         <property name="text">
-          <string>Shell</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QComboBox" name="shells_box"/>
-       </item>
-      </layout>
-     </item>
-     <item row="3" column="0">
-      <layout class="QHBoxLayout" name="password_layout">
-       <item>
-        <widget class="QLabel" name="password_label">
-         <property name="text">
-          <string>Password</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="password_edit">
-         <property name="echoMode">
-          <enum>QLineEdit::EchoMode::Password</enum>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item row="1" column="0">
-      <layout class="QHBoxLayout" name="name_layout">
-       <item>
-        <widget class="QLabel" name="user_name_label">
-         <property name="text">
-          <string>Username</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="user_name_edit"/>
-       </item>
-      </layout>
-     </item>
-     <item row="2" column="0">
-      <layout class="QHBoxLayout" name="full_name_layout">
-       <item>
-        <widget class="QLabel" name="full_name_label">
-         <property name="text">
-          <string>Full name</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="full_name_edit"/>
        </item>
       </layout>
      </item>
