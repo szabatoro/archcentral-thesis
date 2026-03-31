@@ -3,6 +3,7 @@ from PySide6.QtCore import QByteArray, QProcess, QObject, Signal
 class QProcessHandler(QObject):
     started: Signal = Signal()
     finished: Signal = Signal(str)
+    finished_with_exit_code: Signal = Signal(str, int)
     stream: Signal = Signal(str)
 
     def __init__(self) -> None:
@@ -51,5 +52,6 @@ class QProcessHandler(QObject):
                 self._buffer += bytes(remaining_data).decode("utf8")
             # emit final combined output
             self.finished.emit(self._buffer.strip())
+            self.finished_with_exit_code.emit(self._buffer.strip(), self.process.exitCode())
         self.process = None
         self._buffer = ""
