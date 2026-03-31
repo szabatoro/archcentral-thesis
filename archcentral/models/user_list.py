@@ -5,7 +5,7 @@ class UserListModel(QAbstractTableModel):
     def __init__(self, data):
         super().__init__()
         self._data = data
-        self._headers = ["Username", "UID", "GID", "GECOS", "Home", "Shell"]
+        self._headers = ["Username", "UID", "GID", "Full name", "Home", "Shell"]
 
     def rowCount(self, parent=None):
         return len(self._data)
@@ -43,6 +43,7 @@ class UserListModel(QAbstractTableModel):
         return self._data[index.row()]
 
     def return_all_users(self, name_only: bool = False) -> list[UserInfo] | list[str]:
+        """Returns all users - either only their name or the entire object, depending on the parameter."""
         users = []
         for user in self._data:
             users.append(user.name if name_only else user)
