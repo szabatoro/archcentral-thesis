@@ -15,9 +15,9 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QAbstractButton, QApplication, QDialog, QDialogButtonBox,
-    QHeaderView, QSizePolicy, QTableView, QVBoxLayout,
-    QWidget)
+from PySide6.QtWidgets import (QAbstractButton, QAbstractItemView, QApplication, QDialog,
+    QDialogButtonBox, QHeaderView, QSizePolicy, QTableView,
+    QVBoxLayout, QWidget)
 
 class Ui_GroupManageUsersDialog(object):
     def setupUi(self, GroupManageUsersDialog):
@@ -28,6 +28,8 @@ class Ui_GroupManageUsersDialog(object):
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.user_list_table = QTableView(GroupManageUsersDialog)
         self.user_list_table.setObjectName(u"user_list_table")
+        self.user_list_table.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)
+        self.user_list_table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.user_list_table.horizontalHeader().setStretchLastSection(True)
         self.user_list_table.verticalHeader().setVisible(False)
 

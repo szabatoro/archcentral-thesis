@@ -13,7 +13,13 @@ class GroupManageUsersDialog(QDialog, Ui_GroupManageUsersDialog):
         self.userlist: str = userlist
         self.group: GroupInfo = group
 
+        self.setWindowTitle(f"Manage users for group {self.group.name}")
+
+        self.marked_users: list[list[str, bool]] = []
+
         self.initialize_model()
+
+        self.user_list_table.clicked.connect(self.on_user_list_table_clicked)
 
     def initialize_model(self) -> None:
         model_data: list[GroupMemberUser] = []
@@ -30,3 +36,6 @@ class GroupManageUsersDialog(QDialog, Ui_GroupManageUsersDialog):
         self.user_list_proxy_model.setFilterKeyColumn(0)
 
         self.user_list_table.setModel(self.user_list_proxy_model)
+
+    def on_user_list_table_clicked(self) -> None:
+        self.marked_users = self.user_list_model.get_marked_users()
