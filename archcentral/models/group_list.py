@@ -5,7 +5,7 @@ class GroupListModel(QAbstractTableModel):
     def __init__(self, data) -> None:
         super().__init__()
         self._data = data
-        self._headers: list[str] = ["Group", "Users"]
+        self._headers: list[str] = ["Group", "GID", "Users"]
 
     def rowCount(self, parent=None) -> int:
         return len(self._data)
@@ -19,7 +19,8 @@ class GroupListModel(QAbstractTableModel):
         if role == Qt.DisplayRole:
             mapping = {
                 0: group.name,
-                1: group.users
+                1: group.gid,
+                2: group.users
             }
             return mapping.get(index.column())
         return None
