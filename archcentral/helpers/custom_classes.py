@@ -86,19 +86,28 @@ class UserInfo():
 
 class GroupInfo():
     """Class that contains group information."""
-    def __init__(self, name, users) -> None:
+    def __init__(self, name, gid, users) -> None:
         self.name = name
+        self.gid = gid
         self.users = users
 
 class EditedUser():
     """Class that temporary stores user info during user creation."""
-    username: str = ""
-    fullname: str = ""
-    homedir: str = ""
-    homedirtype: Literal["none", "auto", "selectexisting"] = "auto"
-    password: str = ""
-    shell: str = "/usr/bin/bash"
-    groups: list[str] = []
+    def __init__(self) -> None:
+        self.username: str = ""
+        self.fullname: str = ""
+        self.homedir: str = ""
+        self.homedirtype: Literal["none", "auto", "selectexisting"] = "auto"
+        self.password: str = ""
+        self.shell: str = "/usr/bin/bash"
+        self.groups: list[str] = []
+
+class EditedGroup():
+    """Class that temporary stores group info during group creation."""
+    def __init__(self) -> None:
+        self.group_name: str = ""
+        self.is_system_group: bool = False
+        self.users: list[str] = []
 
 class GroupMemberUser():
     """Class that stores user membership information for the group member manager dialog"""
