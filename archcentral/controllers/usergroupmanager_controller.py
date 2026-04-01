@@ -10,29 +10,32 @@ class UserGroupManagerController(QObject):
     fetched_list_for_refresh: Signal = Signal(list, list)
     fetched_available_shells_for_user_creation: Signal = Signal(str)
     fetched_available_shells_for_shell_change: Signal = Signal(str)
-    created_user_signal: Signal = Signal(str)
-    changed_user_properties_signal: Signal = Signal()
+    changed_user_group_properties_signal: Signal = Signal()
 
     # These signals carry the user name and the underlying process call's exit code
+    created_user_signal: Signal = Signal(str, str)
     deleted_user_signal: Signal = Signal(str, int)
     changed_password_signal: Signal = Signal(str, int)
     changed_shell_signal: Signal = Signal(str, int)
     changed_full_name_signal: Signal = Signal(str, int)
     changed_homedir_signal: Signal = Signal(str, int)
+    changed_group_members_signal: Signal = Signal(str, int)
+    created_group_signal: Signal = Signal(str, int)
+    deleted_group_signal: Signal = Signal(str, int)
 
     def __init__(self) -> None:
         super().__init__()
 
         # Updates the user and group models after creating a new user or modifying an existing one
         self.created_user_signal.connect(lambda: self.fetch_users_and_groups(for_refresh=True))
-        self.changed_user_properties_signal.connect(lambda: self.fetch_users_and_groups(for_refresh=True))
+        self.changed_user_group_properties_signal.connect(lambda: self.fetch_users_and_groups(for_refresh=True))
 
     def fetch_users_and_groups(self, for_refresh: bool) -> None:
-        """Process data provided by fetch_users_or_groups"""
+        """Fetch user and group information from /etc/passwd and /etc/group with the built in Python libs."""
         users_raw = getpwall()
         groups_raw = getgrall()
         processed_groups: list = [
-            GroupInfo(group.gr_name, group.gr_mem) for group in groups_raw
+            GroupInfo(group.gr_name, group.gr_gid, group.gr_mem) for group in groups_raw
         ]
         processed_users = [
             UserInfo(user.pw_name, user.pw_uid, user.pw_gid, user.pw_gecos, user.pw_dir, user.pw_shell)
@@ -41,32 +44,36 @@ class UserGroupManagerController(QObject):
         ]
         self.fetched_list_for_refresh.emit(processed_users, processed_groups) if for_refresh else self.fetched_list_for_init.emit(processed_users, processed_groups)
 
-    def _get_groups_of_user(self) -> None:
-        pass
-
-    def user_add(self, username: str, fullname: str,  homedir: str, homedirtype: Literal["none", "auto", "selectexisting"], password: str, shell: str) -> None:
+    def user_add(self, username: str, fullname: str,  homedir: str, homedirtype: Literal["none", "auto", "selectexisting"], password: str, shell: str, groups: list[str]) -> None:
         """Calls the useradd comments with the appropriate parameters, then calls passwd to set the new user's password."""
         self.useradd_worker: QProcessHandler = QProcessHandler()
-        self.useradd_worker.finished.connect(lambda: self.passwd(username, password, for_user_creation=True))
+        self.useradd_worker.finished_with_exit_code.connect(
+            lambda _, exit_code: self.changed_password_signal.emit(username, exit_code) if exit_code ==  127 else self.passwd(username, password, for_user_creation=True)
+        )
+        command: list[str] = ["useradd"]
         match homedirtype:
             case "selectexisting":
-                arguments = ["useradd", "-d", homedir,"-s", shell, "-c", fullname, username]
+                command.extend(["-d", homedir])
             case "auto":
-                arguments = ["useradd", "-m", "-s", shell, "-c", fullname, username]
-            case "none":
-                arguments = ["useradd", "-s", shell, "-c", fullname, username]
+                command.append("-m")
+        command.extend(["-s", shell])
+        if fullname != "":
+            command.extend(["-c", fullname])
+        if groups:
+            command.extend(["-G", ",".join(groups)])
+        command.append(username)
 
-        self.useradd_worker.start_process("pkexec", arguments)
+        self.useradd_worker.start_process("pkexec", command)
 
     def passwd(self, username: str, password: str, for_user_creation: bool = False) -> None:
         """Sets the given user's password."""
         self.passwd_worker: QProcessHandler = QProcessHandler()
         self.passwd_worker.write_to_stdin(f"{password}\n")
         if for_user_creation:
-            self.passwd_worker.finished.connect(lambda: self.created_user_signal.emit(username))
+            self.passwd_worker.finished_with_exit_code.connect(lambda _, exit_code: self.created_user_signal.emit(username, exit_code))
         else:
             self.passwd_worker.finished_with_exit_code.connect(lambda _, exit_code: self.changed_password_signal.emit(username, exit_code))
-            self.passwd_worker.finished.connect(lambda: self.changed_user_properties_signal.emit())
+            self.passwd_worker.finished.connect(lambda: self.changed_user_group_properties_signal.emit())
 
         self.passwd_worker.start_process("pkexec", ["passwd", username, "--stdin"])
 
@@ -80,14 +87,14 @@ class UserGroupManagerController(QObject):
         """Runs chsh -s to set new shell for given user."""
         self.usermod_shell_worker: QProcessHandler = QProcessHandler()
         self.usermod_shell_worker.finished_with_exit_code.connect(lambda _, exit_code: self.changed_shell_signal.emit(username, exit_code))
-        self.usermod_shell_worker.finished.connect(lambda: self.changed_user_properties_signal.emit())
+        self.usermod_shell_worker.finished.connect(lambda: self.changed_user_group_properties_signal.emit())
         self.usermod_shell_worker.start_process("pkexec", ["usermod", "-s", shell, username])
 
     def user_delete(self, username: str, homedir_delete: bool) -> None:
         """Runs userdel to delete a given user, with the option to also delete their home directory."""
         self.userdel_worker: QProcessHandler = QProcessHandler()
         self.userdel_worker.finished_with_exit_code.connect(lambda _, exit_code: self.deleted_user_signal.emit(username, exit_code))
-        self.userdel_worker.finished.connect(lambda: self.changed_user_properties_signal.emit())
+        self.userdel_worker.finished.connect(lambda: self.changed_user_group_properties_signal.emit())
         userdel_args = ["userdel", "-r", username] if homedir_delete else ["userdel", username]
         self.userdel_worker.start_process("pkexec", userdel_args)
 
@@ -95,12 +102,59 @@ class UserGroupManagerController(QObject):
         """Runs usermod -c to change user's full name (GECOS comment)."""
         self.usermod_gecos_worker: QProcessHandler = QProcessHandler()
         self.usermod_gecos_worker.finished_with_exit_code.connect(lambda _, exit_code: self.changed_full_name_signal.emit(username, exit_code))
-        #self.usermod_gecos_worker.finished.connect(lambda: self.changed_user_properties_signal.emit())
+        self.usermod_gecos_worker.finished.connect(lambda: self.changed_user_group_properties_signal.emit())
         self.usermod_gecos_worker.start_process("pkexec", ["usermod", "-c", full_name, username])
 
     def change_homedir(self, username: str, homedir: str) -> None:
         """Runs usermod -d to change the user's home directory."""
         self.usermod_homedir_worker: QProcessHandler = QProcessHandler()
         self.usermod_homedir_worker.finished_with_exit_code.connect(lambda _, exit_code: self.changed_homedir_signal.emit(username, exit_code))
-        self.usermod_homedir_worker.finished.connect(lambda: self.changed_user_properties_signal.emit())
+        self.usermod_homedir_worker.finished.connect(lambda: self.changed_user_group_properties_signal.emit())
         self.usermod_homedir_worker.start_process("pkexec", ["usermod", "-d", homedir, username])
+
+    def modify_group_users(self, groupname: str, users: list[str, bool]) -> None:
+        """Adds and removes users from a group."""
+        if not users or not groupname:
+            return None
+
+        user_add: list[str] = []
+        user_remove: list[str] = []
+        for user in users:
+            if user[1]:
+                user_remove.append(user[0])
+            elif not user[1]:
+                user_add.append(user[0])
+
+        command_queue: list[str] = []
+
+        for user in user_add:
+            command_queue.append(f"usermod -aG {groupname} {user}")
+        for user in user_remove:
+            command_queue.append(f"gpasswd -d {user} {groupname}")
+
+        self.group_manager_worker: QProcessHandler = QProcessHandler()
+        self.group_manager_worker.finished_with_exit_code.connect(lambda _, exit_code: self.changed_group_members_signal.emit(groupname, exit_code))
+        self.group_manager_worker.finished.connect(lambda: self.changed_user_group_properties_signal.emit())
+        self.group_manager_worker.start_process("pkexec",
+            ["sh", "-c", f"{' && '.join(command_queue)}"]
+        )
+
+    def group_add(self, groupname: str, is_system_group: bool, users: list[str]) -> None:
+        """Runs the groupadd command to create a new group."""
+        command: list[str] = ["groupadd"]
+        if is_system_group:
+            command.append("-r")
+        command.append("-U")
+        command.append(",".join(users))
+
+        self.groupadd_worker: QProcessHandler = QProcessHandler()
+        self.groupadd_worker.finished_with_exit_code.connect(lambda _, exit_code: self.created_group_signal.emit(groupname, exit_code))
+        self.groupadd_worker.finished.connect(lambda: self.changed_user_group_properties_signal.emit())
+        self.groupadd_worker.start_process("pkexec", command)
+
+    def group_del(self, groupname: str) -> None:
+        """Runs groupdel to delete the given group."""
+        self.groupdel_worker: QProcessHandler = QProcessHandler()
+        self.groupdel_worker.finished_with_exit_code.connect(lambda _, exit_code: self.deleted_group_signal.emit(groupname, exit_code))
+        self.groupdel_worker.finished.connect(lambda: self.changed_user_group_properties_signal.emit())
+        self.groupdel_worker.start_process("pkexec", ["groupdel", groupname])
