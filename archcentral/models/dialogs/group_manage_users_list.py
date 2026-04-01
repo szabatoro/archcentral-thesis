@@ -74,19 +74,12 @@ class GroupManageUsersListTableModel(QAbstractTableModel):
 
         return base_flags
 
-    def get_marked_packages(self):
-        marked_packages: list[list[str, bool]] = []
-        for pkg in self._data:
-            if pkg.marked:
-                marked_packages.append([pkg.name, pkg.installed])
-        return marked_packages
-
-    def get_package(self, index) -> GroupMemberUser:
-        """Returns the PacmanPkgInfo object found in the specified row."""
-        return self._data[index.row()]
-
-    def get_total_size(self):
-        return sum([pkg.size for pkg in self._data])
+    def get_marked_users(self) -> list[list[str, bool]]:
+        marked_users: list[list[str, bool]] = []
+        for user in self._data:
+            if user.marked:
+                marked_users.append([user.name, user.is_member])
+        return marked_users
 
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         if role == Qt.DisplayRole:
