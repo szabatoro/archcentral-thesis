@@ -11,9 +11,12 @@ class UserChangeShellDialog(QDialog, Ui_UserChangeShellDialog):
 
         self.user = selected_user.name
 
+        self.setWindowTitle(f"Change shell for user {self.user}")
+
         self.available_shells_box.textActivated.connect(self.set_shell)
 
     def set_shell(self, shell: str) -> None:
+        """Saves the chosen shell from the combobox as a variable on the dialog object."""
         self.shell: str = shell
 
     def init_shell_list(self, raw_data: str) -> None:

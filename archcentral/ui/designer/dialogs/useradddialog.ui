@@ -26,7 +26,11 @@
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="user_name_edit"/>
+        <widget class="QLineEdit" name="user_name_edit">
+         <property name="placeholderText">
+          <string>Required field...</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
@@ -54,7 +58,11 @@
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="full_name_edit"/>
+        <widget class="QLineEdit" name="full_name_edit">
+         <property name="placeholderText">
+          <string>Optional field...</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
@@ -68,7 +76,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QListView" name="group_list"/>
+        <widget class="QListWidget" name="group_list"/>
        </item>
       </layout>
      </item>
@@ -85,6 +93,9 @@
         <widget class="QLineEdit" name="password_edit">
          <property name="echoMode">
           <enum>QLineEdit::EchoMode::Password</enum>
+         </property>
+         <property name="placeholderText">
+          <string>Required field...</string>
          </property>
         </widget>
        </item>
@@ -103,6 +114,9 @@
         <widget class="QLineEdit" name="home_dir_edit">
          <property name="enabled">
           <bool>false</bool>
+         </property>
+         <property name="placeholderText">
+          <string>Required field...</string>
          </property>
         </widget>
        </item>
@@ -166,6 +180,16 @@
       </layout>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QLabel" name="status_label">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="button_box">

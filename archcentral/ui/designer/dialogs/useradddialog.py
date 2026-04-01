@@ -17,9 +17,9 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QAbstractButton, QApplication, QButtonGroup, QCheckBox,
     QComboBox, QDialog, QDialogButtonBox, QGridLayout,
-    QHBoxLayout, QLabel, QLineEdit, QListView,
-    QRadioButton, QSizePolicy, QToolButton, QVBoxLayout,
-    QWidget)
+    QHBoxLayout, QLabel, QLineEdit, QListWidget,
+    QListWidgetItem, QRadioButton, QSizePolicy, QToolButton,
+    QVBoxLayout, QWidget)
 
 class Ui_UserAddDialog(object):
     def setupUi(self, UserAddDialog):
@@ -82,7 +82,7 @@ class Ui_UserAddDialog(object):
 
         self.group_list_layout.addWidget(self.group_list_label)
 
-        self.group_list = QListView(UserAddDialog)
+        self.group_list = QListWidget(UserAddDialog)
         self.group_list.setObjectName(u"group_list")
 
         self.group_list_layout.addWidget(self.group_list)
@@ -164,6 +164,12 @@ class Ui_UserAddDialog(object):
 
         self.verticalLayout.addLayout(self.grid_layout)
 
+        self.status_label = QLabel(UserAddDialog)
+        self.status_label.setObjectName(u"status_label")
+        self.status_label.setWordWrap(True)
+
+        self.verticalLayout.addWidget(self.status_label)
+
         self.button_box = QDialogButtonBox(UserAddDialog)
         self.button_box.setObjectName(u"button_box")
         self.button_box.setOrientation(Qt.Orientation.Horizontal)
@@ -182,15 +188,20 @@ class Ui_UserAddDialog(object):
     def retranslateUi(self, UserAddDialog):
         UserAddDialog.setWindowTitle(QCoreApplication.translate("UserAddDialog", u"Add a user", None))
         self.user_name_label.setText(QCoreApplication.translate("UserAddDialog", u"Username", None))
+        self.user_name_edit.setPlaceholderText(QCoreApplication.translate("UserAddDialog", u"Required field...", None))
         self.shell_label.setText(QCoreApplication.translate("UserAddDialog", u"Shell", None))
         self.full_name_label.setText(QCoreApplication.translate("UserAddDialog", u"Full name", None))
+        self.full_name_edit.setPlaceholderText(QCoreApplication.translate("UserAddDialog", u"Optional field...", None))
         self.group_list_label.setText(QCoreApplication.translate("UserAddDialog", u"Groups", None))
         self.password_label.setText(QCoreApplication.translate("UserAddDialog", u"Password", None))
+        self.password_edit.setPlaceholderText(QCoreApplication.translate("UserAddDialog", u"Required field...", None))
         self.home_label.setText(QCoreApplication.translate("UserAddDialog", u"Home directory", None))
+        self.home_dir_edit.setPlaceholderText(QCoreApplication.translate("UserAddDialog", u"Required field...", None))
         self.file_browser_button.setText(QCoreApplication.translate("UserAddDialog", u"...", None))
         self.admin_checkbox.setText(QCoreApplication.translate("UserAddDialog", u"Administrator privileges (toggles wheel group in the group selection)", None))
         self.auto_home_button.setText(QCoreApplication.translate("UserAddDialog", u"Auto create home", None))
         self.existing_home_button.setText(QCoreApplication.translate("UserAddDialog", u"Select existing home", None))
         self.no_home_button.setText(QCoreApplication.translate("UserAddDialog", u"Don't assign home", None))
+        self.status_label.setText("")
     # retranslateUi
 

@@ -1,15 +1,18 @@
+from os.path import isdir
 from PySide6.QtGui import Qt
-from archcentral.helpers.custom_classes import EditedUser
+from archcentral.helpers.custom_classes import EditedUser, UserInfo
 from archcentral.ui.designer.dialogs.useradddialog import Ui_UserAddDialog
 from PySide6.QtWidgets import QDialog, QDialogButtonBox, QFileDialog, QListWidgetItem
 
 class UserAddDialog(QDialog, Ui_UserAddDialog):
-    def __init__(self, userlist, available_shells, groups, parent=None) -> None:
+    def __init__(self, userlist: UserInfo, available_shells, groups, parent=None) -> None:
         super().__init__(parent)
         self.setupUi(self)
 
+        self.button_box.button(QDialogButtonBox.Ok).setEnabled(False)
+
         self.current_edited_user = EditedUser()
-        self.userlist: list[str] = userlist
+        self.userlist: list[UserInfo] = userlist
 
         # initialize shell list and group list
         self.init_shell_list(available_shells)
@@ -30,6 +33,37 @@ class UserAddDialog(QDialog, Ui_UserAddDialog):
 
         self.file_browser_button.clicked.connect(self.open_homedir_selector)
 
+    def field_validator(self) -> None:
+        """Checks fields for validity, disables OK button and shows status message accordingly."""
+        username_taken = any(user.name == self.current_edited_user.username for user in self.userlist)
+        username_empty = self.current_edited_user.username == ""
+        homedir_taken = any(user.home == self.current_edited_user.homedir for user in self.userlist)
+        homedir_empty = self.current_edited_user.homedir == "" and self.home_dir_edit.isEnabled()
+        homedir_does_not_exist = not isdir(self.current_edited_user.homedir) and self.current_edited_user.homedir != "" and self.home_dir_edit.isEnabled()
+        password_empty = self.current_edited_user.password == ""
+
+        self.user_name_edit.setStyleSheet("background: #6d3c3c;") if username_taken else self.user_name_edit.setStyleSheet("")
+        self.home_dir_edit.setStyleSheet("background: #6d3c3c;")if homedir_taken or homedir_does_not_exist else self.home_dir_edit.setStyleSheet("")
+
+        status_messages: list[str] = []
+        if username_taken:
+            status_messages.append(f"User with name: \"{self.current_edited_user.username}\" already exists.")
+        if homedir_taken:
+            status_messages.append(f"\"{self.current_edited_user.homedir}\" directory is already taken.")
+        if homedir_does_not_exist:
+            status_messages.append(f"\"{self.current_edited_user.homedir}\" directory does not exist.")
+
+        self.status_label.setText(" ".join(status_messages))
+        dialogbox_status = (username_taken or
+            homedir_taken or
+            username_empty or
+            homedir_empty or
+            homedir_does_not_exist or
+            password_empty
+        )
+
+        self.button_box.button(QDialogButtonBox.Ok).setDisabled(dialogbox_status)
+
     def group_list_signal_transmitter(self) -> None:
         """Groups functions that are called by changes in the group list selector."""
         self.check_wheel_status()
@@ -37,17 +71,16 @@ class UserAddDialog(QDialog, Ui_UserAddDialog):
 
     def set_user_name(self, username) -> None:
         """Setters for the current_edited_user object"""
-        if username not in self.userlist:
-            self.current_edited_user.username = username
-            self.button_box.button(QDialogButtonBox.Ok).setEnabled(True)
-        else:
-            self.button_box.button(QDialogButtonBox.Ok).setEnabled(False)
+        self.current_edited_user.username = username
+        self.field_validator()
     def set_full_name(self, fullname) -> None:
         self.current_edited_user.fullname = fullname
     def set_user_home_dir(self, homedir) -> None:
         self.current_edited_user.homedir = homedir
+        self.field_validator()
     def set_user_password(self, password) -> None:
         self.current_edited_user.password = password
+        self.field_validator()
     def set_user_shell(self, shell) -> None:
         self.current_edited_user.shell = shell
     def set_groups(self) -> None:
@@ -107,6 +140,7 @@ class UserAddDialog(QDialog, Ui_UserAddDialog):
                 self.current_edited_user.homedirtype = "auto"
                 self.home_dir_edit.setEnabled(False)
                 self.file_browser_button.setEnabled(False)
+        self.field_validator()
 
     def open_homedir_selector(self):
         """Opens a folder selector and sets the homedir path to the selected folder."""

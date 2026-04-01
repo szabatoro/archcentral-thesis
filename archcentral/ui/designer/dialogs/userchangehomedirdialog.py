@@ -23,8 +23,8 @@ class Ui_UserChangeHomeDirDialog(object):
     def setupUi(self, UserChangeHomeDirDialog):
         if not UserChangeHomeDirDialog.objectName():
             UserChangeHomeDirDialog.setObjectName(u"UserChangeHomeDirDialog")
-        UserChangeHomeDirDialog.resize(400, 100)
-        UserChangeHomeDirDialog.setMaximumSize(QSize(16777215, 100))
+        UserChangeHomeDirDialog.resize(400, 130)
+        UserChangeHomeDirDialog.setMaximumSize(QSize(16777215, 130))
         self.verticalLayout = QVBoxLayout(UserChangeHomeDirDialog)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.horizontalLayout = QHBoxLayout()
@@ -49,6 +49,11 @@ class Ui_UserChangeHomeDirDialog(object):
 
         self.verticalLayout.addLayout(self.horizontalLayout)
 
+        self.status_label = QLabel(UserChangeHomeDirDialog)
+        self.status_label.setObjectName(u"status_label")
+
+        self.verticalLayout.addWidget(self.status_label)
+
         self.button_box = QDialogButtonBox(UserChangeHomeDirDialog)
         self.button_box.setObjectName(u"button_box")
         self.button_box.setOrientation(Qt.Orientation.Horizontal)
@@ -68,5 +73,6 @@ class Ui_UserChangeHomeDirDialog(object):
         UserChangeHomeDirDialog.setWindowTitle(QCoreApplication.translate("UserChangeHomeDirDialog", u"Change user home directory", None))
         self.homedir_label.setText(QCoreApplication.translate("UserChangeHomeDirDialog", u"Home directory", None))
         self.homedir_button.setText(QCoreApplication.translate("UserChangeHomeDirDialog", u"...", None))
+        self.status_label.setText("")
     # retranslateUi
 
