@@ -68,7 +68,6 @@ class UserGroupManagerController(QObject):
     def passwd(self, username: str, password: str, for_user_creation: bool = False) -> None:
         """Sets the given user's password."""
         self.passwd_worker: QProcessHandler = QProcessHandler()
-        self.passwd_worker.write_to_stdin(f"{password}\n")
         if for_user_creation:
             self.passwd_worker.finished_with_exit_code.connect(lambda _, exit_code: self.created_user_signal.emit(username, exit_code))
         else:
@@ -76,6 +75,7 @@ class UserGroupManagerController(QObject):
             self.passwd_worker.finished.connect(lambda: self.changed_user_group_properties_signal.emit())
 
         self.passwd_worker.start_process("pkexec", ["passwd", username, "--stdin"])
+        self.passwd_worker.write_to_stdin(f"{password}\n")
 
     def get_shell_list(self, for_user_creation: bool = False) -> None:
         """Runs chsh -l to get a list of available shells."""
