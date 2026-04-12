@@ -39,8 +39,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.service_manager_button.clicked.connect(self.handle_sidebar)
         self.user_group_manager_button.clicked.connect(self.handle_sidebar)
 
-    # handling switching between modules via sidebar
     def handle_sidebar(self) -> None:
+        """Handles switching between modules via the sidebar."""
         # check the sender of the signal
         clicked_button: QObject = self.sender()
         # open the appropriate module
