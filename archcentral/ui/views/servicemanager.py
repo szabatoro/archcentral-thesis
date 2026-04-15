@@ -69,6 +69,11 @@ class ServiceManagerModule(QWidget, Ui_ServiceManager):
         """Changes the service buttons names depending on selected service status."""
         selected_service, _ = self._get_selected_row()
 
+        if selected_service.activestate == "active":
+            self.restart_button.setEnabled(True)
+        else:
+            self.restart_button.setEnabled(False)
+
         if selected_service.substate == "running":
             self.start_stop_button.setText("Stop")
         else:
@@ -112,6 +117,8 @@ class ServiceManagerModule(QWidget, Ui_ServiceManager):
             self.system_service_list_model: SystemdServiceListModel = SystemdServiceListModel(services)
             self.system_service_list_proxy_model: QSortFilterProxyModel = QSortFilterProxyModel()
             self.system_service_list_proxy_model.setDynamicSortFilter(True)
+            self.system_service_list_proxy_model.setFilterCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
+            self.system_service_list_proxy_model.setSortCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
             self.system_service_list_proxy_model.sort(0, Qt.AscendingOrder)
             self.system_service_list_proxy_model.setSourceModel(self.system_service_list_model)
             self.system_service_list_proxy_model.setFilterKeyColumn(0)
@@ -123,6 +130,8 @@ class ServiceManagerModule(QWidget, Ui_ServiceManager):
             self.user_service_list_model: SystemdServiceListModel = SystemdServiceListModel(services)
             self.user_service_list_proxy_model: QSortFilterProxyModel = QSortFilterProxyModel()
             self.user_service_list_proxy_model.setDynamicSortFilter(True)
+            self.user_service_list_proxy_model.setFilterCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
+            self.user_service_list_proxy_model.setSortCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
             self.user_service_list_proxy_model.sort(0, Qt.AscendingOrder)
             self.user_service_list_proxy_model.setSourceModel(self.user_service_list_model)
             self.user_service_list_proxy_model.setFilterKeyColumn(0)
