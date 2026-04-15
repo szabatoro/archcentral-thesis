@@ -152,6 +152,9 @@ class PackageManagerController(QObject):
             package1, package2, to_remove = match.groups()
             self.pacman_package_conflict.emit(package1, package2, to_remove)
 
+    def decide_pacman_conflict(self, choice: bool) -> None:
+        self.write_to_stdin.emit("y\n" if choice else "n\n")
+
     def run_package_transaction(self, packagelist: list[list[str,bool]]) -> None:
         """
         Runs the pacman package manager directly and installs/removes packages depending on their flags.
