@@ -2,8 +2,8 @@ from PySide6.QtCore import QAbstractTableModel, Qt
 from PySide6.QtGui import QColor
 from archcentral.helpers.custom_classes import SystemdServiceInfo
 
-# Model for the systemd service table
-class SystemdServiceListModel(QAbstractTableModel):
+# Model for the systemd unit table
+class SystemdUnitListModel(QAbstractTableModel):
     def __init__(self, data):
         super().__init__()
         self._data = data

@@ -74,6 +74,7 @@ class ServiceManagerController(QObject):
 
     def list_units_for_init(self, unit_type: Literal["service", "timer", "socket"]) -> None:
         """Returns unit lists to for respective categories. Used when initializing lists."""
+        self._acquire_systemctl()
         system_units: list[SystemdServiceInfo] = self._list_units_internal(unit_type, True)
         user_units: list[SystemdServiceInfo] = self._list_units_internal(unit_type, False)
         match unit_type:
@@ -87,8 +88,11 @@ class ServiceManagerController(QObject):
                     self.sockets_fetched_for_init.emit(True, system_units)
                     self.sockets_fetched_for_init.emit(False, user_units)
 
+        self._release_systemctl()
+
     def list_units_for_refresh(self, unit_type: Literal["service", "timer", "socket"]) -> None:
         """Returns unit lists to for respective categories. Used after systemd operations."""
+        self._acquire_systemctl()
         system_units: list[SystemdServiceInfo] = self._list_units_internal(unit_type, True)
         user_units: list[SystemdServiceInfo] = self._list_units_internal(unit_type, False)
         match unit_type:
