@@ -54,7 +54,7 @@ class ServiceManagerModule(QWidget, Ui_ServiceManager):
         self.restart_button.clicked.connect(self.restart_unit)
 
     def _get_selected_row(self):
-        """Fetches the systemdserviceinfo object stored in the selected row."""
+        """Fetches the SystemdBaseInfo object stored in the selected row."""
         match self.user_system_tab.currentIndex():
             case 0:
                 source_index: QModelIndex = self.system_unit_list_proxy_model.mapToSource(self.system_unit_list_table.currentIndex())
@@ -191,6 +191,7 @@ class ServiceManagerModule(QWidget, Ui_ServiceManager):
         self.systemctl_operation_signal.emit(is_user_unit, selected_unit.unitname, operation, selected_unit.type)
 
     def restart_unit(self) -> None:
+        """Restarts the selected service."""
         selected_unit, is_user_unit = self._get_selected_row()
         self.systemctl_operation_signal.emit(is_user_unit, selected_unit.unitname, "restart", selected_unit.type)
 
