@@ -8,8 +8,7 @@ from archcentral.controllers.servicemanager_controller import ServiceManagerCont
 from archcentral.models.systemd_units_list import SystemdUnitListModel
 
 class ServiceManagerModule(QWidget, Ui_ServiceManager):
-    fetch_systemd_units_signal_for_init: Signal = Signal(str)
-    fetch_systemd_units_signal_for_refresh: Signal = Signal(str)
+    fetch_systemd_units_signal: Signal = Signal(bool, bool, str)
     systemctl_operation_signal: Signal = Signal(bool, str, str, str)
 
     def __init__(self) -> None:
@@ -41,9 +40,9 @@ class ServiceManagerModule(QWidget, Ui_ServiceManager):
         self.smc.systemctl_lock_activated.connect(self.interface_lock)
         self.smc.systemctl_lock_deactivated.connect(self.interface_unlock)
 
-        self.fetch_systemd_units_signal_for_init.connect(self.smc.list_units_for_init)
-        self.fetch_systemd_units_signal_for_refresh.connect(self.smc.list_units_for_refresh)
-        self.fetch_systemd_units_signal_for_init.emit("service")
+        self.fetch_systemd_units_signal.connect(self.smc.list_units)
+        self.fetch_systemd_units_signal.emit(False, True, "service")
+        self.fetch_systemd_units_signal.emit(False, False, "service")
 
         self.unit_types_box.textActivated.connect(self.handle_unit_type_selection)
 
@@ -106,11 +105,14 @@ class ServiceManagerModule(QWidget, Ui_ServiceManager):
         """Fetches list of units of the type selected in the type selector."""
         match unit_type:
             case "Services":
-                self.fetch_systemd_units_signal_for_refresh.emit("service")
+                self.fetch_systemd_units_signal.emit(True, True, "service")
+                self.fetch_systemd_units_signal.emit(True, False, "service")
             case "Timers":
-                self.fetch_systemd_units_signal_for_refresh.emit("timer")
+                self.fetch_systemd_units_signal.emit(True, True, "timer")
+                self.fetch_systemd_units_signal.emit(True, False, "timer")
             case "Sockets":
-                self.fetch_systemd_units_signal_for_refresh.emit("socket")
+                self.fetch_systemd_units_signal.emit(True, True, "socket")
+                self.fetch_systemd_units_signal.emit(True, False, "socket")
 
     def initalize_models(self, is_system: bool, units: list) -> None:
         """Initializes the user and system unit models with services from the systemd dbus API and populates their tables."""
