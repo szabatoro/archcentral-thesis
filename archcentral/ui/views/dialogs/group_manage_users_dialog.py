@@ -31,7 +31,7 @@ class GroupManageUsersDialog(QDialog, Ui_GroupManageUsersDialog):
         self.user_list_model: GroupManageUsersListTableModel = GroupManageUsersListTableModel(model_data)
         self.user_list_proxy_model: QSortFilterProxyModel = QSortFilterProxyModel()
         self.user_list_proxy_model.setDynamicSortFilter(True)
-        self.user_list_proxy_model.sort(0, Qt.AscendingOrder)
+        self.user_list_proxy_model.sort(1, Qt.AscendingOrder)
         self.user_list_proxy_model.setSourceModel(self.user_list_model)
         self.user_list_proxy_model.setFilterKeyColumn(0)
 

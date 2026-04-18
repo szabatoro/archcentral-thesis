@@ -20,7 +20,7 @@ class GroupListModel(QAbstractTableModel):
             mapping = {
                 0: group.name,
                 1: group.gid,
-                2: group.users
+                2: ", ".join(group.users)
             }
             return mapping.get(index.column())
         return None

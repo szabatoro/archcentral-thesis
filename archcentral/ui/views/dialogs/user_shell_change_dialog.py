@@ -10,6 +10,7 @@ class UserChangeShellDialog(QDialog, Ui_UserChangeShellDialog):
         self.init_shell_list(shell_list)
 
         self.user = selected_user.name
+        self.shell = "/usr/bin/bash"
 
         self.setWindowTitle(f"Change shell for user {self.user}")
 
