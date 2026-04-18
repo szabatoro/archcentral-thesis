@@ -45,6 +45,8 @@ class PackageManagerModule(QWidget, Ui_PackageManager):
 
         self.pmc.update_fetched.connect(self.update_list_model.refresh)
         self.pmc.update_finished.connect(self.fetch_package_list_signal.emit)
+        self.pmc.update_finished.connect(lambda: self.update_button.setEnabled(False))
+        self.pmc.update_finished.connect(lambda: self.update_list_model.refresh([]))
         self.pmc.update_fetched.connect(self.are_there_updates)
         self.pmc.update_stdout_stream.connect(self.pacman_output.appendPlainText)
 
