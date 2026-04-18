@@ -3,7 +3,7 @@ from PySide6.QtWidgets import QApplication, QMainWindow
 from archcentral.ui.views.sysinfo import SysInfoModule
 from archcentral.ui.views.packagemanager import PackageManagerModule
 from archcentral.ui.views.servicemanager import ServiceManagerModule
-from archcentral.ui.views.usergroupmanager import UserManagerModule
+from archcentral.ui.views.usergroupmanager import UserGroupManager
 from archcentral.ui.designer.mainwindow import Ui_MainWindow
 import sys
 from getpass import getuser
@@ -18,7 +18,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.sysinfo_widget: SysInfoModule = SysInfoModule()
         self.package_manager_widget: PackageManagerModule = PackageManagerModule()
         self.service_manager_widget: ServiceManagerModule = ServiceManagerModule()
-        self.user_group_manager_widget: UserManagerModule = UserManagerModule()
+        self.user_group_manager_widget: UserGroupManager = UserGroupManager()
 
         self.welcome_label.setText(f"Welcome, {getuser()}!")
 

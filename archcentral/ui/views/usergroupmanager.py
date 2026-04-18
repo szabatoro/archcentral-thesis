@@ -15,7 +15,7 @@ from archcentral.ui.views.dialogs.user_homedir_change_dialog import UserChangeHo
 from archcentral.ui.views.dialogs.user_password_change_dialog import UserPasswordChangeDialog
 from archcentral.ui.views.dialogs.user_shell_change_dialog import UserChangeShellDialog
 
-class UserManagerModule(QWidget, Ui_UserGroupManager):
+class UserGroupManager(QWidget, Ui_UserGroupManager):
     create_user_signal: Signal = Signal(str, str, str, str, str, str, list)
     delete_user_signal: Signal = Signal(str, bool)
     create_group_signal: Signal = Signal(str, bool, list)
