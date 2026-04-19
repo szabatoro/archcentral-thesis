@@ -34,15 +34,15 @@ class UserGroupManager(QWidget, Ui_UserGroupManager):
 
         self.destroyed.connect(self.cleanup_thread)
 
-        self.thread = QThread()
+        self.ugmc_thread = QThread()
 
         self.ugmc: UserGroupManagerController = UserGroupManagerController()
-        self.ugmc.moveToThread(self.thread)
+        self.ugmc.moveToThread(self.ugmc_thread)
 
-        self.thread.start()
+        self.ugmc_thread.start()
 
         # Connecting data sources from the controller for model initialization and refreshing
-        self.ugmc.fetched_list_for_init.connect(self.initialize_model)
+        self.ugmc.fetched_list_for_init.connect(self.initialize_models)
         self.ugmc.fetched_list_for_refresh.connect(self.refresh_lists)
 
         # User modification status messages
@@ -122,7 +122,7 @@ class UserGroupManager(QWidget, Ui_UserGroupManager):
 
         return selected_service
 
-    def initialize_model(self, user_data, group_data) -> None:
+    def initialize_models(self, user_data, group_data) -> None:
         """Initializes the models with relevant data."""
         self.user_list_model: UserListModel = UserListModel(user_data)
         self.user_list_proxy_model: QSortFilterProxyModel = QSortFilterProxyModel()
@@ -311,6 +311,6 @@ class UserGroupManager(QWidget, Ui_UserGroupManager):
 
     def cleanup_thread(self) -> None:
         """Gracefully stops threads."""
-        if self.thread.isRunning():
-            self.thread.quit()
-            self.thread.wait()
+        if self.ugmc_thread.isRunning():
+            self.ugmc_thread.quit()
+            self.ugmc_thread.wait()
