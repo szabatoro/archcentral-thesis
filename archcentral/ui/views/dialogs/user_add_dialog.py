@@ -1,11 +1,11 @@
 from os.path import isdir
 from PySide6.QtGui import Qt
-from archcentral.helpers.custom_classes import EditedUser, UserInfo
+from archcentral.helpers.custom_classes import EditedUser, GroupInfo, UserInfo
 from archcentral.ui.designer.dialogs.useradddialog import Ui_UserAddDialog
 from PySide6.QtWidgets import QDialog, QDialogButtonBox, QFileDialog, QListWidgetItem
 
 class UserAddDialog(QDialog, Ui_UserAddDialog):
-    def __init__(self, userlist: UserInfo, available_shells, groups, parent=None) -> None:
+    def __init__(self, userlist: list[UserInfo], available_shells: list[str], groups: list[GroupInfo], parent=None) -> None:
         super().__init__(parent)
         self.setupUi(self)
 

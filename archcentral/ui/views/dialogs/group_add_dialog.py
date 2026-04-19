@@ -4,7 +4,7 @@ from archcentral.ui.designer.dialogs.groupadddialog import Ui_GroupAddDialog
 from PySide6.QtWidgets import QDialog, QDialogButtonBox, QFileDialog, QListWidgetItem
 
 class GroupAddDialog(QDialog, Ui_GroupAddDialog):
-    def __init__(self, userlist, groups, parent=None) -> None:
+    def __init__(self, userlist: list[str], groups: list[str], parent=None) -> None:
         super().__init__(parent)
         self.setupUi(self)
 
