@@ -24,8 +24,7 @@ class GroupManageUsersDialog(QDialog, Ui_GroupManageUsersDialog):
     def initialize_model(self) -> None:
         model_data: list[GroupMemberUser] = []
         for user in self.userlist:
-            user_in_group: bool = False
-            user_in_group = user in self.group.users
+            user_in_group: bool = user in self.group.users
             model_data.append(GroupMemberUser(False, user, user_in_group))
 
         self.user_list_model: GroupManageUsersListTableModel = GroupManageUsersListTableModel(model_data)
