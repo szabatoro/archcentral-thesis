@@ -13,7 +13,7 @@ class UserGroupManagerController(QObject):
     changed_user_group_properties_signal: Signal = Signal()
 
     # These signals carry the user name and the underlying process call's exit code
-    created_user_signal: Signal = Signal(str, str)
+    created_user_signal: Signal = Signal(str, int)
     deleted_user_signal: Signal = Signal(str, int)
     changed_password_signal: Signal = Signal(str, int)
     changed_shell_signal: Signal = Signal(str, int)
@@ -27,7 +27,6 @@ class UserGroupManagerController(QObject):
         super().__init__()
 
         # Updates the user and group models after creating a new user or modifying an existing one
-        self.created_user_signal.connect(lambda: self.fetch_users_and_groups(for_refresh=True))
         self.changed_user_group_properties_signal.connect(lambda: self.fetch_users_and_groups(for_refresh=True))
 
     def fetch_users_and_groups(self, for_refresh: bool) -> None:
@@ -48,7 +47,7 @@ class UserGroupManagerController(QObject):
         """Calls the useradd comments with the appropriate parameters, then calls passwd to set the new user's password."""
         self.useradd_worker: QProcessHandler = QProcessHandler()
         self.useradd_worker.finished_with_exit_code.connect(
-            lambda _, exit_code: self.changed_password_signal.emit(username, exit_code) if exit_code ==  127 else self.passwd(username, password, for_user_creation=True)
+            lambda _, exit_code: self.created_user_signal.emit(username, exit_code) if exit_code ==  127 else self.passwd(username, password, for_user_creation=True)
         )
         command: list[str] = ["useradd"]
         match homedirtype:
@@ -72,7 +71,7 @@ class UserGroupManagerController(QObject):
             self.passwd_worker.finished_with_exit_code.connect(lambda _, exit_code: self.created_user_signal.emit(username, exit_code))
         else:
             self.passwd_worker.finished_with_exit_code.connect(lambda _, exit_code: self.changed_password_signal.emit(username, exit_code))
-            self.passwd_worker.finished.connect(lambda: self.changed_user_group_properties_signal.emit())
+        self.passwd_worker.finished.connect(lambda: self.changed_user_group_properties_signal.emit())
 
         self.passwd_worker.start_process("pkexec", ["passwd", username, "--stdin"])
         self.passwd_worker.write_to_stdin(f"{password}\n")
@@ -128,7 +127,7 @@ class UserGroupManagerController(QObject):
         command_queue: list[str] = []
 
         for user in user_add:
-            command_queue.append(f"usermod -aG {groupname} {user}")
+            command_queue.append(f"gpasswd -a {user} {groupname}")
         for user in user_remove:
             command_queue.append(f"gpasswd -d {user} {groupname}")
 

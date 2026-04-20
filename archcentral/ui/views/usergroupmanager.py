@@ -47,7 +47,7 @@ class UserGroupManager(QWidget, Ui_UserGroupManager):
 
         # User modification status messages
         self.ugmc.created_user_signal.connect(
-            lambda user, exit_code: self.status_label.setText(f"{user} created." if exit_code == 0 else "User creation aborted.")
+            lambda user, exit_code: self.status_label.setText(f"User {user} created." if exit_code == 0 else "User creation aborted.")
         )
         self.ugmc.changed_password_signal.connect(
             lambda user, exit_code: self.status_label.setText(f"Password changed for user {user}." if exit_code == 0 else "Password change aborted.")
@@ -62,7 +62,7 @@ class UserGroupManager(QWidget, Ui_UserGroupManager):
             lambda user, exit_code: self.status_label.setText(f"Home directory changed for user {user}." if exit_code == 0 else "Home directory change aborted.")
         )
         self.ugmc.deleted_user_signal.connect(
-            lambda user, exit_code: self.status_label.setText(f"{user} successfully deleted." if exit_code == 0 else "User deletion aborted.")
+            lambda user, exit_code: self.status_label.setText(f"User {user} successfully deleted." if exit_code == 0 else "User deletion aborted.")
         )
         self.ugmc.changed_group_members_signal.connect(
             lambda group, exit_code: self.status_label.setText(f"Group member changes in {group} group performed successfully." if exit_code == 0 else "Group member changes aborted.")
@@ -107,8 +107,10 @@ class UserGroupManager(QWidget, Ui_UserGroupManager):
         self.change_user_shell_signal.connect(self.ugmc.change_shell)
         self.change_user_full_name_signal.connect(self.ugmc.change_full_name)
         self.change_user_homedir_signal.connect(self.ugmc.change_homedir)
+        self.delete_user_signal.connect(self.ugmc.user_delete)
         self.modify_group_users_signal.connect(self.ugmc.modify_group_users)
         self.create_group_signal.connect(self.ugmc.group_add)
+        self.delete_group_signal.connect(self.ugmc.group_del)
 
     def _get_selected_row(self) -> UserInfo | GroupInfo:
         """Returns the object connected to the selected row from the model."""
