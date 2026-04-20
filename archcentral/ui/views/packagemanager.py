@@ -1,11 +1,12 @@
-from PySide6.QtCore import QSortFilterProxyModel, QModelIndex, QThread, Signal
+from PySide6.QtCore import QSortFilterProxyModel, QModelIndex, QThread, Qt, Signal
 from PySide6.QtWidgets import QWidget, QDialog, QTreeWidgetItem
 from archcentral.helpers.custom_classes import PacmanPkgInfo
 from archcentral.helpers.unitconverter import unit_converter
 from archcentral.ui.designer.packagemanager import Ui_PackageManager
 from archcentral.models.pacman_update_list import PacmanUpdateTableModel
 from archcentral.models.pacman_package_list import PacmanPackageListTableModel
-from archcentral.ui.views.pacman_update_dialog import PacmanUpdateDialog
+from archcentral.ui.views.dialogs.pacman_conflict_dialog import PacmanConflictDialog
+from archcentral.ui.views.dialogs.pacman_update_dialog import PacmanUpdateDialog
 from archcentral.controllers.packagemanager_controller import PackageManagerController
 from datetime import datetime
 
@@ -13,8 +14,10 @@ class PackageManagerModule(QWidget, Ui_PackageManager):
     # signals
     fetch_package_list_signal: Signal = Signal()
     refresh_package_list_signal: Signal = Signal()
-    initiate_update_signal: Signal = Signal()
+    initiate_update_fetch_signal: Signal = Signal()
+    initiate_update_signal: Signal = Signal(list)
     initiate_package_transaction_signal: Signal = Signal(list)
+    package_conflict_input_signal: Signal = Signal(bool)
 
     def __init__(self) -> None:
         super().__init__()
@@ -28,9 +31,11 @@ class PackageManagerModule(QWidget, Ui_PackageManager):
 
         # Connecting module signals to pmc
         self.fetch_package_list_signal.connect(self.pmc.list_all_packages_for_init)
-        self.initiate_update_signal.connect(self.pmc.fetch_updates)
+        self.initiate_update_fetch_signal.connect(self.pmc.fetch_updates)
+        self.initiate_update_signal.connect(self.pmc.perform_update)
         self.refresh_package_list_signal.connect(self.pmc.list_all_packages_for_refresh)
         self.initiate_package_transaction_signal.connect(self.pmc.run_package_transaction)
+        self.package_conflict_input_signal.connect(self.pmc.decide_pacman_conflict)
 
         # Hook up model to the update table view to initialize it
         self.update_list_model: PacmanUpdateTableModel = PacmanUpdateTableModel([])
@@ -40,6 +45,8 @@ class PackageManagerModule(QWidget, Ui_PackageManager):
 
         self.pmc.update_fetched.connect(self.update_list_model.refresh)
         self.pmc.update_finished.connect(self.fetch_package_list_signal.emit)
+        self.pmc.update_finished.connect(lambda: self.update_button.setEnabled(False))
+        self.pmc.update_finished.connect(lambda: self.update_list_model.refresh([]))
         self.pmc.update_fetched.connect(self.are_there_updates)
         self.pmc.update_stdout_stream.connect(self.pacman_output.appendPlainText)
 
@@ -68,6 +75,9 @@ class PackageManagerModule(QWidget, Ui_PackageManager):
         self.pmc.transaction_finished.connect(self.refresh_package_list_signal.emit)
         self.run_transaction_button.pressed.connect(self.initiate_package_transaction)
 
+        # Open the package conflict dialog if the controller detects a package conflict
+        self.pmc.pacman_package_conflict.connect(self.open_package_conflict_dialog)
+
         # Connecting action buttons status and status message label to pacman lock state
         self.pmc.pacman_lock_activated.connect(self.on_pacman_lock_activated)
         self.pmc.pacman_lock_deactivated.connect(self.on_pacman_lock_deactivated)
@@ -76,6 +86,7 @@ class PackageManagerModule(QWidget, Ui_PackageManager):
         self.package_list_model: PacmanPackageListTableModel = PacmanPackageListTableModel(packages)
         self.package_list_proxy_model: QSortFilterProxyModel = QSortFilterProxyModel()
         self.package_list_proxy_model.setDynamicSortFilter(True)
+        self.package_list_proxy_model.setFilterCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
         self.package_list_proxy_model.setSourceModel(self.package_list_model)
         self.package_list_proxy_model.setFilterKeyColumn(2)
         self.package_list_table.setModel(self.package_list_proxy_model)
@@ -98,7 +109,7 @@ class PackageManagerModule(QWidget, Ui_PackageManager):
         self.are_there_updates()
 
     def on_update_button_clicked(self) -> None:
-        self.initiate_update_signal.emit()
+        self.initiate_update_fetch_signal.emit()
         self.pacman_output.setPlainText("")
 
     def are_there_updates(self) -> None:
@@ -113,7 +124,7 @@ class PackageManagerModule(QWidget, Ui_PackageManager):
     def update_packages(self) -> None:
         """Initiates the package update process depending on the dialog box return value."""
         if self.open_update_confirm_dialog():
-            self.pmc.perform_update(self.update_list_model.get_packagenames())
+            self.initiate_update_signal.emit(self.update_list_model.get_packagenames())
 
     def initiate_package_transaction(self) -> None:
         """Initiates the package transaction by emitting a signal."""
@@ -182,6 +193,15 @@ class PackageManagerModule(QWidget, Ui_PackageManager):
         else:
             groups_item: QTreeWidgetItem = QTreeWidgetItem(["Groups:", "None"])
         self.package_details_tree.addTopLevelItem(groups_item)
+
+    def open_package_conflict_dialog(self, pkg1, pkg2, pkg_to_remove) -> None:
+        """Opens dialog box for update confirmation. Returns a boolean value depending on if the dialog is accepted or not."""
+        dialog: PacmanConflictDialog = PacmanConflictDialog(pkg1, pkg2, pkg_to_remove)
+        result = dialog.exec()
+        if result == QDialog.Accepted:
+            self.package_conflict_input_signal.emit(True)
+        elif result == QDialog.Rejected:
+            self.package_conflict_input_signal.emit(False)
 
     def cleanup_thread(self) -> None:
         """Gracefully stops threads."""

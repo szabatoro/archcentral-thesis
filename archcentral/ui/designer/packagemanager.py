@@ -91,28 +91,13 @@ class Ui_PackageManager(object):
 
         self.verticalLayout_8.addWidget(self.search_layout)
 
-        self.package_list_layout = QHBoxLayout()
-        self.package_list_layout.setObjectName(u"package_list_layout")
         self.package_list_table = QTableView(self.management)
         self.package_list_table.setObjectName(u"package_list_table")
         self.package_list_table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.package_list_table.horizontalHeader().setStretchLastSection(True)
         self.package_list_table.verticalHeader().setVisible(False)
 
-        self.package_list_layout.addWidget(self.package_list_table)
-
-        self.package_list_options_layout = QVBoxLayout()
-        self.package_list_options_layout.setObjectName(u"package_list_options_layout")
-        self.pushButton_2 = QPushButton(self.management)
-        self.pushButton_2.setObjectName(u"pushButton_2")
-
-        self.package_list_options_layout.addWidget(self.pushButton_2)
-
-
-        self.package_list_layout.addLayout(self.package_list_options_layout)
-
-
-        self.verticalLayout_8.addLayout(self.package_list_layout)
+        self.verticalLayout_8.addWidget(self.package_list_table)
 
         self.operations_layout = QHBoxLayout()
         self.operations_layout.setObjectName(u"operations_layout")
@@ -187,7 +172,6 @@ class Ui_PackageManager(object):
         self.content.setTabText(self.content.indexOf(self.update), QCoreApplication.translate("PackageManager", u"Update packages", None))
         self.package_search.setPlaceholderText(QCoreApplication.translate("PackageManager", u"Search a package...", None))
         self.package_search_button.setText(QCoreApplication.translate("PackageManager", u"Search", None))
-        self.pushButton_2.setText(QCoreApplication.translate("PackageManager", u"PushButton", None))
         ___qtreewidgetitem = self.package_details_tree.headerItem()
         ___qtreewidgetitem.setText(1, QCoreApplication.translate("PackageManager", u"Value", None));
         ___qtreewidgetitem.setText(0, QCoreApplication.translate("PackageManager", u"Name", None));

@@ -1,4 +1,5 @@
 from archcentral.helpers.unitconverter import unit_converter
+from typing import Literal
 
 class PacmanPkgInfo():
     """Class that contains package information extracted from the given alpm package object, with additional package manager specifics."""
@@ -72,3 +73,45 @@ class SystemdSocketInfo(SystemdBaseInfo):
         self.type = "socket"
         self.dbus_path = dbus_path
         self.listen_address = unit.Listen[0][1]
+
+class UserInfo():
+    """Class that contains user information."""
+    def __init__(self, name, uid, gid, gecos, home, shell) -> None:
+        self.name = name
+        self.uid = uid
+        self.gid = gid
+        self.gecos = gecos
+        self.home = home
+        self.shell = shell
+
+class GroupInfo():
+    """Class that contains group information."""
+    def __init__(self, name, gid, users) -> None:
+        self.name = name
+        self.gid = gid
+        self.users = users
+
+class EditedUser():
+    """Class that temporary stores user info during user creation."""
+    def __init__(self) -> None:
+        self.username: str = ""
+        self.fullname: str = ""
+        self.homedir: str = ""
+        self.homedirtype: Literal["none", "auto", "selectexisting"] = "auto"
+        self.password: str = ""
+        self.shell: str = "/usr/bin/bash"
+        self.groups: list[str] = []
+
+class EditedGroup():
+    """Class that temporary stores group info during group creation."""
+    def __init__(self) -> None:
+        self.group_name: str = ""
+        self.is_system_group: bool = False
+        self.users: list[str] = []
+
+class GroupMemberUser():
+    """Class that stores user membership information for the group member manager dialog"""
+    def __init__(self, marked, name, is_member) -> None:
+        self.marked: bool = marked
+        self.name: str = name
+        self.is_member: bool = is_member

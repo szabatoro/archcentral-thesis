@@ -3,8 +3,10 @@ from PySide6.QtWidgets import QApplication, QMainWindow
 from archcentral.ui.views.sysinfo import SysInfoModule
 from archcentral.ui.views.packagemanager import PackageManagerModule
 from archcentral.ui.views.servicemanager import ServiceManagerModule
+from archcentral.ui.views.usergroupmanager import UserGroupManager
 from archcentral.ui.designer.mainwindow import Ui_MainWindow
 import sys
+from getpass import getuser
 
 # Main window of the application. All the modules will be loaded within this window
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -16,19 +18,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.sysinfo_widget: SysInfoModule = SysInfoModule()
         self.package_manager_widget: PackageManagerModule = PackageManagerModule()
         self.service_manager_widget: ServiceManagerModule = ServiceManagerModule()
+        self.user_group_manager_widget: UserGroupManager = UserGroupManager()
+
+        self.welcome_label.setText(f"Welcome, {getuser()}!")
 
         # Gracefully shut down threads when exiting the app
-        QApplication.instance().aboutToQuit.connect(
-            self.service_manager_widget.cleanup_thread
-        )
-        QApplication.instance().aboutToQuit.connect(
-            self.package_manager_widget.cleanup_thread
-        )
+        QApplication.instance().aboutToQuit.connect(self._call_module_thread_cleaners)
 
         # setting up the displayarea stacked widgets with the modules
         self.display_area.addWidget(self.sysinfo_widget)
         self.display_area.addWidget(self.package_manager_widget)
         self.display_area.addWidget(self.service_manager_widget)
+        self.display_area.addWidget(self.user_group_manager_widget)
         self.display_area.setCurrentWidget(self.sysinfo_widget)
 
         # setting up the buttons
@@ -36,9 +37,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.sys_info_button.clicked.connect(self.handle_sidebar)
         self.package_manager_button.clicked.connect(self.handle_sidebar)
         self.service_manager_button.clicked.connect(self.handle_sidebar)
+        self.user_group_manager_button.clicked.connect(self.handle_sidebar)
 
-    # handling switching between modules via sidebar
     def handle_sidebar(self) -> None:
+        """Handles switching between modules via the sidebar."""
         # check the sender of the signal
         clicked_button: QObject = self.sender()
         # open the appropriate module
@@ -52,6 +54,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             case self.service_manager_button:
                 if self.display_area.currentWidget() is not self.service_manager_widget:
                     self.display_area.setCurrentWidget(self.service_manager_widget)
+            case self.user_group_manager_button:
+                if self.display_area.currentWidget() is not self.user_group_manager_widget:
+                    self.display_area.setCurrentWidget(self.user_group_manager_widget)
+
+    def _call_module_thread_cleaners(self) -> None:
+        self.package_manager_widget.cleanup_thread()
+        self.service_manager_widget.cleanup_thread()
+        self.user_group_manager_widget.cleanup_thread()
+
 
 # main function to launch the program
 def main():

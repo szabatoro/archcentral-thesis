@@ -33,7 +33,7 @@ class ServiceManagerController(QObject):
         # Lock object to prevent native systemctl lock crashing the qprocesses or working with non-up-to-date data
         self.systemctl_lock: Lock = Lock()
 
-        self.systemctl_operation_done.connect(self.list_units_for_refresh)
+        self.systemctl_operation_done.connect(lambda type: self.list_units(True, type))
 
     def _acquire_systemctl(self) -> bool:
         """Activates the systemctl lock and retuns True, if its already locked it emits a signal and returns False."""
@@ -72,35 +72,26 @@ class ServiceManagerController(QObject):
 
         return processed_unitlist
 
-    def list_units_for_init(self, unit_type: Literal["service", "timer", "socket"]) -> None:
-        """Returns unit lists to for respective categories. Used when initializing lists."""
-        system_units: list[SystemdServiceInfo] = self._list_units_internal(unit_type, True)
-        user_units: list[SystemdServiceInfo] = self._list_units_internal(unit_type, False)
-        match unit_type:
-            case "service":
-                    self.services_fetched_for_init.emit(True, system_units)
-                    self.services_fetched_for_init.emit(False, user_units)
-            case "timer":
-                    self.timers_fetched_for_init.emit(True, system_units)
-                    self.timers_fetched_for_init.emit(False, user_units)
-            case "socket":
-                    self.sockets_fetched_for_init.emit(True, system_units)
-                    self.sockets_fetched_for_init.emit(False, user_units)
-
-    def list_units_for_refresh(self, unit_type: Literal["service", "timer", "socket"]) -> None:
-        """Returns unit lists to for respective categories. Used after systemd operations."""
-        system_units: list[SystemdServiceInfo] = self._list_units_internal(unit_type, True)
-        user_units: list[SystemdServiceInfo] = self._list_units_internal(unit_type, False)
-        match unit_type:
-            case "service":
-                    self.services_fetched_for_refresh.emit(True, system_units)
-                    self.services_fetched_for_refresh.emit(False, user_units)
-            case "timer":
-                    self.timers_fetched_for_refresh.emit(True, system_units)
-                    self.timers_fetched_for_refresh.emit(False, user_units)
-            case "socket":
-                    self.sockets_fetched_for_refresh.emit(True, system_units)
-                    self.sockets_fetched_for_refresh.emit(False, user_units)
+    def list_units(self, is_for_refresh: bool, is_system_level: bool, unit_type: Literal["service", "timer", "socket"]) -> None:
+        """Returns unit lists for their respective categories."""
+        self._acquire_systemctl()
+        units: list[SystemdServiceInfo] = self._list_units_internal(unit_type, is_system_level)
+        if is_for_refresh:
+            match unit_type:
+                case "service":
+                        self.services_fetched_for_refresh.emit(is_system_level, units)
+                case "timer":
+                        self.timers_fetched_for_refresh.emit(is_system_level, units)
+                case "socket":
+                        self.sockets_fetched_for_refresh.emit(is_system_level, units)
+        else:
+            match unit_type:
+                case "service":
+                        self.services_fetched_for_init.emit(is_system_level, units)
+                case "timer":
+                        self.timers_fetched_for_init.emit(is_system_level, units)
+                case "socket":
+                        self.sockets_fetched_for_init.emit(is_system_level, units)
 
         self._release_systemctl()
 
