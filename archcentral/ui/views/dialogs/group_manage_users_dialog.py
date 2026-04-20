@@ -2,7 +2,7 @@ from PySide6.QtCore import QSortFilterProxyModel
 from archcentral.helpers.custom_classes import GroupInfo, GroupMemberUser
 from archcentral.models.dialogs.group_manage_users_list import GroupManageUsersListTableModel
 from archcentral.ui.designer.dialogs.groupmanageusersdialog import Ui_GroupManageUsersDialog
-from PySide6.QtWidgets import QDialog
+from PySide6.QtWidgets import QDialog, QDialogButtonBox
 from PySide6.QtGui import Qt
 
 class GroupManageUsersDialog(QDialog, Ui_GroupManageUsersDialog):
@@ -15,13 +15,24 @@ class GroupManageUsersDialog(QDialog, Ui_GroupManageUsersDialog):
 
         self.setWindowTitle(f"Manage users for group {self.group.name}")
 
+        self.button_box.button(QDialogButtonBox.Ok).setDisabled(True)
+
         self.marked_users: list[list[str, bool]] = []
 
         self.initialize_model()
 
         self.user_list_table.clicked.connect(self.on_user_list_table_clicked)
 
+    def field_validator(self):
+        """Checks fields for validity, disables OK button accordingly."""
+        no_user_selected: bool = False if self.user_list_model.get_marked_users() else True
+
+        self.button_box.button(QDialogButtonBox.Ok).setDisabled(no_user_selected)
+
+        return no_user_selected
+
     def initialize_model(self) -> None:
+        """Initializes the model for displaying and choosing group members."""
         model_data: list[GroupMemberUser] = []
         for user in self.userlist:
             user_in_group: bool = user in self.group.users
@@ -37,4 +48,5 @@ class GroupManageUsersDialog(QDialog, Ui_GroupManageUsersDialog):
         self.user_list_table.setModel(self.user_list_proxy_model)
 
     def on_user_list_table_clicked(self) -> None:
-        self.marked_users = self.user_list_model.get_marked_users()
+        if self.field_validator():
+            self.marked_users = self.user_list_model.get_marked_users()

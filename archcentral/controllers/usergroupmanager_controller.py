@@ -113,8 +113,6 @@ class UserGroupManagerController(QObject):
 
     def modify_group_users(self, groupname: str, users: list[str, bool]) -> None:
         """Adds and removes users from a group."""
-        if not users or not groupname:
-            return None
 
         user_add: list[str] = []
         user_remove: list[str] = []
