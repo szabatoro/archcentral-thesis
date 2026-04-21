@@ -145,6 +145,11 @@ class Ui_SysInfo(object):
 
         self.verticalLayout_6.addWidget(self.network_active_interface)
 
+        self.network_traffic_label = QLabel(self.network_info)
+        self.network_traffic_label.setObjectName(u"network_traffic_label")
+
+        self.verticalLayout_6.addWidget(self.network_traffic_label)
+
         self.network_local_ip = QLabel(self.network_info)
         self.network_local_ip.setObjectName(u"network_local_ip")
 
@@ -307,6 +312,7 @@ class Ui_SysInfo(object):
         self.swap_amount.setText(QCoreApplication.translate("SysInfo", u"Swap disabled.", None))
         self.network_title.setText(QCoreApplication.translate("SysInfo", u"Network", None))
         self.network_active_interface.setText(QCoreApplication.translate("SysInfo", u"Active interface: ", None))
+        self.network_traffic_label.setText(QCoreApplication.translate("SysInfo", u"Network traffic:", None))
         self.network_local_ip.setText(QCoreApplication.translate("SysInfo", u"Local IP: ", None))
         self.network_public_ip.setText(QCoreApplication.translate("SysInfo", u"Public IP:", None))
 #if QT_CONFIG(tooltip)

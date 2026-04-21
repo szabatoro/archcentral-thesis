@@ -11,8 +11,17 @@ import time
 # Class intended to be used by the sysinfo module to fetch system information
 class SysInfoController(QObject):
     # Signals
+    public_ip_fetched: Signal = Signal(str, str)
+    cpu_info_fetched: Signal = Signal(str, int, int)
+    initial_ram_info_fetched: Signal = Signal(list, list, float, float, float)
+    ram_info_fetched: Signal = Signal(list, list, float, float, float)
+    network_interface_fetched: Signal = Signal(str, str)
+    cpu_freqs_fetched: Signal = Signal(list)
+    network_traffic_fetched: Signal = Signal(int, int)
+
     kernel_fetched: Signal = Signal(str)
     hostname_fetched: Signal = Signal(str)
+    uptime_fetched: Signal = Signal(str)
 
     def __init__(self) -> None:
         super().__init__()
@@ -41,10 +50,10 @@ class SysInfoController(QObject):
         cpu_file.close()
 
         cpu_model: str = re.search(r'model name\s+: (.+)\n', cpu_str).group(1)
-        cpu_cores: str = psutil.cpu_count(logical=False)
-        cpu_threads: str = psutil.cpu_count(logical=True)
+        cpu_cores: int = psutil.cpu_count(logical=False)
+        cpu_threads: int = psutil.cpu_count(logical=True)
 
-        return (cpu_model, cpu_cores, cpu_threads)
+        self.cpu_info_fetched.emit(cpu_model, cpu_cores, cpu_threads)
 
     # get a list of cpu cores utilisation %
     def read_cpu_freqs(self) -> list[float]:
@@ -52,7 +61,7 @@ class SysInfoController(QObject):
         Returns a list of floats containing the load on each thread.
         """
 
-        return psutil.cpu_percent(percpu=True)
+        self.cpu_freqs_fetched.emit(psutil.cpu_percent(percpu=True))
 
 
     # fetch ipify.org for public ip
@@ -77,13 +86,13 @@ class SysInfoController(QObject):
         except URLError:
             public_ip_v6 = "There is no IPv6 connectivity."
 
-        return (public_ip_v4, public_ip_v6)
+        self.public_ip_fetched.emit(public_ip_v4, public_ip_v6)
 
 
     ### RAM ###
     # psutil returns bytes, convert to kilobytes as a more convenient unit
     # doesn't read swap status if unnecessary
-    def read_ram(self):
+    def read_ram(self, is_for_init: bool):
         """
         Returns a tuple with the following items:
             0: Used/Total RAM (for label)
@@ -99,7 +108,10 @@ class SysInfoController(QObject):
         swap_total: float = float(psutil.swap_memory().total)
         swap_used: float = float(psutil.swap_memory().used)
         swap_readable: str = convert_mem_unit(swap_used, swap_total)
-        return (ram_readable, swap_readable, ram_used, swap_used, ram_total)
+        if is_for_init:
+            self.ram_info_fetched.emit(ram_readable, swap_readable, ram_used, swap_used, ram_total)
+        else:
+            self.initial_ram_info_fetched.emit(ram_readable, swap_readable, ram_used, swap_used, ram_total)
 
     def read_network_interface(self):
         """
@@ -125,7 +137,7 @@ class SysInfoController(QObject):
             else:
                 ip = "Not connected."
 
-        return (ip, self.active_network_interface)
+        self.network_interface_fetched.emit(ip, self.active_network_interface)
 
     def read_network_traffic(self):
         """
@@ -150,32 +162,26 @@ class SysInfoController(QObject):
                 current_br: float = psutil.net_io_counters(pernic=True)[self.active_network_interface].bytes_recv
                 diff_br: float = current_br - self.br
                 self.br = current_br
-                return (diff_bs, diff_br)
+                self.network_traffic_fetched.emit(diff_bs, diff_br)
         else:
-            return None
+            return
 
     def fetch_kernel(self):
         """
         Runs uname through qprocess and emits the kernel_fetched signal.
         """
         self.kernel_handler.start_process("uname",  ["-sr"])
-        self.kernel_handler.finished.connect(self._fetch_kernel_internal)
-
-    def _fetch_kernel_internal(self, data):
-        self.kernel_fetched.emit(data)
+        self.kernel_handler.finished.connect(self.kernel_fetched.emit)
 
     def fetch_hostname(self):
         """
         Runs uname through qprocess and emits the hostname_fetched signal.
         """
         self.hostname_handler.start_process("uname",  ["-n"])
-        self.hostname_handler.finished.connect(self._fetch_hostname_internal)
-
-    def _fetch_hostname_internal(self, data):
-        self.hostname_fetched.emit(data)
+        self.hostname_handler.finished.connect(self.hostname_fetched.emit)
 
     def fetch_uptime(self):
         """
         Returns a H:M:S formatted uptime string.
         """
-        return time.strftime("%Hh:%Mm:%Ss", time.gmtime(time.time() - psutil.boot_time()))
+        self.uptime_fetched.emit(time.strftime("%Hh:%Mm:%Ss", time.gmtime(time.time() - psutil.boot_time())))

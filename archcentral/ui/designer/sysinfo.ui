@@ -219,6 +219,13 @@
               </widget>
              </item>
              <item>
+              <widget class="QLabel" name="network_traffic_label">
+               <property name="text">
+                <string>Network traffic:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
               <widget class="QLabel" name="network_local_ip">
                <property name="text">
                 <string>Local IP: </string>
