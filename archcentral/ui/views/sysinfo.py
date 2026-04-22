@@ -116,7 +116,7 @@ class SysInfoModule(QWidget, Ui_SysInfo):
         # draw the ram graph
         self.ram_graph.plotter([used_ram, used_swap], total_ram)
 
-    def populate_cpu_info(self, cpu_model, cpu_cores, cpu_threads):
+    def populate_cpu_info(self, cpu_model: str, cpu_cores: int, cpu_threads: int):
         self.cpu_name.setText(f"Name: {cpu_model}")
         self.cpu_core_count.setText(f"Core count: {cpu_cores} cores, {cpu_threads} threads")
         cpu_labels = []
@@ -131,30 +131,30 @@ class SysInfoModule(QWidget, Ui_SysInfo):
         self.network_local_ip.setText(f"Local IP: {local_ip}")
         self.network_legend.build(self.network_graph.get_legend_data())
 
-    def populate_cpu_freqs(self, cpu_corefreqs):
+    def populate_cpu_freqs(self, cpu_corefreqs: list[float]):
         ### CPU ###
         # get a list of cpu cores utilisation %
         # draw the cpu graph with every core
         self.cpu_graph.plotter(cpu_corefreqs, 100.0)
 
-    def populate_network_traffic(self, bytes_sent, bytes_recieved):
+    def populate_network_traffic(self, bytes_sent: int, bytes_recieved: int):
         bytes_sent_readable: str = unit_converter(bytes_sent, as_tuple=False)
         bytes_recieved_readable : str= unit_converter(bytes_recieved, as_tuple=False)
         self.network_traffic_label.setText(f"Network traffic: {bytes_sent_readable}/s UP, {bytes_recieved_readable}/s DOWN")
         self.network_graph.plotter([bytes_sent, bytes_recieved])
 
     ############### Software info ###############
-    def populate_de_info(self, window_manager, desktop_environment, display_server, locale):
+    def populate_de_info(self, window_manager: str, desktop_environment: str, display_server: str, locale: str):
         self.wm_label.setText(f"Window manager: {window_manager if window_manager else "Unknown"}")
         self.de_label.setText(f"Desktop environment: {desktop_environment if desktop_environment else "Unknown"}")
         self.ds.setText(f"Display server: {display_server}")
         self.locale_label.setText(f"Locale: {locale}")
 
-    def populate_archcentral_build_info(self, pythonver, pysidever):
+    def populate_archcentral_build_info(self, pythonver: str, pysidever: str):
         self.pythonver_label.setText(f"Python version: {pythonver}")
         self.pysidever_label.setText(f"Pyside/Qt version: {pysidever}")
 
-    def populate_system_info(self, kernelver, hostname):
+    def populate_system_info(self, kernelver: str, hostname: str):
         self.kernelver_label.setText(f"Linux kernel version: {kernelver}")
         self.hostname.setText(f"Hostname: {hostname}")
 
