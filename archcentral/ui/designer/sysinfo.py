@@ -70,6 +70,7 @@ class Ui_SysInfo(object):
 
         self.cpu_name = QLabel(self.cpu_info)
         self.cpu_name.setObjectName(u"cpu_name")
+        self.cpu_name.setWordWrap(True)
 
         self.verticalLayout_4.addWidget(self.cpu_name)
 
@@ -147,6 +148,7 @@ class Ui_SysInfo(object):
 
         self.network_traffic_label = QLabel(self.network_info)
         self.network_traffic_label.setObjectName(u"network_traffic_label")
+        self.network_traffic_label.setWordWrap(True)
 
         self.verticalLayout_6.addWidget(self.network_traffic_label)
 
@@ -309,6 +311,7 @@ class Ui_SysInfo(object):
 
         self.pythonver_label = QLabel(self.software)
         self.pythonver_label.setObjectName(u"pythonver_label")
+        self.pythonver_label.setWordWrap(True)
 
         self.archcentral.addWidget(self.pythonver_label)
 

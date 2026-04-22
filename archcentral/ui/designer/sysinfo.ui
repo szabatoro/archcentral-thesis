@@ -92,6 +92,9 @@
                <property name="text">
                 <string>Name: </string>
                </property>
+               <property name="wordWrap">
+                <bool>true</bool>
+               </property>
               </widget>
              </item>
              <item>
@@ -222,6 +225,9 @@
               <widget class="QLabel" name="network_traffic_label">
                <property name="text">
                 <string>Network traffic:</string>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -477,6 +483,9 @@
           <widget class="QLabel" name="pythonver_label">
            <property name="text">
             <string>Python version:</string>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
