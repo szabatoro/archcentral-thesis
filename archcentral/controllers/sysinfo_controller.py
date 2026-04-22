@@ -202,7 +202,7 @@ class SysInfoController(QObject):
         wm_list = {
             "kwin": "KWin",
             "kwin_wayland": "KWin",
-            "mutter": "Mutter",
+            "gnome_shell": "Mutter",
             "xfwm4": "Xfwm4",
             "cosmic-comp": "Cosmic",
             "i3": "i3",
