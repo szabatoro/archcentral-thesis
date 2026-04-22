@@ -12,9 +12,10 @@ class SysInfoModule(QWidget, Ui_SysInfo):
     fetch_network_interface_signal: Signal = Signal()
     fetch_network_traffic_signal: Signal = Signal()
 
-    fetch_hostname_signal: Signal = Signal()
-    fetch_kernel_signal: Signal = Signal()
+    fetch_system_info_signal: Signal = Signal()
     fetch_uptime_signal: Signal = Signal()
+    fetch_de_info_signal: Signal = Signal()
+    fetch_buildinfo_signal: Signal = Signal()
 
     def __init__(self) -> None:
         super().__init__()
@@ -30,6 +31,7 @@ class SysInfoModule(QWidget, Ui_SysInfo):
 
         self.sysret_thread.start()
 
+
         self.sysret.public_ip_fetched.connect(self.show_public_ip)
         self.sysret.initial_ram_info_fetched.connect(self.populate_initial_ram_info)
         self.sysret.ram_info_fetched.connect(self.populate_ram_info)
@@ -38,9 +40,10 @@ class SysInfoModule(QWidget, Ui_SysInfo):
         self.sysret.cpu_freqs_fetched.connect(self.populate_cpu_freqs)
         self.sysret.network_traffic_fetched.connect(self.populate_network_traffic)
 
-        self.sysret.kernel_fetched.connect(lambda kr: self.kernel_name.setText(f"Kernel: {kr}"))
-        self.sysret.hostname_fetched.connect(lambda hn: self.hostname.setText(f"Hostname: {hn}"))
+        self.sysret.system_info_fetched.connect(self.populate_system_info)
         self.sysret.uptime_fetched.connect(lambda up: self.uptime.setText(f"Uptime: {up}"))
+        self.sysret.de_info_fetched.connect(self.populate_de_info)
+        self.sysret.build_info_fetched.connect(self.populate_archcentral_build_info)
 
         self.fetch_cpu_info_signal.connect(self.sysret.read_cpu_info)
         self.fetch_cpu_freqs_signal.connect(self.sysret.read_cpu_freqs)
@@ -48,18 +51,20 @@ class SysInfoModule(QWidget, Ui_SysInfo):
         self.fetch_network_interface_signal.connect(self.sysret.read_network_interface)
         self.fetch_network_traffic_signal.connect(self.sysret.read_network_traffic)
 
-        self.fetch_kernel_signal.connect(self.sysret.fetch_kernel)
-        self.fetch_hostname_signal.connect(self.sysret.fetch_hostname)
+        self.fetch_system_info_signal.connect(self.sysret.fetch_system_info)
         self.fetch_uptime_signal.connect(self.sysret.fetch_uptime)
+        self.fetch_de_info_signal.connect(self.sysret.fetch_de_info)
+        self.fetch_buildinfo_signal.connect(self.sysret.fetch_build_info)
 
         # Gather info once at launch
         self.fetch_cpu_info_signal.emit()
         self.fetch_network_interface_signal.emit()
         self.fetch_ram_info_signal.emit(True)
 
-        self.fetch_hostname_signal.emit()
-        self.fetch_kernel_signal.emit()
+        self.fetch_system_info_signal.emit()
         self.fetch_uptime_signal.emit()
+        self.fetch_de_info_signal.emit()
+        self.fetch_buildinfo_signal.emit()
 
         # Set up a timer for the live monitoring
         self.timer: QTimer = QTimer()
@@ -139,13 +144,19 @@ class SysInfoModule(QWidget, Ui_SysInfo):
         self.network_graph.plotter([bytes_sent, bytes_recieved])
 
     ############### Software info ###############
-    def static_sw_info(self):
-        self.sysret.fetch_hostname()
-        self.sysret.fetch_kernel()
+    def populate_de_info(self, window_manager, desktop_environment, display_server, locale):
+        self.wm_label.setText(f"Window manager: {window_manager if window_manager else "Unknown"}")
+        self.de_label.setText(f"Desktop environment: {desktop_environment if desktop_environment else "Unknown"}")
+        self.ds.setText(f"Display server: {display_server}")
+        self.locale_label.setText(f"Locale: {locale}")
 
-    def sw_info_monitor(self) -> None:
-        uptime: str = self.sysret.fetch_uptime()
-        self.uptime.setText(f"Uptime: {uptime}")
+    def populate_archcentral_build_info(self, pythonver, pysidever):
+        self.pythonver_label.setText(f"Python version: {pythonver}")
+        self.pysidever_label.setText(f"Pyside/Qt version: {pysidever}")
+
+    def populate_system_info(self, kernelver, hostname):
+        self.kernelver_label.setText(f"Linux kernel version: {kernelver}")
+        self.hostname.setText(f"Hostname: {hostname}")
 
     def cleanup_thread(self) -> None:
         """Gracefully stops threads."""

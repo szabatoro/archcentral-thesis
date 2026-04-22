@@ -15,9 +15,9 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QHBoxLayout, QLabel, QPushButton,
-    QSizePolicy, QSpacerItem, QTabWidget, QVBoxLayout,
-    QWidget)
+from PySide6.QtWidgets import (QApplication, QGridLayout, QHBoxLayout, QLabel,
+    QPushButton, QSizePolicy, QSpacerItem, QTabWidget,
+    QVBoxLayout, QWidget)
 
 from archcentral.ui.custom_widgets.graph import (CPUGraph, NetworkGraph, RAMGraph)
 from archcentral.ui.custom_widgets.legendwidget import LegendWidget
@@ -210,8 +210,55 @@ class Ui_SysInfo(object):
         self.content.addTab(self.hardware, "")
         self.software = QWidget()
         self.software.setObjectName(u"software")
-        self.verticalLayout_7 = QVBoxLayout(self.software)
-        self.verticalLayout_7.setObjectName(u"verticalLayout_7")
+        self.gridLayout = QGridLayout(self.software)
+        self.gridLayout.setObjectName(u"gridLayout")
+        self.gui = QWidget(self.software)
+        self.gui.setObjectName(u"gui")
+        self.gui.setMinimumSize(QSize(0, 0))
+        self.verticalLayout_9 = QVBoxLayout(self.gui)
+        self.verticalLayout_9.setObjectName(u"verticalLayout_9")
+        self.verticalSpacer_9 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_9.addItem(self.verticalSpacer_9)
+
+        self.gui_title = QLabel(self.gui)
+        self.gui_title.setObjectName(u"gui_title")
+        self.gui_title.setFont(font1)
+
+        self.verticalLayout_9.addWidget(self.gui_title)
+
+        self.wm_label = QLabel(self.gui)
+        self.wm_label.setObjectName(u"wm_label")
+
+        self.verticalLayout_9.addWidget(self.wm_label)
+
+        self.de_label = QLabel(self.gui)
+        self.de_label.setObjectName(u"de_label")
+
+        self.verticalLayout_9.addWidget(self.de_label)
+
+        self.ds = QLabel(self.gui)
+        self.ds.setObjectName(u"ds")
+
+        self.verticalLayout_9.addWidget(self.ds)
+
+        self.locale_label = QLabel(self.gui)
+        self.locale_label.setObjectName(u"locale_label")
+
+        self.verticalLayout_9.addWidget(self.locale_label)
+
+        self.verticalSpacer_10 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_9.addItem(self.verticalSpacer_10)
+
+
+        self.gridLayout.addWidget(self.gui, 1, 0, 1, 1)
+
+        self.widget_3 = QWidget(self.software)
+        self.widget_3.setObjectName(u"widget_3")
+
+        self.gridLayout.addWidget(self.widget_3, 2, 0, 1, 1)
+
         self.system = QWidget(self.software)
         self.system.setObjectName(u"system")
         self.verticalLayout_8 = QVBoxLayout(self.system)
@@ -231,10 +278,10 @@ class Ui_SysInfo(object):
 
         self.verticalLayout_8.addWidget(self.hostname)
 
-        self.kernel_name = QLabel(self.system)
-        self.kernel_name.setObjectName(u"kernel_name")
+        self.kernelver_label = QLabel(self.system)
+        self.kernelver_label.setObjectName(u"kernelver_label")
 
-        self.verticalLayout_8.addWidget(self.kernel_name)
+        self.verticalLayout_8.addWidget(self.kernelver_label)
 
         self.uptime = QLabel(self.system)
         self.uptime.setObjectName(u"uptime")
@@ -246,49 +293,43 @@ class Ui_SysInfo(object):
         self.verticalLayout_8.addItem(self.verticalSpacer_8)
 
 
-        self.verticalLayout_7.addWidget(self.system)
+        self.gridLayout.addWidget(self.system, 0, 0, 1, 1)
 
-        self.gui = QWidget(self.software)
-        self.gui.setObjectName(u"gui")
-        self.gui.setMinimumSize(QSize(0, 0))
-        self.verticalLayout_9 = QVBoxLayout(self.gui)
-        self.verticalLayout_9.setObjectName(u"verticalLayout_9")
-        self.verticalSpacer_9 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.archcentral = QVBoxLayout()
+        self.archcentral.setObjectName(u"archcentral")
+        self.verticalSpacer_11 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
-        self.verticalLayout_9.addItem(self.verticalSpacer_9)
+        self.archcentral.addItem(self.verticalSpacer_11)
 
-        self.gui_title = QLabel(self.gui)
-        self.gui_title.setObjectName(u"gui_title")
-        self.gui_title.setFont(font1)
+        self.archcentral_title = QLabel(self.software)
+        self.archcentral_title.setObjectName(u"archcentral_title")
+        self.archcentral_title.setFont(font1)
 
-        self.verticalLayout_9.addWidget(self.gui_title)
+        self.archcentral.addWidget(self.archcentral_title)
 
-        self.de = QLabel(self.gui)
-        self.de.setObjectName(u"de")
+        self.pythonver_label = QLabel(self.software)
+        self.pythonver_label.setObjectName(u"pythonver_label")
 
-        self.verticalLayout_9.addWidget(self.de)
+        self.archcentral.addWidget(self.pythonver_label)
 
-        self.wm = QLabel(self.gui)
-        self.wm.setObjectName(u"wm")
+        self.pysidever_label = QLabel(self.software)
+        self.pysidever_label.setObjectName(u"pysidever_label")
 
-        self.verticalLayout_9.addWidget(self.wm)
+        self.archcentral.addWidget(self.pysidever_label)
 
-        self.verticalSpacer_10 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.verticalSpacer_12 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
-        self.verticalLayout_9.addItem(self.verticalSpacer_10)
+        self.archcentral.addItem(self.verticalSpacer_12)
 
 
-        self.verticalLayout_7.addWidget(self.gui)
+        self.gridLayout.addLayout(self.archcentral, 0, 1, 1, 1)
 
-        self.widget_3 = QWidget(self.software)
-        self.widget_3.setObjectName(u"widget_3")
+        self.verticalLayout_10 = QVBoxLayout()
+        self.verticalLayout_10.setObjectName(u"verticalLayout_10")
 
-        self.verticalLayout_7.addWidget(self.widget_3)
+        self.gridLayout.addLayout(self.verticalLayout_10, 1, 1, 1, 1)
 
         self.content.addTab(self.software, "")
-        self.processes = QWidget()
-        self.processes.setObjectName(u"processes")
-        self.content.addTab(self.processes, "")
 
         self.verticalLayout.addWidget(self.content)
 
@@ -320,14 +361,18 @@ class Ui_SysInfo(object):
 #endif // QT_CONFIG(tooltip)
         self.network_public_ip_switch.setText(QCoreApplication.translate("SysInfo", u"Get IP", None))
         self.content.setTabText(self.content.indexOf(self.hardware), QCoreApplication.translate("SysInfo", u"Hardware", None))
+        self.gui_title.setText(QCoreApplication.translate("SysInfo", u"GUI", None))
+        self.wm_label.setText(QCoreApplication.translate("SysInfo", u"Window manager:", None))
+        self.de_label.setText(QCoreApplication.translate("SysInfo", u"Desktop environment:", None))
+        self.ds.setText(QCoreApplication.translate("SysInfo", u"Display server:", None))
+        self.locale_label.setText(QCoreApplication.translate("SysInfo", u"Locale: ", None))
         self.system_title.setText(QCoreApplication.translate("SysInfo", u"System", None))
         self.hostname.setText(QCoreApplication.translate("SysInfo", u"Hostname:", None))
-        self.kernel_name.setText(QCoreApplication.translate("SysInfo", u"Kernel:", None))
+        self.kernelver_label.setText(QCoreApplication.translate("SysInfo", u"Linux kernel version:", None))
         self.uptime.setText(QCoreApplication.translate("SysInfo", u"Uptime: ", None))
-        self.gui_title.setText(QCoreApplication.translate("SysInfo", u"GUI", None))
-        self.de.setText(QCoreApplication.translate("SysInfo", u"Desktop environment:", None))
-        self.wm.setText(QCoreApplication.translate("SysInfo", u"Window manager:", None))
+        self.archcentral_title.setText(QCoreApplication.translate("SysInfo", u"ArchCentral", None))
+        self.pythonver_label.setText(QCoreApplication.translate("SysInfo", u"Python version:", None))
+        self.pysidever_label.setText(QCoreApplication.translate("SysInfo", u"PySide/Qt version:", None))
         self.content.setTabText(self.content.indexOf(self.software), QCoreApplication.translate("SysInfo", u"Software", None))
-        self.content.setTabText(self.content.indexOf(self.processes), QCoreApplication.translate("SysInfo", u"Processes", None))
     # retranslateUi
 

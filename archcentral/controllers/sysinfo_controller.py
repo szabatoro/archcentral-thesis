@@ -1,12 +1,15 @@
+import sys
 from urllib.request import urlopen
 from urllib.error import URLError, HTTPError
 from archcentral.helpers.unitconverter import convert_mem_unit
 from PySide6.QtCore import QObject,  Signal
+from PySide6 import __version__ as pysidever
 from archcentral.helpers.qprocesshelper import QProcessHandler
 import re # for taking data from files if info not retrievable by psutil
 import psutil # for everything else
 import socket
 import time
+import os
 
 # Class intended to be used by the sysinfo module to fetch system information
 class SysInfoController(QObject):
@@ -19,9 +22,10 @@ class SysInfoController(QObject):
     cpu_freqs_fetched: Signal = Signal(list)
     network_traffic_fetched: Signal = Signal(int, int)
 
-    kernel_fetched: Signal = Signal(str)
-    hostname_fetched: Signal = Signal(str)
+    system_info_fetched: Signal = Signal(str, str)
     uptime_fetched: Signal = Signal(str)
+    de_info_fetched: Signal = Signal(str, str, str, str)
+    build_info_fetched: Signal = Signal(str, str)
 
     def __init__(self) -> None:
         super().__init__()
@@ -166,6 +170,11 @@ class SysInfoController(QObject):
         else:
             return
 
+    def fetch_system_info(self):
+        """Fetches kernel version and hostname."""
+        uname = os.uname()
+        self.system_info_fetched.emit(uname.release, uname.nodename)
+
     def fetch_kernel(self):
         """
         Runs uname through qprocess and emits the kernel_fetched signal.
@@ -185,3 +194,50 @@ class SysInfoController(QObject):
         Returns a H:M:S formatted uptime string.
         """
         self.uptime_fetched.emit(time.strftime("%Hh:%Mm:%Ss", time.gmtime(time.time() - psutil.boot_time())))
+
+    def fetch_de_info(self):
+        """Fetches various information about the graphical environment."""
+        detected_wm: str = ""
+        detected_de: str = ""
+        wm_list = {
+            "kwin": "KWin",
+            "kwin_wayland": "KWin",
+            "mutter": "Mutter",
+            "xfwm4": "Xfwm4",
+            "cosmic-comp": "Cosmic",
+            "i3": "i3",
+            "sway": "Sway",
+            "openbox": "Openbox",
+            "awesome": "Awesome",
+            "bspwm": "bspwm",
+            "hyprland": "Hyprland",
+            "labwc": "Labwc"
+        }
+
+        for proc in psutil.process_iter(["name"]):
+            name = proc.info["name"]
+            if name in wm_list.keys():
+                detected_wm = wm_list.get(name)
+                break
+
+        match os.environ.get("XDG_SESSION_DESKTOP"):
+            case "KDE":
+                detected_de = "KDE Plasma"
+            case "gnome":
+                detected_de = "GNOME"
+            case "lxqt" | "lxqt-wayland":
+                detected_de = "LXQT"
+            case "xfce":
+                detected_de = "XFCE"
+            case "cosmic":
+                detected_de = "Cosmic"
+
+        display_server_env = os.environ.get("XDG_SESSION_TYPE")
+        display_server_type = "Wayland" if display_server_env == 'wayland' else "X11"
+        locale = os.environ.get("LANG")
+
+        self.de_info_fetched.emit(detected_wm, detected_de, display_server_type, locale)
+
+    def fetch_build_info(self):
+        """Fetches python and pyside versions used by the application."""
+        self.build_info_fetched.emit(sys.version, pysidever)

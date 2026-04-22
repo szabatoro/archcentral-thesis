@@ -296,8 +296,90 @@
       <attribute name="title">
        <string>Software</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_7">
-       <item>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="1" column="0">
+        <widget class="QWidget" name="gui" native="true">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_9">
+          <item>
+           <spacer name="verticalSpacer_9">
+            <property name="orientation">
+             <enum>Qt::Orientation::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QLabel" name="gui_title">
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>GUI</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="wm_label">
+            <property name="text">
+             <string>Window manager:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="de_label">
+            <property name="text">
+             <string>Desktop environment:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="ds">
+            <property name="text">
+             <string>Display server:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="locale_label">
+            <property name="text">
+             <string>Locale: </string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer_10">
+            <property name="orientation">
+             <enum>Qt::Orientation::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QWidget" name="widget_3" native="true"/>
+       </item>
+       <item row="0" column="0">
         <widget class="QWidget" name="system" native="true">
          <layout class="QVBoxLayout" name="verticalLayout_8">
           <item>
@@ -334,9 +416,9 @@
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="kernel_name">
+           <widget class="QLabel" name="kernelver_label">
             <property name="text">
-             <string>Kernel:</string>
+             <string>Linux kernel version:</string>
             </property>
            </widget>
           </item>
@@ -363,80 +445,67 @@
          </layout>
         </widget>
        </item>
-       <item>
-        <widget class="QWidget" name="gui" native="true">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_9">
-          <item>
-           <spacer name="verticalSpacer_9">
-            <property name="orientation">
-             <enum>Qt::Orientation::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QLabel" name="gui_title">
-            <property name="font">
-             <font>
-              <pointsize>12</pointsize>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>GUI</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="de">
-            <property name="text">
-             <string>Desktop environment:</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="wm">
-            <property name="text">
-             <string>Window manager:</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="verticalSpacer_10">
-            <property name="orientation">
-             <enum>Qt::Orientation::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </widget>
+       <item row="0" column="1">
+        <layout class="QVBoxLayout" name="archcentral">
+         <item>
+          <spacer name="verticalSpacer_11">
+           <property name="orientation">
+            <enum>Qt::Orientation::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLabel" name="archcentral_title">
+           <property name="font">
+            <font>
+             <pointsize>12</pointsize>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>ArchCentral</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="pythonver_label">
+           <property name="text">
+            <string>Python version:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="pysidever_label">
+           <property name="text">
+            <string>PySide/Qt version:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_12">
+           <property name="orientation">
+            <enum>Qt::Orientation::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
        </item>
-       <item>
-        <widget class="QWidget" name="widget_3" native="true"/>
+       <item row="1" column="1">
+        <layout class="QVBoxLayout" name="verticalLayout_10"/>
        </item>
       </layout>
-     </widget>
-     <widget class="QWidget" name="processes">
-      <attribute name="title">
-       <string>Processes</string>
-      </attribute>
      </widget>
     </widget>
    </item>
