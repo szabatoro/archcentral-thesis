@@ -105,6 +105,13 @@
               </widget>
              </item>
              <item>
+              <widget class="QLabel" name="cpu_avg_label">
+               <property name="text">
+                <string>Average load: </string>
+               </property>
+              </widget>
+             </item>
+             <item>
               <widget class="LegendWidget" name="cpu_legend" native="true"/>
              </item>
              <item>

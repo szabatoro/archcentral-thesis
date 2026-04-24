@@ -19,7 +19,7 @@ class SysInfoController(QObject):
     initial_ram_info_fetched: Signal = Signal(list, list, float, float, float)
     ram_info_fetched: Signal = Signal(list, list, float, float, float)
     network_interface_fetched: Signal = Signal(str, str)
-    cpu_freqs_fetched: Signal = Signal(list)
+    cpu_freqs_fetched: Signal = Signal(float, list)
     network_traffic_fetched: Signal = Signal(int, int)
 
     system_info_fetched: Signal = Signal(str, str)
@@ -64,8 +64,9 @@ class SysInfoController(QObject):
         """
         Returns a list of floats containing the load on each thread.
         """
-
-        self.cpu_freqs_fetched.emit(psutil.cpu_percent(percpu=True))
+        cpu_util_avg = psutil.cpu_percent()
+        cpu_freqs_per_thread = psutil.cpu_percent(percpu=True)
+        self.cpu_freqs_fetched.emit(cpu_util_avg, cpu_freqs_per_thread)
 
 
     # fetch ipify.org for public ip
@@ -141,7 +142,7 @@ class SysInfoController(QObject):
             else:
                 ip = "Not connected."
 
-        self.network_interface_fetched.emit(ip, self.active_network_interface)
+        self.network_interface_fetched.emit(self.active_network_interface, ip)
 
     def read_network_traffic(self):
         """

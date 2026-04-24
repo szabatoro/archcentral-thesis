@@ -79,6 +79,11 @@ class Ui_SysInfo(object):
 
         self.verticalLayout_4.addWidget(self.cpu_core_count)
 
+        self.cpu_avg_label = QLabel(self.cpu_info)
+        self.cpu_avg_label.setObjectName(u"cpu_avg_label")
+
+        self.verticalLayout_4.addWidget(self.cpu_avg_label)
+
         self.cpu_legend = LegendWidget(self.cpu_info)
         self.cpu_legend.setObjectName(u"cpu_legend")
 
@@ -351,6 +356,7 @@ class Ui_SysInfo(object):
         self.cpu_title.setText(QCoreApplication.translate("SysInfo", u"CPU", None))
         self.cpu_name.setText(QCoreApplication.translate("SysInfo", u"Name: ", None))
         self.cpu_core_count.setText(QCoreApplication.translate("SysInfo", u"Core count:", None))
+        self.cpu_avg_label.setText(QCoreApplication.translate("SysInfo", u"Average load: ", None))
         self.ram_title.setText(QCoreApplication.translate("SysInfo", u"RAM", None))
         self.ram_amount.setText(QCoreApplication.translate("SysInfo", u"Used:", None))
         self.swap_amount.setText(QCoreApplication.translate("SysInfo", u"Swap disabled.", None))

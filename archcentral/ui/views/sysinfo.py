@@ -60,6 +60,7 @@ class SysInfoModule(QWidget, Ui_SysInfo):
         self.fetch_cpu_info_signal.emit()
         self.fetch_network_interface_signal.emit()
         self.fetch_ram_info_signal.emit(True)
+        self.fetch_network_traffic_signal.emit()
 
         self.fetch_system_info_signal.emit()
         self.fetch_uptime_signal.emit()
@@ -131,10 +132,11 @@ class SysInfoModule(QWidget, Ui_SysInfo):
         self.network_local_ip.setText(f"Local IP: {local_ip}")
         self.network_legend.build(self.network_graph.get_legend_data())
 
-    def populate_cpu_freqs(self, cpu_corefreqs: list[float]):
+    def populate_cpu_freqs(self, cpu_avg: float, cpu_corefreqs: list[float]):
         ### CPU ###
         # get a list of cpu cores utilisation %
         # draw the cpu graph with every core
+        self.cpu_avg_label.setText(f"Average load: {cpu_avg}%")
         self.cpu_graph.plotter(cpu_corefreqs, 100.0)
 
     def populate_network_traffic(self, bytes_sent: int, bytes_recieved: int):
