@@ -5,7 +5,7 @@ from archcentral.helpers.unitconverter import unit_converter
 from archcentral.ui.designer.packagemanager import Ui_PackageManager
 from archcentral.models.pacman_update_list import PacmanUpdateTableModel
 from archcentral.models.pacman_package_list import PacmanPackageListTableModel
-from archcentral.ui.views.dialogs.pacman_conflict_dialog import PacmanConflictDialog
+from archcentral.ui.views.dialogs.pacman_transaction_dialog import PacmanTransactionDialog
 from archcentral.ui.views.dialogs.pacman_update_dialog import PacmanUpdateDialog
 from archcentral.controllers.packagemanager_controller import PackageManagerController
 from datetime import datetime
@@ -17,6 +17,7 @@ class PackageManagerModule(QWidget, Ui_PackageManager):
     initiate_update_fetch_signal: Signal = Signal()
     initiate_update_signal: Signal = Signal(list)
     initiate_package_transaction_signal: Signal = Signal(list)
+    cancel_package_transaction_signal: Signal = Signal()
     package_conflict_input_signal: Signal = Signal(bool)
 
     def __init__(self) -> None:
@@ -36,6 +37,7 @@ class PackageManagerModule(QWidget, Ui_PackageManager):
         self.refresh_package_list_signal.connect(self.pmc.list_all_packages_for_refresh)
         self.initiate_package_transaction_signal.connect(self.pmc.run_package_transaction)
         self.package_conflict_input_signal.connect(self.pmc.decide_pacman_conflict)
+        self.cancel_package_transaction_signal.connect(self.pmc.cancel_transaction)
 
         # Hook up model to the update table view to initialize it
         self.update_list_model: PacmanUpdateTableModel = PacmanUpdateTableModel([])
@@ -73,6 +75,7 @@ class PackageManagerModule(QWidget, Ui_PackageManager):
         # Run package transaction and refresh the package model upon transaction completion
         self.pmc.transaction_started.connect(lambda: self.package_det_out_tabs.setCurrentIndex(1))
         self.pmc.transaction_finished.connect(self.refresh_package_list_signal.emit)
+        self.pmc.indicate_unsupported_multichoice.connect(self.open_package_transaction_unsupported_multichoice_dialog)
         self.run_transaction_button.pressed.connect(self.initiate_package_transaction)
 
         # Open the package conflict dialog if the controller detects a package conflict
@@ -195,13 +198,22 @@ class PackageManagerModule(QWidget, Ui_PackageManager):
         self.package_details_tree.addTopLevelItem(groups_item)
 
     def open_package_conflict_dialog(self, pkg1, pkg2, pkg_to_remove) -> None:
-        """Opens dialog box for update confirmation. Returns a boolean value depending on if the dialog is accepted or not."""
-        dialog: PacmanConflictDialog = PacmanConflictDialog(pkg1, pkg2, pkg_to_remove)
+        """Opens dialog box for package conflict resolution confirmation."""
+        dialog: PacmanTransactionDialog = PacmanTransactionDialog("conflict", pkg1, pkg2, pkg_to_remove)
         result = dialog.exec()
         if result == QDialog.Accepted:
             self.package_conflict_input_signal.emit(True)
         elif result == QDialog.Rejected:
             self.package_conflict_input_signal.emit(False)
+
+    def open_package_transaction_unsupported_multichoice_dialog(self) -> None:
+        """Opens dialog box for unsupported transaction canceling."""
+        dialog: PacmanTransactionDialog = PacmanTransactionDialog("multichoice")
+        result = dialog.exec()
+        if result == QDialog.Accepted:
+            self.cancel_package_transaction_signal.emit()
+        elif result == QDialog.Rejected:
+            self.cancel_package_transaction_signal.emit()
 
     def cleanup_thread(self) -> None:
         """Gracefully stops threads."""

@@ -18,6 +18,8 @@ class PackageManagerController(QObject):
     pacman_lock_activated: Signal = Signal()
     pacman_lock_deactivated: Signal = Signal()
     write_to_stdin: Signal = Signal(str)
+    indicate_unsupported_multichoice: Signal = Signal()
+    send_sigint_to_transaction: Signal = Signal()
     pacman_package_conflict: Signal = Signal(str, str, str)
 
     def __init__(self) -> None:
@@ -152,8 +154,15 @@ class PackageManagerController(QObject):
             package1, package2, to_remove = match.groups()
             self.pacman_package_conflict.emit(package1, package2, to_remove)
 
+        provider_pattern = r":: There are \d+ providers available for (\S+):"
+        if re.search(provider_pattern, line):
+            self.indicate_unsupported_multichoice.emit()
+
     def decide_pacman_conflict(self, choice: bool) -> None:
         self.write_to_stdin.emit("y\n" if choice else "n\n")
+
+    def cancel_transaction(self) -> None:
+        self.send_sigint_to_transaction.emit()
 
     def run_package_transaction(self, packagelist: list[list[str,bool]]) -> None:
         """
@@ -181,6 +190,7 @@ class PackageManagerController(QObject):
             self.pacman_transaction_worker.finished.connect(lambda: self.transaction_finished.emit())
             self.pacman_transaction_worker.stream.connect(self.transaction_stdout_stream.emit)
             self.write_to_stdin.connect(self.pacman_transaction_worker.write_to_stdin)
+            self.send_sigint_to_transaction.connect(self.pacman_transaction_worker.send_sigint)
             if not pkg_install:
                 self.pacman_transaction_worker.start_process("pkexec",
                     ["pacman", "-Rns"] + pkg_remove
