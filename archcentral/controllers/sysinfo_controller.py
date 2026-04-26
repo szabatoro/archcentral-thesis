@@ -30,10 +30,6 @@ class SysInfoController(QObject):
     def __init__(self) -> None:
         super().__init__()
 
-        # Process runners
-        self.hostname_handler: QProcessHandler = QProcessHandler()
-        self.kernel_handler: QProcessHandler = QProcessHandler()
-
         # module-level variables
         self.active_network_interface: str
         self.bs: float = None # bytes sent
@@ -175,20 +171,6 @@ class SysInfoController(QObject):
         """Fetches kernel version and hostname."""
         uname = os.uname()
         self.system_info_fetched.emit(uname.release, uname.nodename)
-
-    def fetch_kernel(self):
-        """
-        Runs uname through qprocess and emits the kernel_fetched signal.
-        """
-        self.kernel_handler.start_process("uname",  ["-sr"])
-        self.kernel_handler.finished.connect(self.kernel_fetched.emit)
-
-    def fetch_hostname(self):
-        """
-        Runs uname through qprocess and emits the hostname_fetched signal.
-        """
-        self.hostname_handler.start_process("uname",  ["-n"])
-        self.hostname_handler.finished.connect(self.hostname_fetched.emit)
 
     def fetch_uptime(self):
         """
