@@ -47,6 +47,7 @@ class Ui_MainWindow(object):
 
         self.welcome_label = QLabel(self.sidebar)
         self.welcome_label.setObjectName(u"welcome_label")
+        self.welcome_label.setWordWrap(True)
 
         self.verticalLayout.addWidget(self.welcome_label)
 

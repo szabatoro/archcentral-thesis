@@ -156,7 +156,7 @@ class Ui_PackageManager(object):
 
         self.retranslateUi(PackageManager)
 
-        self.content.setCurrentIndex(1)
+        self.content.setCurrentIndex(0)
         self.package_det_out_tabs.setCurrentIndex(0)
 
 

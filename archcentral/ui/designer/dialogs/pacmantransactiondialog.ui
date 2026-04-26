@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>PacmanConflictDialog</class>
- <widget class="QDialog" name="PacmanConflictDialog">
+ <class>PacmanTransactionDialog</class>
+ <widget class="QDialog" name="PacmanTransactionDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -21,16 +21,9 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QLabel" name="conflict_label">
+    <widget class="QLabel" name="info_label">
      <property name="text">
       <string/>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Refusing will quit the operation.</string>
      </property>
     </widget>
    </item>
@@ -51,7 +44,7 @@
   <connection>
    <sender>button_box</sender>
    <signal>accepted()</signal>
-   <receiver>PacmanConflictDialog</receiver>
+   <receiver>PacmanTransactionDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -67,7 +60,7 @@
   <connection>
    <sender>button_box</sender>
    <signal>rejected()</signal>
-   <receiver>PacmanConflictDialog</receiver>
+   <receiver>PacmanTransactionDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

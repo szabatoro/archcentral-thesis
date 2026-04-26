@@ -71,14 +71,11 @@ class ServiceManagerModule(QWidget, Ui_ServiceManager):
         selected_unit, _ = self._get_selected_row()
 
         if selected_unit.activestate == "active":
+            self.start_stop_button.setText("Stop")
             self.restart_button.setEnabled(True)
         else:
-            self.restart_button.setEnabled(False)
-
-        if selected_unit.substate == "running":
-            self.start_stop_button.setText("Stop")
-        else:
             self.start_stop_button.setText("Start")
+            self.restart_button.setEnabled(False)
 
         if selected_unit.enabledstate == "enabled":
             self.enable_disable_button.setText("Disable")
@@ -114,23 +111,10 @@ class ServiceManagerModule(QWidget, Ui_ServiceManager):
                 self.fetch_systemd_units_signal.emit(True, True, "socket")
                 self.fetch_systemd_units_signal.emit(True, False, "socket")
 
-    def initalize_models(self, is_system: bool, units: list) -> None:
+    def initalize_models(self, is_user: bool, units: list) -> None:
         """Initializes the user and system unit models with services from the systemd dbus API and populates their tables."""
 
-        if is_system:
-            self.system_unit_list_model: SystemdUnitListModel = SystemdUnitListModel(units)
-            self.system_unit_list_proxy_model: QSortFilterProxyModel = QSortFilterProxyModel()
-            self.system_unit_list_proxy_model.setDynamicSortFilter(True)
-            self.system_unit_list_proxy_model.setFilterCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
-            self.system_unit_list_proxy_model.setSortCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
-            self.system_unit_list_proxy_model.sort(0, Qt.AscendingOrder)
-            self.system_unit_list_proxy_model.setSourceModel(self.system_unit_list_model)
-            self.system_unit_list_proxy_model.setFilterKeyColumn(0)
-
-            self.system_unit_list_table.setModel(self.system_unit_list_proxy_model)
-            self.system_unit_list_table.selectionModel().currentRowChanged.connect(self.fill_unit_details)
-            self.system_unit_list_table.selectionModel().currentRowChanged.connect(self._adapt_buttons_status)
-        else:
+        if is_user:
             self.user_unit_list_model: SystemdUnitListModel = SystemdUnitListModel(units)
             self.user_unit_list_proxy_model: QSortFilterProxyModel = QSortFilterProxyModel()
             self.user_unit_list_proxy_model.setDynamicSortFilter(True)
@@ -143,10 +127,23 @@ class ServiceManagerModule(QWidget, Ui_ServiceManager):
             self.user_unit_list_table.setModel(self.user_unit_list_proxy_model)
             self.user_unit_list_table.selectionModel().currentRowChanged.connect(self.fill_unit_details)
             self.user_unit_list_table.selectionModel().currentRowChanged.connect(self._adapt_buttons_status)
+        else:
+            self.system_unit_list_model: SystemdUnitListModel = SystemdUnitListModel(units)
+            self.system_unit_list_proxy_model: QSortFilterProxyModel = QSortFilterProxyModel()
+            self.system_unit_list_proxy_model.setDynamicSortFilter(True)
+            self.system_unit_list_proxy_model.setFilterCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
+            self.system_unit_list_proxy_model.setSortCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
+            self.system_unit_list_proxy_model.sort(0, Qt.AscendingOrder)
+            self.system_unit_list_proxy_model.setSourceModel(self.system_unit_list_model)
+            self.system_unit_list_proxy_model.setFilterKeyColumn(0)
 
-    def refresh_unit_list(self, is_system: bool, services: list) -> None:
+            self.system_unit_list_table.setModel(self.system_unit_list_proxy_model)
+            self.system_unit_list_table.selectionModel().currentRowChanged.connect(self.fill_unit_details)
+            self.system_unit_list_table.selectionModel().currentRowChanged.connect(self._adapt_buttons_status)
+
+    def refresh_unit_list(self, is_user: bool, services: list) -> None:
         """Refreshes the service list model."""
-        self.system_unit_list_model.refresh(services) if is_system else self.user_unit_list_model.refresh(services)
+        self.user_unit_list_model.refresh(services) if is_user else self.system_unit_list_model.refresh(services)
 
     def fill_unit_details(self) -> None:
         """Fills out the service details tab with information about the selected service."""
@@ -177,7 +174,7 @@ class ServiceManagerModule(QWidget, Ui_ServiceManager):
     def start_stop_unit(self) -> None:
         """Stops or starts the selected service depending on its substate."""
         selected_unit, is_user_unit = self._get_selected_row()
-        if selected_unit.substate == "running":
+        if selected_unit.activestate == "active":
             operation = "stop"
         else:
             operation = "start"

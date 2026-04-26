@@ -7,6 +7,7 @@ from archcentral.ui.views.usergroupmanager import UserGroupManager
 from archcentral.ui.designer.mainwindow import Ui_MainWindow
 import sys
 from getpass import getuser
+from grp import getgrnam
 
 # Main window of the application. All the modules will be loaded within this window
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -20,7 +21,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.service_manager_widget: ServiceManagerModule = ServiceManagerModule()
         self.user_group_manager_widget: UserGroupManager = UserGroupManager()
 
-        self.welcome_label.setText(f"Welcome, {getuser()}!")
+        self.user: str = getuser()
+
+        self.is_user_admin: bool = self.user in getgrnam("wheel").gr_mem
+
+        self.welcome_label.setText(
+            f"Welcome, {self.user}!" if self.is_user_admin else f"Welcome, {self.user}! You are not an admin, functionality limited."
+        )
 
         # Gracefully shut down threads when exiting the app
         QApplication.instance().aboutToQuit.connect(self._call_module_thread_cleaners)
@@ -35,9 +42,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # setting up the buttons
         self.sys_info_button.setChecked(True)
         self.sys_info_button.clicked.connect(self.handle_sidebar)
-        self.package_manager_button.clicked.connect(self.handle_sidebar)
-        self.service_manager_button.clicked.connect(self.handle_sidebar)
-        self.user_group_manager_button.clicked.connect(self.handle_sidebar)
+        if self.is_user_admin:
+            self.package_manager_button.clicked.connect(self.handle_sidebar)
+            self.service_manager_button.clicked.connect(self.handle_sidebar)
+            self.user_group_manager_button.clicked.connect(self.handle_sidebar)
+        else:
+            self.package_manager_button.setDisabled(True)
+            self.service_manager_button.setDisabled(True)
+            self.user_group_manager_button.setDisabled(True)
 
     def handle_sidebar(self) -> None:
         """Handles switching between modules via the sidebar."""
@@ -59,6 +71,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     self.display_area.setCurrentWidget(self.user_group_manager_widget)
 
     def _call_module_thread_cleaners(self) -> None:
+        self.sysinfo_widget.cleanup_thread()
         self.package_manager_widget.cleanup_thread()
         self.service_manager_widget.cleanup_thread()
         self.user_group_manager_widget.cleanup_thread()

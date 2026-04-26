@@ -1,3 +1,4 @@
+import subprocess
 from PySide6.QtCore import QByteArray, QProcess, QObject, Signal
 
 class QProcessHandler(QObject):
@@ -27,6 +28,12 @@ class QProcessHandler(QObject):
         """Encodes a given string to bytes and writes it to stdin."""
         writeable_data = str.encode("utf-8")
         self.process.write(writeable_data)
+
+    def send_sigint(self) -> None:
+        """Send SIGINT via pkexec kill -INT to the process."""
+
+        pid: int = self.process.processId()
+        subprocess.run(["pkexec", "kill", "-INT", str(pid)])
 
     def _read_stdout(self) -> None:
         if self.process:

@@ -35,6 +35,7 @@ class ResourceGraph(QWidget):
         self.value_store: list[list[float]]= [] # values needed for plotting are stored here
         self.graph_length: int = 30
         self.plots: list = []
+        self.x_index: int = 0
 
         # Create and configure the plot widget
         if not_byte: # Specifically for the CPU plot as it's the only one not measured in bytes
@@ -53,8 +54,8 @@ class ResourceGraph(QWidget):
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.layout.addWidget(self.graph_widget)
 
-    # Extracting plot name and color for creating a legend
     def get_legend_data(self):
+        """Extracting plot name and color for creating a legend"""
         legend_data = []
 
         for plot in self.plots:
@@ -64,8 +65,8 @@ class ResourceGraph(QWidget):
 
         return legend_data
 
-    # Set up plots as needed
     def init_plots(self, line_labels) -> None:
+        """Set up plots as needed"""
         self.plots.clear()
         for i, label in enumerate(line_labels):
             pen = mkPen(color=i)
@@ -75,24 +76,36 @@ class ResourceGraph(QWidget):
             )
             self.plots.append(plot)
 
-    # Plot the graph with the relevant data, handles multiple plots if needed
     def plotter(self, value_points: list[float], upper_limit: float = None) -> None:
+        """Plot the graph with the relevant data, handles multiple plots if needed"""
+        self.x_index += 1
+
         self.value_store.append(value_points)
-        # set graph range on the y axis, use largest value in value store unless the upper_limit parameter is given
+
+        if len(self.value_store) > self.graph_length:
+            self.value_store.pop(0)
+
         if upper_limit is not None:
             ymax = upper_limit
         else:
             ymax = max(max(row) for row in self.value_store)
+
         self.graph_widget.setYRange(0, ymax)
 
-        # for keeping the plot within the length of the graph, pop the first value at every step after the length limit is reached
-        if len(self.value_store) > self.graph_length:
-            self.value_store.pop(0)
+        start = self.x_index - len(self.value_store)
+        x_data = [start + i for i in range(len(self.value_store))]
 
-        # update plots with latest data
         for i, plot in enumerate(self.plots):
             ydata = [row[i] for row in self.value_store]
-            plot.setData(x=list(range(len(self.value_store))),y=ydata)
+            plot.setData(x=x_data, y=ydata)
+
+        if len(self.value_store) < self.graph_length:
+            self.graph_widget.setXRange(0, self.graph_length)
+        else:
+            self.graph_widget.setXRange(
+                self.x_index - self.graph_length,
+                self.x_index
+            )
 
 # Graph widget for visualizing CPU clocks
 class CPUGraph(ResourceGraph):
