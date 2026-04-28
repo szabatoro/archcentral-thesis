@@ -4,7 +4,6 @@ from urllib.error import URLError, HTTPError
 from archcentral.helpers.unitconverter import convert_mem_unit
 from PySide6.QtCore import QObject,  Signal
 from PySide6 import __version__ as pysidever
-from archcentral.helpers.qprocesshelper import QProcessHandler
 import re # for taking data from files if info not retrievable by psutil
 import psutil # for everything else
 import socket
@@ -16,8 +15,8 @@ class SysInfoController(QObject):
     # Signals
     public_ip_fetched: Signal = Signal(str, str)
     cpu_info_fetched: Signal = Signal(str, int, int)
-    initial_ram_info_fetched: Signal = Signal(list, list, float, float, float)
-    ram_info_fetched: Signal = Signal(list, list, float, float, float)
+    initial_ram_info_fetched: Signal = Signal(tuple, tuple, float, float, float)
+    ram_info_fetched: Signal = Signal(tuple, tuple, float, float, float)
     network_interface_fetched: Signal = Signal(str, str)
     cpu_freqs_fetched: Signal = Signal(float, list)
     network_traffic_fetched: Signal = Signal(int, int)
@@ -110,9 +109,9 @@ class SysInfoController(QObject):
         swap_used: float = float(psutil.swap_memory().used)
         swap_readable: str = convert_mem_unit(swap_used, swap_total)
         if is_for_init:
-            self.ram_info_fetched.emit(ram_readable, swap_readable, ram_used, swap_used, ram_total)
-        else:
             self.initial_ram_info_fetched.emit(ram_readable, swap_readable, ram_used, swap_used, ram_total)
+        else:
+            self.ram_info_fetched.emit(ram_readable, swap_readable, ram_used, swap_used, ram_total)
 
     def read_network_interface(self):
         """
@@ -153,14 +152,16 @@ class SysInfoController(QObject):
         if self.active_network_interface:
             # if no value has been recorded yet don't do calculations
             if (self.bs is None) and (self.br is None):
-                self.bs = psutil.net_io_counters(pernic=True)[self.active_network_interface].bytes_sent
-                self.br = psutil.net_io_counters(pernic=True)[self.active_network_interface].bytes_recv
+                net_io_counters = psutil.net_io_counters(pernic=True)[self.active_network_interface]
+                self.bs = net_io_counters.bytes_sent
+                self.br = net_io_counters.bytes_recv
             else:
                 # provided network traffic is cumulative, need to calculate the difference for network speed
-                current_bs: float = psutil.net_io_counters(pernic=True)[self.active_network_interface].bytes_sent
+                net_io_counters = psutil.net_io_counters(pernic=True)[self.active_network_interface]
+                current_bs: float = net_io_counters.bytes_sent
                 diff_bs: float = current_bs - self.bs
                 self.bs = current_bs
-                current_br: float = psutil.net_io_counters(pernic=True)[self.active_network_interface].bytes_recv
+                current_br: float = net_io_counters.bytes_recv
                 diff_br: float = current_br - self.br
                 self.br = current_br
                 self.network_traffic_fetched.emit(diff_bs, diff_br)
