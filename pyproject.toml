@@ -22,3 +22,16 @@ archcentral = "archcentral.__main__:main"
 
 [tool.setuptools]
 packages = ["archcentral"]
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-qt"
+]
+
+[tool.pytest.ini_options]
+addopts = [
+    "--import-mode=importlib",
+]
+pythonpath = ["."]
+testpaths = ["archcentral-tests"]
