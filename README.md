@@ -4,6 +4,7 @@ Ebben a repositoryban érhető el a szakdolgozatom tárgyát képező projekt.
 
 ## Mappák:
 - archcentral: a python projekt helye
+- archcentral-tests: a projekthez tartozó pytest teszt kollekció helye
 - screenshots: képernyőképek a programról
 - tools: a fejlesztést segítő szkriptek és egyebek
 
@@ -44,6 +45,7 @@ The project that is the subject of my thesis/final project is available in this 
 
 ## Directories:
 - archcentral: the location of the python project
+- archcentral-tests: the location of the pytest test suite of the project
 - screenshots: screenshots about various parts of the program
 - tools: scripts and other things for helping development
 
