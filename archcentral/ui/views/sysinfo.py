@@ -76,11 +76,6 @@ class SysInfoModule(QWidget, Ui_SysInfo):
         # Connect buttons
         self.network_public_ip_switch.clicked.connect(self.sysret.fetch_public_ip)
 
-        # Generate legends
-        self.network_legend.build(self.network_graph.get_legend_data())
-        self.cpu_legend.build(self.cpu_graph.get_legend_data())
-        self.ram_legend.build(self.ram_graph.get_legend_data())
-
     def timer_connector(self) -> None:
         self.fetch_ram_info_signal.emit(False)
         self.fetch_cpu_freqs_signal.emit()
