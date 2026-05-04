@@ -15,12 +15,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super().__init__()
         self.setupUi(MainWindow=self)
 
-        # instanciating widget modules
-        self.sysinfo_widget: SysInfoModule = SysInfoModule()
-        self.package_manager_widget: PackageManagerModule = PackageManagerModule()
-        self.service_manager_widget: ServiceManagerModule = ServiceManagerModule()
-        self.user_group_manager_widget: UserGroupManager = UserGroupManager()
-
         self.user: str = getuser()
 
         self.is_user_admin: bool = self.user in getgrnam("wheel").gr_mem
@@ -29,20 +23,28 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             f"Welcome, {self.user}!" if self.is_user_admin else f"Welcome, {self.user}! You are not an admin, functionality limited."
         )
 
+        # instanciating widget modules
+        self.sysinfo_widget: SysInfoModule = SysInfoModule()
+        if self.is_user_admin:
+            self.package_manager_widget: PackageManagerModule = PackageManagerModule()
+            self.service_manager_widget: ServiceManagerModule = ServiceManagerModule()
+            self.user_group_manager_widget: UserGroupManager = UserGroupManager()
+
         # Gracefully shut down threads when exiting the app
         QApplication.instance().aboutToQuit.connect(self._call_module_thread_cleaners)
 
         # setting up the displayarea stacked widgets with the modules
         self.display_area.addWidget(self.sysinfo_widget)
-        self.display_area.addWidget(self.package_manager_widget)
-        self.display_area.addWidget(self.service_manager_widget)
-        self.display_area.addWidget(self.user_group_manager_widget)
+        if self.is_user_admin:
+            self.display_area.addWidget(self.package_manager_widget)
+            self.display_area.addWidget(self.service_manager_widget)
+            self.display_area.addWidget(self.user_group_manager_widget)
         self.display_area.setCurrentWidget(self.sysinfo_widget)
 
         # setting up the buttons
         self.sys_info_button.setChecked(True)
-        self.sys_info_button.clicked.connect(self.handle_sidebar)
         if self.is_user_admin:
+            self.sys_info_button.clicked.connect(self.handle_sidebar)
             self.package_manager_button.clicked.connect(self.handle_sidebar)
             self.service_manager_button.clicked.connect(self.handle_sidebar)
             self.user_group_manager_button.clicked.connect(self.handle_sidebar)
@@ -72,9 +74,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def _call_module_thread_cleaners(self) -> None:
         self.sysinfo_widget.cleanup_thread()
-        self.package_manager_widget.cleanup_thread()
-        self.service_manager_widget.cleanup_thread()
-        self.user_group_manager_widget.cleanup_thread()
+        if self.is_user_admin:
+            self.package_manager_widget.cleanup_thread()
+            self.service_manager_widget.cleanup_thread()
+            self.user_group_manager_widget.cleanup_thread()
 
 
 # main function to launch the program
