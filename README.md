@@ -34,7 +34,7 @@ Ebben a repositoryban érhető el a szakdolgozatom tárgyát képező projekt.
 
 1. Az interaktív telepítés során specifikáljuk a teszthez szükséges függőségek telepítését is.
     ```bash
-    pip install -e .[test]
+    pip install -e ".[test]"
     ```
 
 2. Ezután az ```pytest``` parancs használatával lefut az összes teszt.
@@ -75,7 +75,7 @@ The project that is the subject of my thesis/final project is available in this 
 
 1. During the interactive install, specify the test dependencies as well.
     ```bash
-    pip install -e .[test]
+    pip install -e ".[test]"
     ```
 
 2. After this you can run all the tests by typing ```pytest``` .
